@@ -6,7 +6,6 @@ import (
 "time"
 
 	"github.com/KristinaEtc/slf"
-	"fmt"
 )
 
 var log = slf.WithContext("core")
@@ -18,9 +17,17 @@ type BasicManager struct {
 	//tickers map[string]Ticker
 }
 
+type PriceLevels struct {
+	Asks map[string]string
+	Bids map[string]string
+}
+
+type CoinEvents map[string]PriceLevels
+
+type ExchangeEvents map[string]CoinEvents
+
 type Result struct {
-	exchangeTitle    string
-	events map[string]PriceLevels
+	ExchangeEvents ExchangeEvents
 	Err              *error
 }
 
@@ -38,11 +45,13 @@ type Manager struct {
 	//bithumbManager     *BithumbManager
 
 
-	//agregator *Agregator
+	agregator *Agregator
 }
 
 func NewManager() *Manager {
 	var manger = Manager{}
+
+	manger.agregator = NewAgregator()
 	manger.binanceManager = NewBinanceManager()
 	//manger.hitBtcManager = &HitBtcManager{}
 	//manger.poloniexManager = &PoloniexManager{}
@@ -50,7 +59,6 @@ func NewManager() *Manager {
 	//manger.gdaxManager = &GdaxManager{}
 	//manger.okexManager = &OkexManager{}
 	//manger.server = &stream.Server{}
-	//manger.agregator = NewAgregator()
 	//manger.bittrexManager = &BittrexManager{}
 	//manger.huobiManager = &HuobiManager{}
 	//manger.upbitManager = &UpbitManager{}
@@ -189,8 +197,9 @@ func (b *Manager) StartListen(configuration ManagerConfiguration) {
 			if result.Err != nil {
 				log.Errorf("StartListen:error: %v", result.Err)
 			} else {
-				fmt.Println(result.events)
+				//fmt.Println(result.ExchangeEvents)
 				//b.agregator.add(*result.TickerCollection, result.exchangeTitle)
+				b.agregator.add(result.ExchangeEvents)
 			}
 
 		}

@@ -10,10 +10,7 @@ import (
 	"strings"
 )
 
-type PriceLevels struct {
-	Asks map[string]string
-	Bids map[string]string
-}
+
 
 
 type BinanceEvents struct {
@@ -63,12 +60,12 @@ type BinanceEvents struct {
 type BinanceManager struct {
 	BasicManager
 	binanceApi     *api.BinanceApi
-	BidsAsks map[string]PriceLevels
+	cointEvenst CoinEvents
 }
 
 func NewBinanceManager() *BinanceManager {
 	var manger = BinanceManager{}
-	manger.BidsAsks = make(map[string]PriceLevels)
+	manger.cointEvenst = CoinEvents{}
 	manger.binanceApi = &api.BinanceApi{}
 	return &manger
 }
@@ -85,18 +82,19 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 
 			if *response.Err != nil {
 				log.Errorf("StartListen: binance error:%v", *response.Err)
-				resultChan <- Result{exchangeConfiguration.Exchange.String(), make(map[string]PriceLevels), response.Err}
+				exchangeEvents := ExchangeEvents{}
+				resultChan <- Result{exchangeEvents, response.Err}
 			} else if *response.Message != nil {
 				//fmt.Printf("%s \n", *response.Message)
 				var binanceOrders BinanceEvents
 				json.Unmarshal(*response.Message, &binanceOrders)
 				//fmt.Println(binanceOrders.Bids)
 
-				if _, ok := b.BidsAsks[binanceOrders.Symbol]; !ok {
-					b.BidsAsks[binanceOrders.Symbol] = PriceLevels{make(map[string]string), make(map[string]string)}
+				if _, ok := b.cointEvenst[binanceOrders.Symbol]; !ok {
+					b.cointEvenst[binanceOrders.Symbol] = PriceLevels{make(map[string]string), make(map[string]string)}
 				}
 
-				previosPriceLevels := b.BidsAsks[binanceOrders.Symbol]
+				previosPriceLevels := b.cointEvenst[binanceOrders.Symbol]
 
 				for _, level := range  binanceOrders.Asks {
 					price := level[0]
@@ -123,10 +121,11 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 
 				}
 
-				b.BidsAsks[binanceOrders.Symbol] = previosPriceLevels
 
-				//fmt.Println(len(b.BidsAsks[binanceOrders.Symbol].Asks), "\n")
+				//fmt.Println(previosPriceLevels, "\n")
 				//fmt.Println(len(b.BidsAsks[binanceOrders.Symbol].Bids), "\n")
+
+				b.cointEvenst[binanceOrders.Symbol] = previosPriceLevels
 
 			} else {
 				log.Errorf("StartListen: Binance mesage is nil")
@@ -143,17 +142,20 @@ func (b *BinanceManager) startSendingDataBack(exchangeConfiguration ExchangeConf
 		func() {
 
 			b.Lock()
-			tempEvents := make(map[string]PriceLevels)
-			for k, v := range b.BidsAsks {
+			tempEvents := CoinEvents{}
+			for k, v := range b.cointEvenst {
 				k = b.convertSymbol(k)
 				tempEvents[k] = v
 			}
 			b.Unlock()
 
 
+
 			//fmt.Println(tickerCollection)
 			if len(tempEvents) > 0 {
-				resultChan <- Result{exchangeConfiguration.Exchange.String(), tempEvents, nil}
+				exchangeEvents := ExchangeEvents{}
+				exchangeEvents[exchangeConfiguration.Exchange.String()] = tempEvents
+				resultChan <- Result{exchangeEvents, nil}
 			}
 		}()
 	}
