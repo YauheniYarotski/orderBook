@@ -1,5 +1,6 @@
 package core
 
+
 import (
 	"orderBook/api"
 	"time"
@@ -9,14 +10,12 @@ import (
 	"strconv"
 	"math"
 	"strings"
-	"fmt"
 )
 
 type BitfinexManager struct {
-	BasicManager
+	CoinManager
 	bitfinexSymbols map[int]string
 	api             *api.BitfinexApi
-	cointEvenst CoinEvents
 }
 
 //type BitfinexTicker struct {
@@ -47,7 +46,7 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 	//b.bitfinexTickers = make(map[int]BitfinexTicker)
 	b.bitfinexSymbols = map[int]string{}
 	b.api = api.NewBitfinexApi()
-	b.cointEvenst = CoinEvents{}
+	b.coinBooks = map[string]CoinBook{}
 
 	var apiCurrenciesConfiguration = api.ApiCurrenciesConfiguration{}
 	apiCurrenciesConfiguration.TargetCurrencies = exchangeConfiguration.TargetCurrencies
@@ -63,15 +62,12 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 		select {
 		case response := <-ch:
 
-			//fmt.Println(0)
 			if *response.Err != nil {
 				log.Errorf("StartListen *response.Err: %v", response.Err)
 				//resultChan <- Result{exchangeConfiguration.Exchange.String(), nil, response.Err}
 			} else if *response.Message != nil {
 				//fmt.Printf("%s \n", response.Message)
-				//fmt.Println(1)
 				b.addMessage(*response.Message)
-				//fmt.
 			} else {
 				log.Errorf("StartListen :error parsing Bitfinex ticker")
 			}
@@ -87,21 +83,22 @@ func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeCon
 		func() {
 
 			b.Lock()
-			tempEvents := CoinEvents{}
-			for k, v := range b.cointEvenst {
+			tempCoinBooks := map[string]CoinBook{}
+			for k, v := range b.coinBooks {
 				k = b.convertSymbol(k)
-				fmt.Println(k)
-				tempEvents[k] = v
+				//fmt.Println(k)
+				tempCoinBooks[k] = v
 			}
 			b.Unlock()
 
 
 
 			//fmt.Println(tickerCollection)
-			if len(tempEvents) > 0 {
-				exchangeEvents := ExchangeEvents{}
-				exchangeEvents[exchangeConfiguration.Exchange.String()] = tempEvents
-				resultChan <- Result{exchangeEvents, nil}
+			if len(tempCoinBooks) > 0 {
+				exchangeBook := ExchangeBook{}
+				exchangeBook.Exchange = Bitfinex
+				exchangeBook.Coins = tempCoinBooks
+				resultChan <- Result{exchangeBook, nil}
 			}
 		}()
 	}
@@ -157,16 +154,16 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
 
-
 	b.Lock()
 
-
-
-	if _, ok := b.cointEvenst[symbol]; !ok {
-		b.cointEvenst[symbol] = PriceLevels{make(map[string]string), make(map[string]string)}
+	if _, ok := b.coinBooks[symbol]; !ok {
+		coinBook := CoinBook{}
+		coinBook.Pair = b.convert(symbol)
+		coinBook.PriceLevels = PriceLevels{make(map[string]string), make(map[string]string)}
+		b.coinBooks[symbol] = coinBook
 	}
 
-	previosPriceLevels := b.cointEvenst[symbol]
+	coinBook := b.coinBooks[symbol]
 
 
 	priceString := strconv.FormatFloat(price, 'f', 8, 64)
@@ -174,17 +171,17 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 
 	if amount < 0 {
 		if amount == 0 {
-			delete(previosPriceLevels.Asks, priceString)
+			delete(coinBook.PriceLevels.Asks, priceString)
 		} else {
-			previosPriceLevels.Asks[priceString] = amountString
+			coinBook.PriceLevels.Asks[priceString] = amountString
 		}
 
 
 	} else {
 		if amount == 0 {
-			delete(previosPriceLevels.Bids, priceString)
+			delete(coinBook.PriceLevels.Bids, priceString)
 		} else {
-			previosPriceLevels.Bids[priceString] = amountString
+			coinBook.PriceLevels.Bids[priceString] = amountString
 		}
 
 	}
@@ -222,4 +219,43 @@ func (b *BitfinexManager) convertSymbol(binanceSymbol string) string {
 
 	}
 	return ""
+}
+
+func (b *BitfinexManager) convert(symbol string) CurrencyPair {
+	if len(symbol) > 0 {
+
+		var damagedSymbol = TrimLeftChars(symbol, 1)
+		for _, referenceCurrency := range DefaultReferenceCurrencies {
+			//fmt.Println(damagedSymbol, referenceCurrency.CurrencyCode())
+
+			referenceCurrencyCode := referenceCurrency.CurrencyCode()
+
+			if referenceCurrencyCode == "USDT" {
+				referenceCurrencyCode = "USD"
+			}
+
+			//fmt.Println(damagedSymbol)
+			//fmt.Println(referenceCurrencyCode)
+			//fmt.Println(strings.Contains(damagedSymbol, referenceCurrencyCode))
+
+			if strings.Contains(damagedSymbol, referenceCurrencyCode) {
+				//fmt.Println(damagedSymbol)
+
+				//fmt.Println("2",symbol, referenceCurrency.CurrencyCode())
+				targetCurrencyString := strings.TrimSuffix(symbol, referenceCurrencyCode)
+
+
+				if targetCurrencyString == "DSH" {
+					targetCurrencyString = "DASH"
+				}
+
+
+				//fmt.Println("targetCurrencyString", targetCurrencyString)
+				var targetCurrency = NewCurrencyWithCode(targetCurrencyString)
+				return CurrencyPair{ targetCurrency, referenceCurrency}
+			}
+		}
+
+	}
+	return CurrencyPair{NotAplicable, NotAplicable}
 }

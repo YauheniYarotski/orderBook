@@ -8,30 +8,18 @@ import (
 
 type Agregator struct {
 	sync.Mutex
-	exchangeEvents ExchangeEvents
+	exchangeBooks map[string]ExchangeBook
 }
 
 func NewAgregator() *Agregator {
 	var agregator = Agregator{}
-	agregator.exchangeEvents = ExchangeEvents{}
+	agregator.exchangeBooks = map[string]ExchangeBook{}
 	return &agregator
 }
 
-func (b *Agregator) add(exchangeEvents ExchangeEvents) {
+func (b *Agregator) add(exchangeBook ExchangeBook) {
 	b.Lock()
-	fmt.Println("added:", exchangeEvents)
-	for k,v := range exchangeEvents {
-		b.exchangeEvents[k] = v
-	}
+	fmt.Println("added:", exchangeBook)
+	b.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
 	b.Unlock()
 }
-
-//func (b *Agregator) getEvents() map[string]Events {
-//	b.Lock()
-//	var tempEvents = map[string]Events{}
-//	for k,v := range b.events {
-//		tempEvents[k] = v
-//	}
-//	b.Unlock()
-//	return tempEvents
-//}

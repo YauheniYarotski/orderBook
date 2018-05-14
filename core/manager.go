@@ -17,18 +17,29 @@ type BasicManager struct {
 	//tickers map[string]Ticker
 }
 
+type CoinManager struct {
+	BasicManager
+	coinBooks 		map[string]CoinBook
+}
+
 type PriceLevels struct {
 	Asks map[string]string
 	Bids map[string]string
 }
 
-type CoinEvents map[string]PriceLevels
-
-type ExchangeEvents map[string]CoinEvents
-
 type Result struct {
-	ExchangeEvents ExchangeEvents
+	ExchangeBook ExchangeBook
 	Err              *error
+}
+
+type ExchangeBook struct {
+	Exchange Exchange
+	Coins map[string]CoinBook
+}
+
+type CoinBook struct {
+	Pair CurrencyPair
+	PriceLevels PriceLevels
 }
 
 type Manager struct {
@@ -46,6 +57,12 @@ type Manager struct {
 
 
 	agregator *Agregator
+}
+
+type DBConfiguration struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
 }
 
 func NewManager() *Manager {
@@ -93,11 +110,11 @@ func (b *ManagerConfiguration) Pairs() []CurrencyPair {
 	return pairs
 }
 
-type DBConfiguration struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-}
+//type DBConfiguration struct {
+//	User     string `json:"user"`
+//	Password string `json:"password"`
+//	Name     string `json:"name"`
+//}
 
 type Exchange int
 
@@ -199,7 +216,7 @@ func (b *Manager) StartListen(configuration ManagerConfiguration) {
 			} else {
 				//fmt.Println(result.ExchangeEvents)
 				//b.agregator.add(*result.TickerCollection, result.exchangeTitle)
-				b.agregator.add(result.ExchangeEvents)
+				b.agregator.add(result.ExchangeBook)
 			}
 
 		}
