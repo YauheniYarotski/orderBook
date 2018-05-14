@@ -1,13 +1,4 @@
-
 package core
-
-
-/*
-import (
-	"github.com/KristinaEtc/slf"
-	"database/sql"
-)
-
 
 import (
 	"database/sql"
@@ -17,19 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/KristinaEtc/slf"
 	_ "github.com/KristinaEtc/slflog"
 	_ "github.com/lib/pq"
 )
 
-var log = slf.WithContext("exchange-rates")
-
-
-
-//type DbExchange struct {
-//	name    string
-//	Tickers []DbTicker
-//}
+type DbExchange struct {
+	name    string
+	//Tickers []DbTicker
+}
 
 //type DbTicker struct {
 //	TargetCurrency    currencies.Currency
@@ -70,11 +56,11 @@ func (b *DbManager) connectDb(configuration DBConfiguration) *sql.DB {
 	//defer db.Close()
 }
 
-func (b *DbManager) FillDb(withExchangeEvents ExchangeEvents) {
-
-	for exchangeName, coinEvents := range withExchangeEvents {
-		for symbolName, priceLevels := range coinEvents {
-			b.insertSaRate(exchange.name, ticker.TargetCurrency, ticker.ReferenceCurrency, strconv.FormatFloat(ticker.Rate, 'f', 8, 64), ticker.isCalculated)
+func (b *DbManager) FillDb(exchangeBook ExchangeBook) {
+	fmt.Println(exchangeBook)
+	for _, coinBook := range exchangeBook.Coins {
+		for price, amount := range  coinBook.PriceLevels.Bids {
+			b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, false, 0, amount)
 		}
 	}
 	b.fillRateFromSA()
@@ -101,9 +87,10 @@ func (b *DbManager) FillDb(withExchangeEvents ExchangeEvents) {
 //	//fmt.Println("inserted rows:", rows)
 //}
 //
-func (b *DbManager) insertSaRate(exchange_title string, target_currency currencies.Currency, reference_currency currencies.Currency, rateString string, isCalculated bool) {
-	rate, _ := strconv.ParseFloat(rateString, 64)
-	_, err := b.db.Exec("INSERT INTO sa_rates(exchange_title, target_title, target_code, target_native_id, reference_title, reference_code, reference_native_id, time_stamp, rate, is_calculated) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10);", exchange_title, target_currency.CurrencyName(), target_currency.CurrencyCode(), target_currency, reference_currency.CurrencyName(), reference_currency.CurrencyCode(), reference_currency, time.Now(), rate, isCalculated)
+func (b *DbManager) insertSaBook(exchange_title string, target_currency Currency, reference_currency Currency, priceString string, isAsk bool, count int, amountString string) {
+	price, _ := strconv.ParseFloat(priceString, 64)
+	amount, _ := strconv.ParseFloat(amountString, 64)
+	_, err := b.db.Exec("INSERT INTO sa_book_orders(exchange, target_currency, reference_currency, price, isask, count, amount) VALUES($1,$2,$3,$4,$5,$6,$7);", exchange_title, target_currency.CurrencyCode(), reference_currency.CurrencyCode(), price, isAsk, count, amount)
 	if err != nil {
 		log.Errorf("DbManager:insertSaRate:b.db.Exec %v", err.Error())
 	}
@@ -163,4 +150,3 @@ func (stringSlice StringSlice) Value() (driver.Value, error) {
 	return value, nil
 }
 
-*/

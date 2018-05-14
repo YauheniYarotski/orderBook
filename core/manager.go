@@ -6,6 +6,7 @@ import (
 "time"
 
 	"github.com/KristinaEtc/slf"
+	"fmt"
 )
 
 var log = slf.WithContext("core")
@@ -47,6 +48,7 @@ type Manager struct {
 	//hitBtcManager   *HitBtcManager
 	//poloniexManager *PoloniexManager
 	bitfinexManager *BitfinexManager
+	dbManger            *DbManager
 	//gdaxManager     *GdaxManager
 	//okexManager     *OkexManager
 	//bittrexManager     *BittrexManager
@@ -82,6 +84,12 @@ func NewManager() *Manager {
 	//manger.krakenManager = &KrakenManager{}
 	//manger.bithumbManager = &BithumbManager{}
 
+	dbConfig := DBConfiguration{}
+	dbConfig.Name = "test"
+	dbConfig.Password = "postgres"
+	dbConfig.User = "postgres"
+
+	manger.dbManger = NewDbManager(dbConfig)
 	return &manger
 }
 
@@ -194,6 +202,8 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 
 func (b *Manager) StartListen(configuration ManagerConfiguration) {
 
+	go b.fillDb()
+
 	ch := make(chan Result)
 
 	for _, exchangeString := range configuration.Exchanges {
@@ -222,7 +232,28 @@ func (b *Manager) StartListen(configuration ManagerConfiguration) {
 		}
 	}
 
+
 }
+
+
+func (b *Manager) fillDb() {
+
+	for range time.Tick(5 * time.Second) {
+
+		for _, exchangeBook := range b.agregator.exchangeBooks {
+			b.dbManger.FillDb(exchangeBook)
+		}
+
+
+
+		//v := b.GetRates(time.Now().Add(-4 * time.Minute), "BINANCE", "BTS", []string{"BTC", "USDT"})
+		//
+		//for _,value := range v {
+		//	fmt.Println("get rates :", value.symbol(), value.TimpeStamp, value.Rate)
+		//}
+	}
+}
+
 //
 //func (b *Manager) convertToTickerCollection(tickerCollection TickerCollection) stream.StreamTickerCollection {
 //	var streamTickerCollection = stream.StreamTickerCollection{}
