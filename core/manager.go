@@ -35,7 +35,7 @@ type Manager struct {
 	binanceManager  *BinanceManager
 	//hitBtcManager   *HitBtcManager
 	//poloniexManager *PoloniexManager
-	//bitfinexManager *BitfinexManager
+	bitfinexManager *BitfinexManager
 	//gdaxManager     *GdaxManager
 	//okexManager     *OkexManager
 	//bittrexManager     *BittrexManager
@@ -55,7 +55,7 @@ func NewManager() *Manager {
 	manger.binanceManager = NewBinanceManager()
 	//manger.hitBtcManager = &HitBtcManager{}
 	//manger.poloniexManager = &PoloniexManager{}
-	//manger.bitfinexManager = &BitfinexManager{}
+	manger.bitfinexManager = &BitfinexManager{}
 	//manger.gdaxManager = &GdaxManager{}
 	//manger.okexManager = &OkexManager{}
 	//manger.server = &stream.Server{}
@@ -150,8 +150,8 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 	switch exchangeConfiguration.Exchange {
 	case Binance:
 		go b.binanceManager.StartListen(exchangeConfiguration, ch)
-	//case Bitfinex:
-	//	go b.bitfinexManager.StartListen(exchangeConfiguration, ch)
+	case Bitfinex:
+		go b.bitfinexManager.StartListen(exchangeConfiguration, ch)
 	//case Gdax:
 	//	go b.gdaxManager.StartListen(exchangeConfiguration, ch)
 	//case HitBtc:

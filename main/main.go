@@ -29,7 +29,7 @@ func main() {
 	//	configuration.TargetCurrencies = []string{"LTC","DASH"}
 	configuration.TargetCurrencies = []string{"BTC"}
 	configuration.ReferenceCurrencies = []string{"USDT"}
-	configuration.Exchanges = []string{"Binance"}
+	configuration.Exchanges = []string{"BITFINEX", "BINANCE"}
 	configuration.RefreshInterval = 1
 //, "Bitfinex", "Gdax", "HitBtc", "Okex", "Poloniex", "Bittrex", "HUOBI", "UPBIT", "KRAKEN", "BITHUMB"
 	dbConfig := core.DBConfiguration{}

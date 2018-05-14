@@ -217,6 +217,7 @@ const (
 	EOS                    Currency = 37314
 	Tether                 Currency = 37315
 	SouthKoreanWon         Currency = 57316
+	UnitedStatesDollars    Currency = 57317
 )
 
 var CurrencyNames = map[Currency]string{
@@ -409,6 +410,7 @@ var CurrencyNames = map[Currency]string{
 	EOS:                    "EOS",
 	Tether:                 "Tether",
 	SouthKoreanWon: 		"SouthKoreanWon",
+	UnitedStatesDollars: 		"UnitedStatesDollars",
 }
 
 var CurrencyCodes = map[Currency]string{
@@ -426,6 +428,7 @@ var CurrencyCodes = map[Currency]string{
 	EOS:          "EOS",
 	Tether:       "USDT",
 	SouthKoreanWon: "KRW",
+	UnitedStatesDollars: "USD",
 }
 
 func (currency Currency) CurrencyName() string {
