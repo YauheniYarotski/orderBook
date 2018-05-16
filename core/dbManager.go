@@ -59,7 +59,6 @@ func (b *DbManager) connectDb(configuration DBConfiguration) *sql.DB {
 func (b *DbManager) FillDb(exchangeBooks []ExchangeBook) {
 	//fmt.Println(exchangeBook)
 	for _, exchangeBook := range exchangeBooks {
-			exchangeBook.Lock()
 		for _, coinBook := range exchangeBook.Coins {
 			//for price, amount := range coinBook.PriceLevels.Bids.Range()
 			coinBook.PriceLevels.Bids.Range(func(key, value interface{}) bool {
@@ -73,7 +72,6 @@ func (b *DbManager) FillDb(exchangeBooks []ExchangeBook) {
 				return true
 			})
 		}
-		exchangeBook.Unlock()
 	}
 	b.fillBookFromSA()
 }

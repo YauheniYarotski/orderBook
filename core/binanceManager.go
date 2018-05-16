@@ -106,20 +106,16 @@ func (b *BinanceManager) startSendingDataBack(exchangeConfiguration ExchangeConf
 	for range time.Tick(1 * time.Second) {
 		func() {
 
-			b.Lock()
 			tempCoinBooks := map[string]CoinBook{}
 			for k, v := range b.coinBooks {
 				tempCoinBooks[b.convertSymbol(k)] = v.copy()
 			}
-			b.Unlock()
 
 			//fmt.Println(tickerCollection)
 			if len(tempCoinBooks) > 0 {
 				exchangeBook := ExchangeBook{}
-				b.Lock()
 				exchangeBook.Exchange = Binance
 				exchangeBook.Coins = tempCoinBooks
-				b.Unlock()
 				resultChan <- Result{exchangeBook, nil}
 			}
 		}()

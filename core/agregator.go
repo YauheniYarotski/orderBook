@@ -6,29 +6,25 @@ import (
 
 
 type Agregator struct {
-	sync.Mutex
-	exchangeBooks map[string]ExchangeBook
+	exchangeBooks sync.Map //map[string]ExchangeBook
 }
 
 func NewAgregator() *Agregator {
 	var agregator = Agregator{}
-	agregator.exchangeBooks = map[string]ExchangeBook{}
+	agregator.exchangeBooks = sync.Map{}
 	return &agregator
 }
 
 func (b *Agregator) add(exchangeBook ExchangeBook) {
-	b.Lock()
 	//fmt.Println("added:", exchangeBook)
-	b.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook.copy()
-	b.Unlock()
+	b.exchangeBooks.Store(exchangeBook.Exchange.String(), exchangeBook)
 }
 
 func (b *Agregator) getExchangeBooks()  []ExchangeBook {
-	b.Lock()
 	var tempBooks = []ExchangeBook{}
-	for _,v := range b.exchangeBooks {
-		tempBooks = append(tempBooks, v.copy())
-	}
-	b.Unlock()
+	b.exchangeBooks.Range(func(k, v interface{}) bool {
+		tempBooks = append(tempBooks, v.(ExchangeBook))
+		return true
+	})
 	return tempBooks
 }

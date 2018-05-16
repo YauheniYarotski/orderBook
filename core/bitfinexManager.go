@@ -111,9 +111,7 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 	if bitfinexBook.ChanID > 0 {
 		//fmt.Println(bitfinexTicker)
-		//b.Lock()
 		b.bitfinexSymbols[bitfinexBook.ChanID] = bitfinexBook.Pair
-		//b.Unlock()
 	} else {
 		var unmarshaledBookMessage []interface{}
 		json.Unmarshal(message, &unmarshaledBookMessage)

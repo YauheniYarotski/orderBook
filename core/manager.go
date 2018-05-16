@@ -14,7 +14,6 @@ var log = slf.WithContext("core")
 const maxTickerAge = 5
 
 type BasicManager struct {
-	sync.Mutex
 	//tickers map[string]Ticker
 }
 
@@ -54,7 +53,6 @@ type Result struct {
 }
 
 type ExchangeBook struct {
-	sync.Mutex
 	Exchange Exchange  `json:"exchange"`
 	Coins map[string]CoinBook  `json:"books"`
 }
