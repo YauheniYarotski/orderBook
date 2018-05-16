@@ -80,6 +80,7 @@ type Manager struct {
 	//poloniexManager *PoloniexManager
 	bitfinexManager *BitfinexManager
 	dbManger            *DbManager
+	wsServer *WsServer
 	//gdaxManager     *GdaxManager
 	//okexManager     *OkexManager
 	//bittrexManager     *BittrexManager
@@ -106,6 +107,7 @@ func NewManager() *Manager {
 	//manger.hitBtcManager = &HitBtcManager{}
 	//manger.poloniexManager = &PoloniexManager{}
 	manger.bitfinexManager = &BitfinexManager{}
+	manger.wsServer = NewWsServer()
 	//manger.gdaxManager = &GdaxManager{}
 	//manger.okexManager = &OkexManager{}
 	//manger.server = &stream.Server{}
@@ -233,6 +235,7 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 
 func (b *Manager) StartListen(configuration ManagerConfiguration) {
 
+	go b.wsServer.start()
 	go b.fillDb()
 
 	ch := make(chan Result)

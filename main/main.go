@@ -38,7 +38,7 @@ func main() {
 	dbConfig.Name = "test"
 	configuration.DBConfiguration = dbConfig
 
-	waitGroup.Add(len(configuration.Exchanges) + 5)
+	waitGroup.Add(len(configuration.Exchanges) + 6)
 
 	go manager.StartListen(configuration)
 

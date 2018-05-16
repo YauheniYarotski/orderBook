@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="862e676e-2981-4e98-b4bd-95375047c21a" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/core/wsServer.go" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/core/agregator.go" afterPath="$PROJECT_DIR$/core/agregator.go" />
-      <change beforePath="$PROJECT_DIR$/core/binanceManager.go" afterPath="$PROJECT_DIR$/core/binanceManager.go" />
-      <change beforePath="$PROJECT_DIR$/core/bitfinexManager.go" afterPath="$PROJECT_DIR$/core/bitfinexManager.go" />
-      <change beforePath="$PROJECT_DIR$/core/dbManager.go" afterPath="$PROJECT_DIR$/core/dbManager.go" />
       <change beforePath="$PROJECT_DIR$/core/manager.go" afterPath="$PROJECT_DIR$/core/manager.go" />
+      <change beforePath="$PROJECT_DIR$/main/main.go" afterPath="$PROJECT_DIR$/main/main.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,33 +20,16 @@
         <entry file="file://$PROJECT_DIR$/main/main.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="585">
-              <caret line="42" column="41" lean-forward="false" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
-              <folding>
-                <element signature="e#14#50#0" expanded="true" />
-              </folding>
+              <caret line="42" column="20" lean-forward="true" selection-start-line="42" selection-start-column="20" selection-end-line="42" selection-end-column="20" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dbManager.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/dbManager.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-              <folding>
-                <element signature="e#14#159#0" expanded="true" />
-                <marker date="1526452327627" expanded="true" signature="2848:3078" ph="INSERT INTO sa_rates... " />
-                <marker date="1526452327627" expanded="true" signature="3466:3484" ph="SELECT fill_... " />
-                <marker date="1526452327627" expanded="true" signature="3775:3813" ph="SELECT * fro... getRates" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="bitfinexManager.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="bitfinexManager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
+            <state relative-caret-position="810">
               <caret line="99" column="18" lean-forward="false" selection-start-line="99" selection-start-column="18" selection-end-line="99" selection-end-column="18" />
               <folding>
                 <element signature="e#15#143#0" expanded="true" />
@@ -57,11 +38,23 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="wsServer.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/core/wsServer.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="420">
+              <caret line="66" column="37" lean-forward="true" selection-start-line="66" selection-start-column="37" selection-end-line="66" selection-end-column="37" />
+              <folding>
+                <element signature="e#15#110#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="binanceManager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/binanceManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="402">
-              <caret line="116" column="26" lean-forward="false" selection-start-line="116" selection-start-column="26" selection-end-line="116" selection-end-column="26" />
+            <state relative-caret-position="331">
+              <caret line="101" column="16" lean-forward="true" selection-start-line="100" selection-start-column="4" selection-end-line="101" selection-end-column="16" />
               <folding>
                 <element signature="e#15#87#0" expanded="true" />
               </folding>
@@ -79,31 +72,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="panic.go" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/go/src/runtime/panic.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="618" column="0" lean-forward="false" selection-start-line="618" selection-start-column="0" selection-end-line="618" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="hashmap.go" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/go/src/runtime/hashmap.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="746" column="0" lean-forward="false" selection-start-line="746" selection-start-column="0" selection-end-line="746" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="manager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/manager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="259" column="0" lean-forward="false" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
+            <state relative-caret-position="263">
+              <caret line="237" column="21" lean-forward="false" selection-start-line="237" selection-start-column="21" selection-end-line="237" selection-end-column="21" />
               <folding>
                 <element signature="e#14#79#0" expanded="true" />
               </folding>
@@ -126,8 +99,8 @@
       <file leaf-file-name="bitfinex.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/bitfinex.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+            <state relative-caret-position="360">
+              <caret line="32" column="26" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="35" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -154,6 +127,7 @@
       <find>bitfinexManager</find>
       <find>convertSymbol</find>
       <find>5</find>
+      <find>echo</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/go" />
@@ -168,12 +142,13 @@
         <option value="$PROJECT_DIR$/api/binance.go" />
         <option value="$PROJECT_DIR$/api/bitfinex.go" />
         <option value="$PROJECT_DIR$/core/currencies.go" />
-        <option value="$PROJECT_DIR$/main/main.go" />
         <option value="$PROJECT_DIR$/core/dbManager.go" />
-        <option value="$PROJECT_DIR$/core/manager.go" />
         <option value="$PROJECT_DIR$/core/agregator.go" />
         <option value="$PROJECT_DIR$/core/binanceManager.go" />
         <option value="$PROJECT_DIR$/core/bitfinexManager.go" />
+        <option value="$PROJECT_DIR$/main/main.go" />
+        <option value="$PROJECT_DIR$/core/manager.go" />
+        <option value="$PROJECT_DIR$/core/wsServer.go" />
       </list>
     </option>
   </component>
@@ -228,10 +203,6 @@
               <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
               <item name="orderBook" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
@@ -295,7 +266,7 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.49386212" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29084042" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -324,7 +295,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#14#50#0" expanded="true" />
+            <element signature="e#14#50#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -355,7 +326,7 @@
         <state relative-caret-position="450">
           <caret line="33" column="102" lean-forward="false" selection-start-line="33" selection-start-column="102" selection-end-line="33" selection-end-column="102" />
           <folding>
-            <element signature="e#14#50#0" expanded="true" />
+            <element signature="e#14#50#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -364,6 +335,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2520">
           <caret line="168" column="18" lean-forward="false" selection-start-line="168" selection-start-column="18" selection-end-line="168" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -371,6 +343,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
           <caret line="23" column="3" lean-forward="false" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -440,7 +413,7 @@
         <state relative-caret-position="450">
           <caret line="33" column="102" lean-forward="false" selection-start-line="33" selection-start-column="102" selection-end-line="33" selection-end-column="102" />
           <folding>
-            <element signature="e#14#50#0" expanded="true" />
+            <element signature="e#14#50#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -449,6 +422,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2520">
           <caret line="168" column="18" lean-forward="false" selection-start-line="168" selection-start-column="18" selection-end-line="168" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -456,6 +430,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
           <caret line="23" column="3" lean-forward="true" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -517,6 +492,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2415">
           <caret line="168" column="18" lean-forward="false" selection-start-line="168" selection-start-column="18" selection-end-line="168" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -524,6 +500,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="19" column="37" lean-forward="true" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -531,6 +508,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1320">
           <caret line="88" column="86" lean-forward="false" selection-start-line="88" selection-start-column="86" selection-end-line="88" selection-end-column="86" />
+          <folding>
+            <element signature="e#14#202#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -545,16 +525,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
           <caret line="23" column="3" lean-forward="false" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="42" column="41" lean-forward="false" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
-          <folding>
-            <element signature="e#14#50#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -595,39 +566,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/bitfinex.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/binance.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
           <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/binanceManager.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="402">
-          <caret line="116" column="26" lean-forward="false" selection-start-line="116" selection-start-column="26" selection-end-line="116" selection-end-column="26" />
-          <folding>
-            <element signature="e#15#87#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core/manager.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="259" column="0" lean-forward="false" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
-          <folding>
-            <element signature="e#14#79#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -641,12 +584,74 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/api/bitfinex.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="32" column="26" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="35" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="42" column="20" lean-forward="true" selection-start-line="42" selection-start-column="20" selection-end-line="42" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/manager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="237" column="21" lean-forward="false" selection-start-line="237" selection-start-column="21" selection-end-line="237" selection-end-column="21" />
+          <folding>
+            <element signature="e#14#79#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../github.com/gorilla/websocket/conn.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="1017" column="37" lean-forward="false" selection-start-line="1017" selection-start-column="37" selection-end-line="1017" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
+        <state relative-caret-position="810">
           <caret line="99" column="18" lean-forward="false" selection-start-line="99" selection-start-column="18" selection-end-line="99" selection-end-column="18" />
           <folding>
             <element signature="e#15#143#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/net/http/server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="2966" column="5" lean-forward="false" selection-start-line="2966" selection-start-column="5" selection-end-line="2966" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/binanceManager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="101" column="16" lean-forward="true" selection-start-line="100" selection-start-column="4" selection-end-line="101" selection-end-column="16" />
+          <folding>
+            <element signature="e#15#87#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/wsServer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="66" column="37" lean-forward="true" selection-start-line="66" selection-start-column="37" selection-end-line="66" selection-end-column="37" />
+          <folding>
+            <element signature="e#15#110#0" expanded="true" />
           </folding>
         </state>
       </provider>
