@@ -17,6 +17,7 @@ var addr = flag.String("addr", "localhost:8080", "http service address")
 
 type WsServer struct {
 	upgrader websocket.Upgrader
+	ServerHandler   func(*[]ExchangeBook)
 }
 
 
@@ -52,13 +53,15 @@ func (b *WsServer) echo(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	for range time.Tick(1 * time.Second) {
-		func() {
+
+		exchangeBooks := []ExchangeBook{}
+		b.ServerHandler(&exchangeBooks)
+		fmt.Println(exchangeBooks)
 			subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
 			err = c.WriteMessage(websocket.TextMessage, []byte(subscribtion))
 			if err != nil {
 				log.Debugf("write:", err)
 			}
-		}()
 		}
 }
 
