@@ -89,7 +89,6 @@ func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeCon
 				//fmt.Println(k)
 				tempCoinBooks[k] = v
 			}
-			b.Unlock()
 
 
 
@@ -98,6 +97,7 @@ func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeCon
 				exchangeBook := ExchangeBook{}
 				exchangeBook.Exchange = Bitfinex
 				exchangeBook.Coins = tempCoinBooks
+				b.Unlock()
 				resultChan <- Result{exchangeBook, nil}
 			}
 		}()

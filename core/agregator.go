@@ -19,17 +19,16 @@ func NewAgregator() *Agregator {
 func (b *Agregator) add(exchangeBook ExchangeBook) {
 	b.Lock()
 	//fmt.Println("added:", exchangeBook)
-	b.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
+	b.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook.copy()
 	b.Unlock()
 }
 
 func (b *Agregator) getExchangeBooks()  []ExchangeBook {
-	var tempBooks = []ExchangeBook{}
 	b.Lock()
+	var tempBooks = []ExchangeBook{}
 	for _,v := range b.exchangeBooks {
-		tempBooks = append(tempBooks, v)
+		tempBooks = append(tempBooks, v.copy())
 	}
 	b.Unlock()
-
 	return tempBooks
 }

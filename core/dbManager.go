@@ -56,14 +56,22 @@ func (b *DbManager) connectDb(configuration DBConfiguration) *sql.DB {
 	//defer db.Close()
 }
 
-func (b *DbManager) FillDb(exchangeBook ExchangeBook) {
-	fmt.Println(exchangeBook)
-	for _, coinBook := range exchangeBook.Coins {
-		for price, amount := range  coinBook.PriceLevels.Bids {
-			b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, false, 0, amount)
+func (b *DbManager) FillDb(exchangeBooks []ExchangeBook) {
+	//fmt.Println(exchangeBook)
+	for _, exchangeBook := range exchangeBooks {
+			exchangeBook.Lock()
+		for _, coinBook := range exchangeBook.Coins {
+			for price, amount := range coinBook.PriceLevels.Bids {
+				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, false, 0, amount)
+			}
+
+			for price, amount := range coinBook.PriceLevels.Asks {
+				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, true, 0, amount)
+			}
 		}
+		exchangeBook.Unlock()
 	}
-	b.fillRateFromSA()
+	b.fillBookFromSA()
 }
 
 //
@@ -90,15 +98,15 @@ func (b *DbManager) FillDb(exchangeBook ExchangeBook) {
 func (b *DbManager) insertSaBook(exchange_title string, target_currency Currency, reference_currency Currency, priceString string, isAsk bool, count int, amountString string) {
 	price, _ := strconv.ParseFloat(priceString, 64)
 	amount, _ := strconv.ParseFloat(amountString, 64)
-	_, err := b.db.Exec("INSERT INTO sa_book_orders(exchange, target_currency, reference_currency, price, isask, count, amount) VALUES($1,$2,$3,$4,$5,$6,$7);", exchange_title, target_currency.CurrencyCode(), reference_currency.CurrencyCode(), price, isAsk, count, amount)
+	_, err := b.db.Exec("INSERT INTO sa_book_orders(exchange_title, target_title, target_code, target_native_id, reference_title, reference_code, reference_native_id, price, is_ask, count, amount, time_stamp) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);", exchange_title, target_currency.CurrencyName(), target_currency.CurrencyCode(),target_currency, reference_currency.CurrencyName(), reference_currency.CurrencyCode(),reference_currency, price, isAsk, count, amount, time.Now())
 	if err != nil {
 		log.Errorf("DbManager:insertSaRate:b.db.Exec %v", err.Error())
 	}
 	//b.db.
 }
 
-func (b *DbManager) fillRateFromSA() {
-	_, err := b.db.Exec("SELECT fill_rates()")
+func (b *DbManager) fillBookFromSA() {
+	_, err := b.db.Exec("SELECT fill_book()")
 	if err != nil {
 		log.Errorf("DbManager:fillRateFromSA:b.db.Exec %v", err.Error())
 	}

@@ -6,7 +6,6 @@ import (
 "time"
 
 	"github.com/KristinaEtc/slf"
-	"fmt"
 )
 
 var log = slf.WithContext("core")
@@ -34,13 +33,45 @@ type Result struct {
 }
 
 type ExchangeBook struct {
+	sync.Mutex
 	Exchange Exchange
 	Coins map[string]CoinBook
+}
+
+func (b *ExchangeBook) copy() ExchangeBook {
+	b.Lock()
+	tempExchangeBook := ExchangeBook{}
+	tempExchangeBook.Exchange = b.Exchange
+	tempExchangeBook.Coins = map[string]CoinBook{}
+	for k, v := range b.Coins {
+		tempExchangeBook.Coins[k] = v.copy()
+	}
+	b.Unlock()
+	return  tempExchangeBook
+}
+
+func (b *PriceLevels) copy() PriceLevels {
+	tempAsks := map[string]string{}
+	tempBids := map[string]string{}
+
+	for k, v := range b.Asks {
+		tempAsks[k] = v
+	}
+
+	for k, v := range b.Bids {
+		tempBids[k] = v
+	}
+
+	return PriceLevels{tempAsks, tempBids}
 }
 
 type CoinBook struct {
 	Pair CurrencyPair
 	PriceLevels PriceLevels
+}
+
+func (b *CoinBook) copy() CoinBook {
+	return CoinBook{b.Pair, b.PriceLevels.copy()}
 }
 
 type Manager struct {
@@ -238,12 +269,8 @@ func (b *Manager) StartListen(configuration ManagerConfiguration) {
 
 func (b *Manager) fillDb() {
 
-	for range time.Tick(5 * time.Second) {
-
-		for _, exchangeBook := range b.agregator.exchangeBooks {
-			b.dbManger.FillDb(exchangeBook)
-		}
-
+	for range time.Tick(1 * time.Second) {
+			b.dbManger.FillDb(b.agregator.getExchangeBooks())
 
 
 		//v := b.GetRates(time.Now().Add(-4 * time.Minute), "BINANCE", "BTS", []string{"BTC", "USDT"})
