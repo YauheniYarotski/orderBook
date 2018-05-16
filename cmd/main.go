@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"sync"
@@ -38,7 +38,7 @@ func main() {
 	dbConfig.Name = "test"
 	configuration.DBConfiguration = dbConfig
 
-	waitGroup.Add(len(configuration.Exchanges) + 6)
+	waitGroup.Add(len(configuration.Exchanges) + 8)
 
 	go manager.StartListen(configuration)
 
