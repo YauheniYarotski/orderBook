@@ -238,20 +238,20 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 
 func (b *Manager) StartListen(configuration ManagerConfiguration) {
 
-	go b.wsServer.start()
-	b.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
-
-		*exchangeBooks = b.agregator.getExchangeBooks()
-
-
-		//exchangeBooks
-		//
-		//for key, tickerColection := range tickerCollections {
-		//	var streamTickerColection = b.convertToTickerCollection(tickerColection)
-		//	streamTickerCollections[key] = streamTickerColection
-		//}
-		//*allTickers = streamTickerCollections
-	}
+	//go b.wsServer.start()
+	//b.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
+	//
+	//	*exchangeBooks = b.agregator.getExchangeBooks()
+	//
+	//
+	//	//exchangeBooks
+	//	//
+	//	//for key, tickerColection := range tickerCollections {
+	//	//	var streamTickerColection = b.convertToTickerCollection(tickerColection)
+	//	//	streamTickerCollections[key] = streamTickerColection
+	//	//}
+	//	//*allTickers = streamTickerCollections
+	//}
 
 	go b.fillDb()
 

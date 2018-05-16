@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"math"
 	"strings"
+	"fmt"
 )
 
 type BitfinexManager struct {
@@ -66,7 +67,7 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 				log.Errorf("StartListen *response.Err: %v", response.Err)
 				//resultChan <- Result{exchangeConfiguration.Exchange.String(), nil, response.Err}
 			} else if *response.Message != nil {
-				//fmt.Printf("%s \n", response.Message)
+				fmt.Printf("%s \n", response.Message)
 				b.addMessage(*response.Message)
 			} else {
 				log.Errorf("StartListen :error parsing Bitfinex ticker")
