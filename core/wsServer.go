@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/websocket"
 	"fmt"
 	"time"
+	"encoding/json"
 )
 
 var addr = flag.String("addr", "localhost:8080", "http service address")
@@ -56,12 +57,14 @@ func (b *WsServer) echo(w http.ResponseWriter, r *http.Request) {
 
 		exchangeBooks := []ExchangeBook{}
 		b.ServerHandler(&exchangeBooks)
-		fmt.Println(exchangeBooks)
-			subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
-			err = c.WriteMessage(websocket.TextMessage, []byte(subscribtion))
+		//fmt.Println(exchangeBooks)
+			//subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
+			msg, _ := json.Marshal(exchangeBooks)
+			err = c.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
 				log.Debugf("write:", err)
 			}
+
 		}
 }
 

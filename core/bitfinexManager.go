@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"math"
 	"strings"
-	"fmt"
 )
 
 type BitfinexManager struct {
@@ -67,7 +66,7 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 				log.Errorf("StartListen *response.Err: %v", response.Err)
 				//resultChan <- Result{exchangeConfiguration.Exchange.String(), nil, response.Err}
 			} else if *response.Message != nil {
-				fmt.Printf("%s \n", response.Message)
+				//fmt.Printf("%s \n", response.Message)
 				b.addMessage(*response.Message)
 			} else {
 				log.Errorf("StartListen :error parsing Bitfinex ticker")
@@ -83,7 +82,6 @@ func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeCon
 	for range time.Tick(1 * time.Second) {
 		func() {
 
-			b.Lock()
 			tempCoinBooks := map[string]CoinBook{}
 			for k, v := range b.coinBooks {
 				k = b.convertSymbol(k)
@@ -98,7 +96,6 @@ func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeCon
 				exchangeBook := ExchangeBook{}
 				exchangeBook.Exchange = Bitfinex
 				exchangeBook.Coins = tempCoinBooks
-				b.Unlock()
 				resultChan <- Result{exchangeBook, nil}
 			}
 		}()

@@ -34,19 +34,17 @@ type Result struct {
 
 type ExchangeBook struct {
 	sync.Mutex
-	Exchange Exchange
-	Coins map[string]CoinBook
+	Exchange Exchange  `json:"exchange"`
+	Coins map[string]CoinBook  `json:"books"`
 }
 
 func (b *ExchangeBook) copy() ExchangeBook {
-	b.Lock()
 	tempExchangeBook := ExchangeBook{}
 	tempExchangeBook.Exchange = b.Exchange
 	tempExchangeBook.Coins = map[string]CoinBook{}
 	for k, v := range b.Coins {
 		tempExchangeBook.Coins[k] = v.copy()
 	}
-	b.Unlock()
 	return  tempExchangeBook
 }
 
@@ -66,8 +64,8 @@ func (b *PriceLevels) copy() PriceLevels {
 }
 
 type CoinBook struct {
-	Pair CurrencyPair
-	PriceLevels PriceLevels
+	Pair CurrencyPair  `json:"pair"`
+	PriceLevels PriceLevels  `json:"price_levels"`
 }
 
 func (b *CoinBook) copy() CoinBook {
@@ -238,20 +236,20 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 
 func (b *Manager) StartListen(configuration ManagerConfiguration) {
 
-	//go b.wsServer.start()
-	//b.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
-	//
-	//	*exchangeBooks = b.agregator.getExchangeBooks()
-	//
-	//
-	//	//exchangeBooks
-	//	//
-	//	//for key, tickerColection := range tickerCollections {
-	//	//	var streamTickerColection = b.convertToTickerCollection(tickerColection)
-	//	//	streamTickerCollections[key] = streamTickerColection
-	//	//}
-	//	//*allTickers = streamTickerCollections
-	//}
+	go b.wsServer.start()
+	b.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
+
+		*exchangeBooks = b.agregator.getExchangeBooks()
+
+
+		//exchangeBooks
+		//
+		//for key, tickerColection := range tickerCollections {
+		//	var streamTickerColection = b.convertToTickerCollection(tickerColection)
+		//	streamTickerCollections[key] = streamTickerColection
+		//}
+		//*allTickers = streamTickerCollections
+	}
 
 	go b.fillDb()
 
