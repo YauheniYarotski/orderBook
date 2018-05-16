@@ -61,13 +61,17 @@ func (b *DbManager) FillDb(exchangeBooks []ExchangeBook) {
 	for _, exchangeBook := range exchangeBooks {
 			exchangeBook.Lock()
 		for _, coinBook := range exchangeBook.Coins {
-			for price, amount := range coinBook.PriceLevels.Bids {
-				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, false, 0, amount)
-			}
+			//for price, amount := range coinBook.PriceLevels.Bids.Range()
+			coinBook.PriceLevels.Bids.Range(func(key, value interface{}) bool {
+				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, key.(string), false, 0, value.(string))
+				return true
+			})
 
-			for price, amount := range coinBook.PriceLevels.Asks {
-				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, true, 0, amount)
-			}
+			//for price, amount := range coinBook.PriceLevels.Asks
+			coinBook.PriceLevels.Asks.Range(func(key, value interface{}) bool {
+				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, key.(string), true, 0, value.(string))
+				return true
+			})
 		}
 		exchangeBook.Unlock()
 	}

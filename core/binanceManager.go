@@ -8,6 +8,7 @@ import (
 	//"fmt"
 	"time"
 	"strings"
+	"sync"
 )
 
 type BinanceEvents struct {
@@ -55,7 +56,7 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 				if _, ok := b.coinBooks[binanceOrders.Symbol]; !ok {
 					coinBook := CoinBook{}
 					coinBook.Pair = b.convert(binanceOrders.Symbol)
-					coinBook.PriceLevels = PriceLevels{make(map[string]string), make(map[string]string)}
+					coinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
 					b.coinBooks[binanceOrders.Symbol] = coinBook
 				}
 
@@ -66,9 +67,11 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 					quantity:= level[1]
 
 					if quantity == "0.00000000" {
-						delete(previosCoinBook.PriceLevels.Asks, price)
+						//delete(previosCoinBook.PriceLevels.Asks, price)
+						previosCoinBook.PriceLevels.Asks.Delete(price)
 					} else {
-						previosCoinBook.PriceLevels.Asks[price] = quantity
+						//previosCoinBook.PriceLevels.Asks[price] = quantity
+						previosCoinBook.PriceLevels.Asks.Store(price, quantity)
 					}
 				}
 
@@ -77,9 +80,11 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 					quantity:= level[1]
 
 					if quantity == "0.00000000" {
-						delete(previosCoinBook.PriceLevels.Bids, price)
+						//delete(previosCoinBook.PriceLevels.Bids, price)
+						previosCoinBook.PriceLevels.Bids.Delete(price)
 					} else {
-						previosCoinBook.PriceLevels.Bids[price] = quantity
+						//previosCoinBook.PriceLevels.Bids[price] = quantity
+						previosCoinBook.PriceLevels.Bids.Store(price, quantity)
 					}
 				}
 				//fmt.Println(previosPriceLevels, "\n")

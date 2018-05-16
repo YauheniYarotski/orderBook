@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"math"
 	"strings"
+	"sync"
+	//"fmt"
 )
 
 type BitfinexManager struct {
@@ -91,7 +93,7 @@ func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeCon
 
 
 
-			//fmt.Println(tickerCollection)
+			//fmt.Println(b.coinBooks)
 			if len(tempCoinBooks) > 0 {
 				exchangeBook := ExchangeBook{}
 				exchangeBook.Exchange = Bitfinex
@@ -109,9 +111,9 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 	if bitfinexBook.ChanID > 0 {
 		//fmt.Println(bitfinexTicker)
-		b.Lock()
+		//b.Lock()
 		b.bitfinexSymbols[bitfinexBook.ChanID] = bitfinexBook.Pair
-		b.Unlock()
+		//b.Unlock()
 	} else {
 		var unmarshaledBookMessage []interface{}
 		json.Unmarshal(message, &unmarshaledBookMessage)
@@ -152,12 +154,12 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
 
-	b.Lock()
-
+	//b.Lock()
+//fmt.Println(symbol, price)
 	if _, ok := b.coinBooks[symbol]; !ok {
 		coinBook := CoinBook{}
 		coinBook.Pair = b.convert(symbol)
-		coinBook.PriceLevels = PriceLevels{make(map[string]string), make(map[string]string)}
+		coinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
 		b.coinBooks[symbol] = coinBook
 	}
 
@@ -169,22 +171,30 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 
 	if amount < 0 {
 		if amount == 0 {
-			delete(coinBook.PriceLevels.Asks, priceString)
+			//delete(coinBook.PriceLevels.Asks, priceString)
+			coinBook.PriceLevels.Asks.Delete(priceString)
+
 		} else {
-			coinBook.PriceLevels.Asks[priceString] = amountString
+			//coinBook.PriceLevels.Asks[priceString] = amountString
+			coinBook.PriceLevels.Asks.Store(priceString, amountString)
 		}
 
 
 	} else {
 		if amount == 0 {
-			delete(coinBook.PriceLevels.Bids, priceString)
+			//delete(coinBook.PriceLevels.Bids, priceString)
+			coinBook.PriceLevels.Bids.Delete(priceString)
 		} else {
-			coinBook.PriceLevels.Bids[priceString] = amountString
+			//coinBook.PriceLevels.Bids[priceString] = amountString
+			coinBook.PriceLevels.Bids.Store(priceString, amountString)
 		}
 
 	}
-	b.Unlock()
-	//fmt.Println(b.cointEvenst)
+
+	b.coinBooks[symbol] = coinBook
+	//b.Unlock()
+	//fmt.Println(coinBook)
+	//fmt.Println(b.coinBooks)
 }
 //func (b PoloniexManager) convertArgsToTicker(args []interface{}) (wsticker PoloniexTicker, err error) {
 //	wsticker.CurrencyPair = b.channelsByID[strconv.FormatFloat(args[0].(float64), 'f', 0, 64)]

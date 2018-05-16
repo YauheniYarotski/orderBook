@@ -6,6 +6,7 @@ import (
 "time"
 
 	"github.com/KristinaEtc/slf"
+	"encoding/json"
 )
 
 var log = slf.WithContext("core")
@@ -23,8 +24,28 @@ type CoinManager struct {
 }
 
 type PriceLevels struct {
-	Asks map[string]string
-	Bids map[string]string
+	Asks sync.Map
+	Bids sync.Map
+}
+
+func (f PriceLevels) MarshalJSON() ([]byte, error) {
+	tmpMap := make(map[string]map[string]string)
+	asks := make(map[string]string)
+	bids := make(map[string]string)
+	f.Asks.Range(func(k, v interface{}) bool {
+		 asks[k.(string)] = v.(string)
+		return true
+	})
+
+	f.Bids.Range(func(k, v interface{}) bool {
+		bids[k.(string)] = v.(string)
+		return true
+	})
+
+	tmpMap["Asks"] = asks
+	tmpMap["Bids"] = bids
+
+	return json.Marshal(tmpMap)
 }
 
 type Result struct {
@@ -48,20 +69,20 @@ func (b *ExchangeBook) copy() ExchangeBook {
 	return  tempExchangeBook
 }
 
-func (b *PriceLevels) copy() PriceLevels {
-	tempAsks := map[string]string{}
-	tempBids := map[string]string{}
-
-	for k, v := range b.Asks {
-		tempAsks[k] = v
-	}
-
-	for k, v := range b.Bids {
-		tempBids[k] = v
-	}
-
-	return PriceLevels{tempAsks, tempBids}
-}
+//func (b *PriceLevels) copy() PriceLevels {
+//	tempAsks := map[string]string{}
+//	tempBids := map[string]string{}
+//
+//	for k, v := range b.Asks. {
+//		tempAsks[k] = v
+//	}
+//
+//	for k, v := range b.Bids {
+//		tempBids[k] = v
+//	}
+//
+//	return PriceLevels{tempAsks, tempBids}
+//}
 
 type CoinBook struct {
 	Pair CurrencyPair  `json:"pair"`
@@ -69,7 +90,7 @@ type CoinBook struct {
 }
 
 func (b *CoinBook) copy() CoinBook {
-	return CoinBook{b.Pair, b.PriceLevels.copy()}
+	return CoinBook{b.Pair, b.PriceLevels}
 }
 
 
