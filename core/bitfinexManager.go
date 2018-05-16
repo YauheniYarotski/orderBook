@@ -152,7 +152,6 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
 
-	//b.Lock()
 //fmt.Println(symbol, price)
 	if _, ok := b.coinBooks[symbol]; !ok {
 		coinBook := CoinBook{}

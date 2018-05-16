@@ -57,41 +57,10 @@ type ExchangeBook struct {
 	Coins map[string]CoinBook  `json:"books"`
 }
 
-func (b *ExchangeBook) copy() ExchangeBook {
-	tempExchangeBook := ExchangeBook{}
-	tempExchangeBook.Exchange = b.Exchange
-	tempExchangeBook.Coins = map[string]CoinBook{}
-	for k, v := range b.Coins {
-		tempExchangeBook.Coins[k] = v.copy()
-	}
-	return  tempExchangeBook
-}
-
-//func (b *PriceLevels) copy() PriceLevels {
-//	tempAsks := map[string]string{}
-//	tempBids := map[string]string{}
-//
-//	for k, v := range b.Asks. {
-//		tempAsks[k] = v
-//	}
-//
-//	for k, v := range b.Bids {
-//		tempBids[k] = v
-//	}
-//
-//	return PriceLevels{tempAsks, tempBids}
-//}
-
 type CoinBook struct {
 	Pair CurrencyPair  `json:"pair"`
 	PriceLevels PriceLevels  `json:"price_levels"`
 }
-
-func (b *CoinBook) copy() CoinBook {
-	return CoinBook{b.Pair, b.PriceLevels}
-}
-
-
 
 
 type Manager struct {
