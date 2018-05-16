@@ -20,10 +20,10 @@ deps:
 	govendor sync
 
 build:
-	go build $(LD_OPTS) -o $(NAME)  . && cd -
+	cd cmd/ && go build $(LD_OPTS) -o $(NAME)  . && cd -
 
 race:
-	go build $(LD_OPTS) -o $(NAME) -race . && cd -
+	cd cmd/ && go build $(LD_OPTS) -o $(NAME) -race . && cd -
 
 # Show to-do items per file.
 todo:
