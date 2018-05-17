@@ -29,8 +29,8 @@ func NewWsServer() *WsServer {
 	return &ws
 }
 
-func (b *WsServer) echo(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("echo")
+func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
+	//fmt.Println("echo")
 	c, err := b.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Debugf("upgrade:", err)
@@ -69,15 +69,15 @@ func (b *WsServer) echo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *WsServer)home(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("home")
-	homeTemplate.Execute(w, "ws://"+r.Host+"/echo")
+	//fmt.Println("home")
+	homeTemplate.Execute(w, "ws://"+r.Host+"/books")
 }
 
 func (b *WsServer) start() {
 	log.Debug("Start WS")
 	fmt.Println("start ws")
 	flag.Parse()
-	http.HandleFunc("/echo", b.echo)
+	http.HandleFunc("/books", b.books)
 	http.HandleFunc("/", b.home)
 	http.ListenAndServe(*addr, nil)
 	//log.Fatal(http.ListenAndServe(*addr, nil))
