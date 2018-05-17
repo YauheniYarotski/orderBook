@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/KristinaEtc/slflog"
 	_ "github.com/lib/pq"
 )
 
@@ -48,9 +47,9 @@ func (b *DbManager) connectDb(configuration DBConfiguration) *sql.DB {
 		configuration.User, configuration.Password, configuration.Name)
 	db, err := sql.Open("postgres", dbinfo)
 	if err != nil {
-		log.Errorf("connectDb:DbManager:sql.Open %v", err.Error())
+		//log.Errorf("connectDb:DbManager:sql.Open %v", err.Error())
 	} else {
-		log.Infof("Db connected")
+		//log.Infof("Db connected")
 	}
 	return db
 	//defer db.Close()
@@ -105,7 +104,7 @@ func (b *DbManager) insertSaBook(exchange_title string, target_currency Currency
 	amount, _ := strconv.ParseFloat(amountString, 64)
 	_, err := b.db.Exec("INSERT INTO sa_book_orders(exchange_title, target_title, target_code, target_native_id, reference_title, reference_code, reference_native_id, price, is_ask, count, amount, time_stamp) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);", exchange_title, target_currency.CurrencyName(), target_currency.CurrencyCode(),target_currency, reference_currency.CurrencyName(), reference_currency.CurrencyCode(),reference_currency, price, isAsk, count, amount, time.Now())
 	if err != nil {
-		log.Errorf("DbManager:insertSaRate:b.db.Exec %v", err.Error())
+		//log.Errorf("DbManager:insertSaRate:b.db.Exec %v", err.Error())
 	}
 	//b.db.
 }
@@ -113,7 +112,7 @@ func (b *DbManager) insertSaBook(exchange_title string, target_currency Currency
 func (b *DbManager) fillBookFromSA() {
 	_, err := b.db.Exec("SELECT fill_book()")
 	if err != nil {
-		log.Errorf("DbManager:fillRateFromSA:b.db.Exec %v", err.Error())
+		//log.Errorf("DbManager:fillRateFromSA:b.db.Exec %v", err.Error())
 	}
 }
 
@@ -122,7 +121,7 @@ func (b *DbManager) getRates(timeStamp time.Time, exchangeTitle string, targetCo
 	s = refereciesCodes
 	rows, err := b.db.Query("SELECT * from getRates($1, $2, $3, $4)", timeStamp, exchangeTitle, targetCode, s)
 	if err != nil {
-		log.Errorf("DbManager:getRates:b.db.Query %v", err.Error())
+		//log.Errorf("DbManager:getRates:b.db.Query %v", err.Error())
 	}
 
 	var dbRates = []DbRate{}
@@ -136,7 +135,7 @@ func (b *DbManager) getRates(timeStamp time.Time, exchangeTitle string, targetCo
 		var rate float64
 		err = rows.Scan(&exchange_title, &target_code, &reference_code, &time_stamp, &rate)
 		if err != nil {
-			log.Errorf("DbManager:getRates:rows.Scan %v", err.Error())
+			//log.Errorf("DbManager:getRates:rows.Scan %v", err.Error())
 		}
 		dbRate.exchangeTitle = exchange_title
 		dbRate.targetCode = target_code

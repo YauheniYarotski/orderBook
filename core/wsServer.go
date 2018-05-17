@@ -33,7 +33,7 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("echo")
 	c, err := b.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Debugf("upgrade:", err)
+		//log.Debugf("upgrade:", err)
 		return
 	}
 	defer c.Close()
@@ -62,7 +62,7 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 			msg, _ := json.Marshal(exchangeBooks)
 			err = c.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
-				log.Debugf("write:", err)
+				//log.Debugf("write:", err)
 			}
 
 		}
@@ -74,7 +74,7 @@ func (b *WsServer)home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b *WsServer) start() {
-	log.Debug("Start WS")
+	//log.Debug("Start WS")
 	fmt.Println("start ws")
 	flag.Parse()
 	http.HandleFunc("/books", b.books)

@@ -5,12 +5,9 @@ import (
 "net/url"
 //"time"
 
-"github.com/KristinaEtc/slf"
-_ "github.com/KristinaEtc/slflog"
 "github.com/gorilla/websocket"
 )
 
-var log = slf.WithContext("api")
 
 const binanceHost = "stream.binance.com:9443"
 const bookPath  = "/ws/btcusdt@depth"
@@ -26,14 +23,14 @@ type Reposponse struct {
 
 func (b *BinanceApi) connectWs() *websocket.Conn {
 	url := url.URL{Scheme: "wss", Host: binanceHost, Path: bookPath}
-	log.Infof("connectWs:connecting to %s", url.String())
+	//log.Infof("connectWs:connecting to %s", url.String())
 
 	connection, _, err := websocket.DefaultDialer.Dial(url.String(), nil)
 	if err != nil || connection == nil {
 		fmt.Errorf("connectWs:Binance ws connection error: %v", err.Error())
 		return nil
 	} else {
-		log.Debugf("connectWs:Binance ws connected")
+		//log.Debugf("connectWs:Binance ws connected")
 		return connection
 	}
 }
@@ -47,7 +44,7 @@ func (b *BinanceApi) StartListen(ch chan Reposponse) {
 			func() {
 				_, message, err := b.connection.ReadMessage()
 				if err != nil {
-					log.Errorf("StartListen:Binance read message error: %v", err.Error())
+					//log.Errorf("StartListen:Binance read message error: %v", err.Error())
 					b.connection.Close()
 					b.connection = nil
 				} else {
@@ -64,5 +61,5 @@ func (b *BinanceApi) StopListen() {
 		b.connection.Close()
 		b.connection = nil
 	}
-	log.Debugf("StopListen:Binance ws closed")
+	//log.Debugf("StopListen:Binance ws closed")
 }

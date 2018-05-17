@@ -36,7 +36,7 @@ func NewBinanceManager() *BinanceManager {
 }
 
 func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
-	log.Debugf("StartListen:start binance manager listen")
+	//log.Debugf("StartListen:start binance manager listen")
 	ch := make(chan api.Reposponse)
 	go b.binanceApi.StartListen(ch)
 	go b.startSendingDataBack(exchangeConfiguration, resultChan)
@@ -46,7 +46,7 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 		case response := <-ch:
 
 			if *response.Err != nil {
-				log.Errorf("StartListen: binance error:%v", *response.Err)
+				//log.Errorf("StartListen: binance error:%v", *response.Err)
 				exchangeEvents := ExchangeBook{}
 				resultChan <- Result{exchangeEvents, response.Err}
 			} else if *response.Message != nil {
@@ -92,7 +92,7 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 
 				b.exchangeBook.Coins.Store(keySymbok, previosCoinBook)
 			} else {
-				log.Errorf("StartListen: Binance mesage is nil")
+				//log.Errorf("StartListen: Binance mesage is nil")
 			}
 		}
 	}

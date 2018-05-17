@@ -5,11 +5,8 @@ import (
 "sync"
 "time"
 
-	"github.com/KristinaEtc/slf"
 	"encoding/json"
 )
-
-var log = slf.WithContext("core")
 
 const maxTickerAge = 5
 
@@ -229,7 +226,7 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 	//case Bithumb:
 	//	go b.bithumbManager.StartListen(exchangeConfiguration, ch)
 	default:
-		log.Errorf("launchExchange:default %v", exchangeConfiguration.Exchange.String())
+		//log.Errorf("launchExchange:default %v", exchangeConfiguration.Exchange.String())
 	}
 }
 
@@ -270,7 +267,7 @@ func (b *Manager) StartListen(configuration ManagerConfiguration) {
 		case result := <-ch:
 
 			if result.Err != nil {
-				log.Errorf("StartListen:error: %v", result.Err)
+				//log.Errorf("StartListen:error: %v", result.Err)
 			} else {
 				//fmt.Println(result.ExchangeEvents)
 				//b.agregator.add(*result.TickerCollection, result.exchangeTitle)

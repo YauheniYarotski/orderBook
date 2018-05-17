@@ -5,7 +5,6 @@ import (
 
 	"fmt"
 
-	_ "github.com/KristinaEtc/slflog"
 	"github.com/gorilla/websocket"
 )
 
@@ -42,10 +41,10 @@ func (b *BitfinexApi) connectWs() *websocket.Conn {
 	connection, _, err := websocket.DefaultDialer.Dial(url.String(), nil)
 
 	if err != nil || connection == nil {
-		log.Errorf("connectWs:Bitfinex ws connection error: ", err)
+		//log.Errorf("connectWs:Bitfinex ws connection error: ", err)
 		return nil
 	} else {
-		log.Debugf("connectWs:Bitfinex ws connected")
+		//log.Debugf("connectWs:Bitfinex ws connected")
 		//b.symbolesForSubscirbe = b.composeSymbolsForSubscirbe(apiCurrenciesConfiguration)
 		//for _, symbol := range b.symbolesForSubscirbe {
 			subscribtion := `{"event":"subscribe","channel":"book","symbol": "BTCUSD", "prec": "P0"}`
@@ -66,7 +65,7 @@ func (b *BitfinexApi) StartListen(ch chan Reposponse) {
 			func() {
 				_, message, err := b.connection.ReadMessage()
 				if err != nil {
-					log.Errorf("StartListen:Bitfinex read message error: %v", err.Error())
+					//log.Errorf("StartListen:Bitfinex read message error: %v", err.Error())
 					b.connection.Close()
 					b.connection = nil
 				} else {
@@ -108,5 +107,5 @@ func (b *BitfinexApi) StopListen() {
 		b.connection.Close()
 		b.connection = nil
 	}
-	log.Debugf("Bitfinex ws closed")
+	//log.Debugf("Bitfinex ws closed")
 }
