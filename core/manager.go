@@ -19,7 +19,7 @@ type BasicManager struct {
 
 type CoinManager struct {
 	BasicManager
-	coinBooks 		map[string]CoinBook
+	exchangeBook ExchangeBook
 }
 
 type PriceLevels struct {
@@ -54,7 +54,7 @@ type Result struct {
 
 type ExchangeBook struct {
 	Exchange Exchange  `json:"exchange"`
-	Coins map[string]CoinBook  `json:"books"`
+	Coins sync.Map  `json:"books"`
 }
 
 type CoinBook struct {

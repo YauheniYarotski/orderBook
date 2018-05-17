@@ -59,7 +59,8 @@ func (b *DbManager) connectDb(configuration DBConfiguration) *sql.DB {
 func (b *DbManager) FillDb(exchangeBooks []ExchangeBook) {
 	//fmt.Println(exchangeBook)
 	for _, exchangeBook := range exchangeBooks {
-		for _, coinBook := range exchangeBook.Coins {
+		exchangeBook.Coins.Range(func(key, value interface{}) bool {
+			coinBook := value.(CoinBook)
 			//for price, amount := range coinBook.PriceLevels.Bids.Range()
 			coinBook.PriceLevels.Bids.Range(func(key, value interface{}) bool {
 				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, key.(string), false, 0, value.(string))
@@ -71,7 +72,9 @@ func (b *DbManager) FillDb(exchangeBooks []ExchangeBook) {
 				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, key.(string), true, 0, value.(string))
 				return true
 			})
-		}
+			return true
+
+		})
 	}
 	b.fillBookFromSA()
 }

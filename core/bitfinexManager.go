@@ -11,7 +11,6 @@ import (
 	"math"
 	"strings"
 	"sync"
-	//"fmt"
 )
 
 type BitfinexManager struct {
@@ -46,9 +45,13 @@ type BitfinexBookResponse struct {
 
 func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
 	//b.bitfinexTickers = make(map[int]BitfinexTicker)
+
+	b.exchangeBook = ExchangeBook{}
+	b.exchangeBook.Exchange = Bitfinex
+	b.exchangeBook.Coins = sync.Map{}
 	b.bitfinexSymbols = map[int]string{}
 	b.api = api.NewBitfinexApi()
-	b.coinBooks = map[string]CoinBook{}
+	//b.coinBooks = sync.Map{}
 
 	var apiCurrenciesConfiguration = api.ApiCurrenciesConfiguration{}
 	apiCurrenciesConfiguration.TargetCurrencies = exchangeConfiguration.TargetCurrencies
@@ -83,23 +86,11 @@ func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeCon
 
 	for range time.Tick(1 * time.Second) {
 		func() {
-
-			tempCoinBooks := map[string]CoinBook{}
-			for k, v := range b.coinBooks {
-				k = b.convertSymbol(k)
-				//fmt.Println(k)
-				tempCoinBooks[k] = v
-			}
-
-
-
-			//fmt.Println(b.coinBooks)
-			if len(tempCoinBooks) > 0 {
-				exchangeBook := ExchangeBook{}
-				exchangeBook.Exchange = Bitfinex
-				exchangeBook.Coins = tempCoinBooks
-				resultChan <- Result{exchangeBook, nil}
-			}
+			//b.exchangeBook.Coins.Range(func(key, value interface{}) bool {
+			//	fmt.Println(value.(CoinBook))
+			//	return true
+			//})
+			resultChan <- Result{b.exchangeBook, nil}
 		}()
 	}
 }
@@ -148,20 +139,18 @@ func (b *BitfinexManager) addMessage(message []byte) {
 			}
 		}
 	}
-	}
+}
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
 
-//fmt.Println(symbol, price)
-	if _, ok := b.coinBooks[symbol]; !ok {
-		coinBook := CoinBook{}
-		coinBook.Pair = b.convert(symbol)
-		coinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
-		b.coinBooks[symbol] = coinBook
-	}
+	symbol = b.convertSymbol(symbol)
 
-	coinBook := b.coinBooks[symbol]
+	newCoinBook := CoinBook{}
+	newCoinBook.Pair = b.convert(symbol)
+	newCoinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
 
+	previouseCoinBookI, _ := b.exchangeBook.Coins.LoadOrStore(symbol, newCoinBook)
+	previouseCoinBook := previouseCoinBookI.(CoinBook)
 
 	priceString := strconv.FormatFloat(price, 'f', 8, 64)
 	amountString := strconv.FormatFloat(math.Abs(float64(amount)), 'f', 8, 64)
@@ -169,26 +158,27 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 	if amount < 0 {
 		if amount == 0 {
 			//delete(coinBook.PriceLevels.Asks, priceString)
-			coinBook.PriceLevels.Asks.Delete(priceString)
+			previouseCoinBook.PriceLevels.Asks.Delete(priceString)
 
 		} else {
 			//coinBook.PriceLevels.Asks[priceString] = amountString
-			coinBook.PriceLevels.Asks.Store(priceString, amountString)
+			previouseCoinBook.PriceLevels.Asks.Store(priceString, amountString)
 		}
 
 
 	} else {
 		if amount == 0 {
 			//delete(coinBook.PriceLevels.Bids, priceString)
-			coinBook.PriceLevels.Bids.Delete(priceString)
+			previouseCoinBook.PriceLevels.Bids.Delete(priceString)
 		} else {
 			//coinBook.PriceLevels.Bids[priceString] = amountString
-			coinBook.PriceLevels.Bids.Store(priceString, amountString)
+			previouseCoinBook.PriceLevels.Bids.Store(priceString, amountString)
 		}
 
 	}
 
-	b.coinBooks[symbol] = coinBook
+	b.exchangeBook.Coins.Store(symbol, previouseCoinBook)
+	//b.coinBooks[symbol] = coinBook
 	//b.Unlock()
 	//fmt.Println(coinBook)
 	//fmt.Println(b.coinBooks)

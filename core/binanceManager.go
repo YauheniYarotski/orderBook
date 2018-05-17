@@ -28,7 +28,9 @@ type BinanceManager struct {
 
 func NewBinanceManager() *BinanceManager {
 	var manger = BinanceManager{}
-	manger.coinBooks = map[string]CoinBook{}
+	manger.exchangeBook = ExchangeBook{}
+	manger.exchangeBook.Exchange = Binance
+	manger.exchangeBook.Coins = sync.Map{}
 	manger.binanceApi = &api.BinanceApi{}
 	return &manger
 }
@@ -53,14 +55,13 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 				json.Unmarshal(*response.Message, &binanceOrders)
 				//fmt.Println(binanceOrders.Bids)
 
-				if _, ok := b.coinBooks[binanceOrders.Symbol]; !ok {
-					coinBook := CoinBook{}
-					coinBook.Pair = b.convert(binanceOrders.Symbol)
-					coinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
-					b.coinBooks[binanceOrders.Symbol] = coinBook
-				}
+				newCoinBook := CoinBook{}
+				newCoinBook.Pair = b.convert(binanceOrders.Symbol)
+				newCoinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
 
-				previosCoinBook := b.coinBooks[binanceOrders.Symbol]
+				previosCoinBookI, _ := b.exchangeBook.Coins.LoadOrStore(binanceOrders.Symbol, newCoinBook)
+				previosCoinBook := previosCoinBookI.(CoinBook)
+
 
 				for _, level := range  binanceOrders.Asks {
 					price := level[0]
@@ -90,8 +91,8 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 				//fmt.Println(previosPriceLevels, "\n")
 				//fmt.Println(len(b.BidsAsks[binanceOrders.Symbol].Bids), "\n")
 
-				b.coinBooks[binanceOrders.Symbol] = previosCoinBook
-
+				//b.coinBooks[binanceOrders.Symbol] = previosCoinBook
+				b.exchangeBook.Coins.Store(binanceOrders.Symbol, previosCoinBook)
 			} else {
 				log.Errorf("StartListen: Binance mesage is nil")
 			}
@@ -102,17 +103,10 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 
 
 func (b *BinanceManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
-
 	for range time.Tick(1 * time.Second) {
 		func() {
 
-			//fmt.Println(tickerCollection)
-			if len(b.coinBooks) > 0 {
-				exchangeBook := ExchangeBook{}
-				exchangeBook.Exchange = Binance
-				exchangeBook.Coins = b.coinBooks
-				resultChan <- Result{exchangeBook, nil}
-			}
+			resultChan <- Result{b.exchangeBook, nil}
 		}()
 	}
 }
