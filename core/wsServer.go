@@ -12,7 +12,7 @@ import (
 	"encoding/json"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var addr = flag.String("addr", "213.136.80.2:8080", "http service address")
 
 
 
