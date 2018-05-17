@@ -53,13 +53,14 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 				//fmt.Printf("%s \n", *response.Message)
 				var binanceOrders BinanceEvents
 				json.Unmarshal(*response.Message, &binanceOrders)
-				//fmt.Println(binanceOrders.Bids)
+				//fmt.Println(b.convert(binanceOrders.Symbol))
 
 				newCoinBook := CoinBook{}
 				newCoinBook.Pair = b.convert(binanceOrders.Symbol)
 				newCoinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
-
-				previosCoinBookI, _ := b.exchangeBook.Coins.LoadOrStore(binanceOrders.Symbol, newCoinBook)
+				keySymbok := b.convertSymbol(binanceOrders.Symbol)
+				//fmt.Println(keySymbok)
+				previosCoinBookI, _ := b.exchangeBook.Coins.LoadOrStore(keySymbok, newCoinBook)
 				previosCoinBook := previosCoinBookI.(CoinBook)
 
 
@@ -88,11 +89,8 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 						previosCoinBook.PriceLevels.Bids.Store(price, quantity)
 					}
 				}
-				//fmt.Println(previosPriceLevels, "\n")
-				//fmt.Println(len(b.BidsAsks[binanceOrders.Symbol].Bids), "\n")
 
-				//b.coinBooks[binanceOrders.Symbol] = previosCoinBook
-				b.exchangeBook.Coins.Store(binanceOrders.Symbol, previosCoinBook)
+				b.exchangeBook.Coins.Store(keySymbok, previosCoinBook)
 			} else {
 				log.Errorf("StartListen: Binance mesage is nil")
 			}
@@ -105,7 +103,6 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 func (b *BinanceManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
 	for range time.Tick(1 * time.Second) {
 		func() {
-
 			resultChan <- Result{b.exchangeBook, nil}
 		}()
 	}

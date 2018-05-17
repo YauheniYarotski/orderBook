@@ -57,6 +57,17 @@ type ExchangeBook struct {
 	Coins sync.Map  `json:"books"`
 }
 
+func (f ExchangeBook) MarshalJSON() ([]byte, error) {
+	tmpMap := make(map[string]interface{})
+	tmpMap["Exchange"] = f.Exchange.String()
+	f.Coins.Range(func(k, v interface{}) bool {
+		tmpMap[k.(string)] = v.(CoinBook)
+		return true
+	})
+
+	return json.Marshal(tmpMap)
+}
+
 type CoinBook struct {
 	Pair CurrencyPair  `json:"pair"`
 	PriceLevels PriceLevels  `json:"price_levels"`

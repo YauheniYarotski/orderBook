@@ -11,6 +11,7 @@ import (
 	"math"
 	"strings"
 	"sync"
+	//"fmt"
 )
 
 type BitfinexManager struct {
@@ -101,8 +102,8 @@ func (b *BitfinexManager) addMessage(message []byte) {
 	json.Unmarshal(message, &bitfinexBook)
 
 	if bitfinexBook.ChanID > 0 {
-		//fmt.Println(bitfinexTicker)
-		b.bitfinexSymbols[bitfinexBook.ChanID] = bitfinexBook.Pair
+		//fmt.Println(b.convertSymbol(bitfinexBook.Pair))
+		b.bitfinexSymbols[bitfinexBook.ChanID] = b.convertSymbol(bitfinexBook.Pair)
 	} else {
 		var unmarshaledBookMessage []interface{}
 		json.Unmarshal(message, &unmarshaledBookMessage)
@@ -143,10 +144,9 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
 
-	symbol = b.convertSymbol(symbol)
-
 	newCoinBook := CoinBook{}
 	newCoinBook.Pair = b.convert(symbol)
+	//fmt.Println(b.convert(symbol))
 	newCoinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
 
 	previouseCoinBookI, _ := b.exchangeBook.Coins.LoadOrStore(symbol, newCoinBook)
@@ -218,7 +218,6 @@ func (b *BitfinexManager) convertSymbol(binanceSymbol string) string {
 
 func (b *BitfinexManager) convert(symbol string) CurrencyPair {
 	if len(symbol) > 0 {
-
 		var damagedSymbol = TrimLeftChars(symbol, 1)
 		for _, referenceCurrency := range DefaultReferenceCurrencies {
 			//fmt.Println(damagedSymbol, referenceCurrency.CurrencyCode())
@@ -237,7 +236,9 @@ func (b *BitfinexManager) convert(symbol string) CurrencyPair {
 				//fmt.Println(damagedSymbol)
 
 				//fmt.Println("2",symbol, referenceCurrency.CurrencyCode())
-				targetCurrencyString := strings.TrimSuffix(symbol, referenceCurrencyCode)
+				//fmt.Println(referenceCurrency.CurrencyCode())
+
+				targetCurrencyString := strings.TrimSuffix(symbol, "-"+referenceCurrency.CurrencyCode())
 
 
 				if targetCurrencyString == "DSH" {
