@@ -2,10 +2,8 @@ package core
 
 import (
 "strings"
-"sync"
 "time"
 
-	"encoding/json"
 )
 
 const maxTickerAge = 5
@@ -19,30 +17,7 @@ type CoinManager struct {
 	exchangeBook ExchangeBook
 }
 
-type PriceLevels struct {
-	Asks sync.Map
-	Bids sync.Map
-}
 
-func (f PriceLevels) MarshalJSON() ([]byte, error) {
-	tmpMap := make(map[string]map[string]string)
-	asks := make(map[string]string)
-	bids := make(map[string]string)
-	f.Asks.Range(func(k, v interface{}) bool {
-		 asks[k.(string)] = v.(string)
-		return true
-	})
-
-	f.Bids.Range(func(k, v interface{}) bool {
-		bids[k.(string)] = v.(string)
-		return true
-	})
-
-	tmpMap["Asks"] = asks
-	tmpMap["Bids"] = bids
-
-	return json.Marshal(tmpMap)
-}
 
 type Result struct {
 	ExchangeBook ExchangeBook
@@ -51,25 +26,65 @@ type Result struct {
 
 type ExchangeBook struct {
 	Exchange Exchange  `json:"exchange"`
-	Coins sync.Map  `json:"books"`
+	CoinsBooks map[string]CoinBook  `json:"books"`
 }
 
-func (f ExchangeBook) MarshalJSON() ([]byte, error) {
-	tmpMap := make(map[string]interface{})
-	tmpMap["Exchange"] = f.Exchange.String()
-	f.Coins.Range(func(k, v interface{}) bool {
-		tmpMap[k.(string)] = v.(CoinBook)
-		return true
-	})
+func newExchangeBook(exchange Exchange) ExchangeBook  {
+	exchangeBook := ExchangeBook{}
 
-	return json.Marshal(tmpMap)
+	exchangeBook.Exchange = exchange
+	exchangeBook.CoinsBooks = map[string]CoinBook{"":NewCoinBook(CurrencyPair{})}
+	delete(exchangeBook.CoinsBooks, "")
+	return exchangeBook
 }
+
+//func (f ExchangeBook) MarshalJSON() ([]byte, error) {
+//	tmpMap := make(map[string]interface{})
+//	tmpMap["Exchange"] = f.Exchange.String()
+//	f.Coins.Range(func(k, v interface{}) bool {
+//		tmpMap[k.(string)] = v.(CoinBook)
+//		return true
+//	})
+//
+//	return json.Marshal(tmpMap)
+//}
 
 type CoinBook struct {
-	Pair CurrencyPair  `json:"pair"`
-	PriceLevels PriceLevels  `json:"price_levels"`
+	Pair CurrencyPair  	`json:"pair"`
+	Asks map[string]string		`json:"asks"`
+	Bids map[string]string		`json:"bids"`
 }
 
+
+func NewCoinBook(pair CurrencyPair) CoinBook  {
+	coinBook := CoinBook{}
+	coinBook.Pair = pair
+	coinBook.Asks = map[string]string{}
+	coinBook.Bids = map[string]string{}
+	return coinBook
+}
+
+
+
+//func (f CoinBook) MarshalJSON() ([]byte, error) {
+//	tmpMap := make(map[string]map[string]string)
+//	asks := make(map[string]string)
+//	bids := make(map[string]string)
+//	f.Asks.Range(func(k, v interface{}) bool {
+//		asks[k.(string)] = v.(string)
+//		return true
+//	})
+//
+//	f.Bids.Range(func(k, v interface{}) bool {
+//		bids[k.(string)] = v.(string)
+//		return true
+//	})
+//
+//	tmpMap["Asks"] = asks
+//	tmpMap["Bids"] = bids
+//
+//	return json.Marshal(tmpMap)
+//}
 
 type Manager struct {
 	binanceManager  *BinanceManager
@@ -233,18 +248,9 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 func (b *Manager) StartListen(configuration ManagerConfiguration) {
 
 	go b.wsServer.start()
-	b.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
-
+	b.wsServer.ServerHandler = func(exchangeBooks *map[string]ExchangeBook) {
 		*exchangeBooks = b.agregator.getExchangeBooks()
 
-
-		//exchangeBooks
-		//
-		//for key, tickerColection := range tickerCollections {
-		//	var streamTickerColection = b.convertToTickerCollection(tickerColection)
-		//	streamTickerCollections[key] = streamTickerColection
-		//}
-		//*allTickers = streamTickerCollections
 	}
 
 	go b.fillDb()
@@ -317,3 +323,16 @@ func (b *Manager) fillDb() {
 //	streamTicker.Pair = ticker.Pair
 //	return streamTicker
 //}
+
+
+func (b *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+
+	for range time.Tick(1 * time.Second) {
+		func() {
+			Lock.Lock()
+			tmp := b.exchangeBook
+			Lock.Unlock()
+			resultChan <- Result{tmp, nil}
+		}()
+	}
+}

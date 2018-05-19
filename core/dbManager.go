@@ -55,26 +55,23 @@ func (b *DbManager) connectDb(configuration DBConfiguration) *sql.DB {
 	//defer db.Close()
 }
 
-func (b *DbManager) FillDb(exchangeBooks []ExchangeBook) {
+func (b *DbManager) FillDb(exchangeBooks map[string]ExchangeBook) {
 	//fmt.Println(exchangeBook)
-	for _, exchangeBook := range exchangeBooks {
-		exchangeBook.Coins.Range(func(key, value interface{}) bool {
-			coinBook := value.(CoinBook)
+	Lock.Lock()
+		for _, exchangeBook := range exchangeBooks {
+		 for _, coinBook := range exchangeBook.CoinsBooks {
 			//for price, amount := range coinBook.PriceLevels.Bids.Range()
-			coinBook.PriceLevels.Bids.Range(func(key, value interface{}) bool {
-				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, key.(string), false, 0, value.(string))
-				return true
-			})
+			for price, amount := range coinBook.Bids {
+				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, false, 0, amount)
+			}
 
 			//for price, amount := range coinBook.PriceLevels.Asks
-			coinBook.PriceLevels.Asks.Range(func(key, value interface{}) bool {
-				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, key.(string), true, 0, value.(string))
-				return true
-			})
-			return true
-
-		})
+				for price, amount := range coinBook.Asks {
+				b.insertSaBook(exchangeBook.Exchange.String(), coinBook.Pair.TargetCurrency, coinBook.Pair.ReferenceCurrency, price, true, 0, amount)
+			}
+		}
 	}
+	Lock.Unlock()
 	b.fillBookFromSA()
 }
 

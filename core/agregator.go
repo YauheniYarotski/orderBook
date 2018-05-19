@@ -4,27 +4,29 @@ import (
 	"sync"
 )
 
+var Lock sync.Mutex
 
 type Agregator struct {
-	exchangeBooks sync.Map //map[string]ExchangeBook
+	exchangeBooks map[string]ExchangeBook
 }
 
 func NewAgregator() *Agregator {
 	var agregator = Agregator{}
-	agregator.exchangeBooks = sync.Map{}
+	agregator.exchangeBooks = map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
+	delete(agregator.exchangeBooks, "")
 	return &agregator
 }
 
 func (b *Agregator) add(exchangeBook ExchangeBook) {
 	//fmt.Println("added:", exchangeBook)
-	b.exchangeBooks.Store(exchangeBook.Exchange.String(), exchangeBook)
+	Lock.Lock()
+	b.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
+	Lock.Unlock()
 }
 
-func (b *Agregator) getExchangeBooks()  []ExchangeBook {
-	var tempBooks = []ExchangeBook{}
-	b.exchangeBooks.Range(func(k, v interface{}) bool {
-		tempBooks = append(tempBooks, v.(ExchangeBook))
-		return true
-	})
-	return tempBooks
+func (b *Agregator) getExchangeBooks()  map[string]ExchangeBook {
+	Lock.Lock()
+	tmp := b.exchangeBooks
+	Lock.Unlock()
+	return tmp
 }

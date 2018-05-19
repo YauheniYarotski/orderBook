@@ -12,13 +12,13 @@ import (
 	"encoding/json"
 )
 
-var addr = flag.String("addr", "213.136.80.2:8080", "http service address")
+var addr = flag.String("addr", "127.0.0.1:8080", "http service address")
 
 
 
 type WsServer struct {
 	upgrader websocket.Upgrader
-	ServerHandler   func(*[]ExchangeBook)
+	ServerHandler   func(p *map[string]ExchangeBook)
 }
 
 
@@ -37,29 +37,21 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer c.Close()
-	//for {
-	//	fmt.Println("Int for")
-	//	mt, message, err := c.ReadMessage()
-	//	if err != nil {
-	//		log.Debugf("read:", err)
-	//		break
-	//	}
-	//	log.Debugf("recv: %s", message)
-	//	subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
-	//	err = c.WriteMessage(mt, []byte(subscribtion))
-	//	if err != nil {
-	//		log.Debugf("write:", err)
-	//		break
-	//	}
-	//}
 
 	for range time.Tick(1 * time.Second) {
 
-		exchangeBooks := []ExchangeBook{}
+		exchangeBooks := map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
+		delete(exchangeBooks, "")
 		b.ServerHandler(&exchangeBooks)
 		//fmt.Println(exchangeBooks)
+
+
+
+
+
 			//subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
 			msg, _ := json.Marshal(exchangeBooks)
+			//fmt.Println(msg)
 			err = c.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
 				//log.Debugf("write:", err)

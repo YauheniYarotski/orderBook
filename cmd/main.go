@@ -1,8 +1,8 @@
 package main
 
 import (
-	"sync"
 	"orderBook/core"
+	"sync"
 )
 
 var manager = core.NewManager()

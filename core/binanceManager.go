@@ -6,9 +6,7 @@ import (
 
 	"orderBook/api"
 	//"fmt"
-	"time"
 	"strings"
-	"sync"
 )
 
 type BinanceEvents struct {
@@ -28,9 +26,7 @@ type BinanceManager struct {
 
 func NewBinanceManager() *BinanceManager {
 	var manger = BinanceManager{}
-	manger.exchangeBook = ExchangeBook{}
-	manger.exchangeBook.Exchange = Binance
-	manger.exchangeBook.Coins = sync.Map{}
+	manger.exchangeBook = newExchangeBook(Binance)
 	manger.binanceApi = &api.BinanceApi{}
 	return &manger
 }
@@ -50,18 +46,22 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 				exchangeEvents := ExchangeBook{}
 				resultChan <- Result{exchangeEvents, response.Err}
 			} else if *response.Message != nil {
+
+				Lock.Lock()
 				//fmt.Printf("%s \n", *response.Message)
 				var binanceOrders BinanceEvents
 				json.Unmarshal(*response.Message, &binanceOrders)
 				//fmt.Println(b.convert(binanceOrders.Symbol))
 
-				newCoinBook := CoinBook{}
-				newCoinBook.Pair = b.convert(binanceOrders.Symbol)
-				newCoinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
 				keySymbok := b.convertSymbol(binanceOrders.Symbol)
 				//fmt.Println(keySymbok)
-				previosCoinBookI, _ := b.exchangeBook.Coins.LoadOrStore(keySymbok, newCoinBook)
-				previosCoinBook := previosCoinBookI.(CoinBook)
+
+				if _, ok := b.exchangeBook.CoinsBooks[keySymbok]; !ok {
+					newCoinBook := NewCoinBook(b.convert(binanceOrders.Symbol))
+					b.exchangeBook.CoinsBooks[keySymbok] = newCoinBook
+				}
+
+				previosCoinBook := b.exchangeBook.CoinsBooks[keySymbok]
 
 
 				for _, level := range  binanceOrders.Asks {
@@ -70,10 +70,10 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 
 					if quantity == "0.00000000" {
 						//delete(previosCoinBook.PriceLevels.Asks, price)
-						previosCoinBook.PriceLevels.Asks.Delete(price)
+						delete(previosCoinBook.Asks, price)
 					} else {
 						//previosCoinBook.PriceLevels.Asks[price] = quantity
-						previosCoinBook.PriceLevels.Asks.Store(price, quantity)
+						previosCoinBook.Asks[price] = quantity
 					}
 				}
 
@@ -83,14 +83,16 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 
 					if quantity == "0.00000000" {
 						//delete(previosCoinBook.PriceLevels.Bids, price)
-						previosCoinBook.PriceLevels.Bids.Delete(price)
+						delete(previosCoinBook.Bids, price)
 					} else {
 						//previosCoinBook.PriceLevels.Bids[price] = quantity
-						previosCoinBook.PriceLevels.Bids.Store(price, quantity)
+						previosCoinBook.Bids[price] = quantity
 					}
 				}
 
-				b.exchangeBook.Coins.Store(keySymbok, previosCoinBook)
+				b.exchangeBook.CoinsBooks[keySymbok] = previosCoinBook
+
+				Lock.Unlock()
 			} else {
 				//log.Errorf("StartListen: Binance mesage is nil")
 			}
@@ -99,14 +101,6 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 
 }
 
-
-func (b *BinanceManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
-	for range time.Tick(1 * time.Second) {
-		func() {
-			resultChan <- Result{b.exchangeBook, nil}
-		}()
-	}
-}
 
 func (b *BinanceManager) convertSymbol(binanceSymbol string) string {
 

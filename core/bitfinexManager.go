@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"math"
 	"strings"
-	"sync"
+
 	//"fmt"
 )
 
@@ -47,9 +47,7 @@ type BitfinexBookResponse struct {
 func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
 	//b.bitfinexTickers = make(map[int]BitfinexTicker)
 
-	b.exchangeBook = ExchangeBook{}
-	b.exchangeBook.Exchange = Bitfinex
-	b.exchangeBook.Coins = sync.Map{}
+	b.exchangeBook = newExchangeBook(Bitfinex)
 	b.bitfinexSymbols = map[int]string{}
 	b.api = api.NewBitfinexApi()
 	//b.coinBooks = sync.Map{}
@@ -83,23 +81,22 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 
 }
 
-func (b *BitfinexManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
 
-	for range time.Tick(1 * time.Second) {
-		func() {
-			//b.exchangeBook.Coins.Range(func(key, value interface{}) bool {
-			//	fmt.Println(value.(CoinBook))
-			//	return true
-			//})
-			resultChan <- Result{b.exchangeBook, nil}
-		}()
-	}
-}
 
 func (b *BitfinexManager) addMessage(message []byte) {
 
+	var pair string
+	var price float64
+	var count float64
+	var amount float64
+
+	Lock.Lock()
+
+
 	var bitfinexBook BitfinexBookResponse
 	json.Unmarshal(message, &bitfinexBook)
+
+
 
 	if bitfinexBook.ChanID > 0 {
 		//fmt.Println(b.convertSymbol(bitfinexBook.Pair))
@@ -117,40 +114,47 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 					//fmt.Println(v)
 
-					pair := b.bitfinexSymbols[chanId]
-					price := v[0].(float64)
-					count := v[1].(float64)
-					amount := v[2].(float64)
+					pair = b.bitfinexSymbols[chanId]
+					price = v[0].(float64)
+					count = v[1].(float64)
+					amount = v[2].(float64)
 
-					b.addEvent(pair, price, count, amount)
 
 					//fmt.Println(sub.Price)
 					//b.bitfinexTickers[chanId] = sub
 				} else if len(v) > 3 {
 					for _, vv := range v {
 						if events, ok := vv.([]interface{}); ok {
-							pair := b.bitfinexSymbols[chanId]
-							price := events[0].(float64)
-							count := events[1].(float64)
-							amount := events[2].(float64)
-							b.addEvent(pair, price, count, amount)
+							pair = b.bitfinexSymbols[chanId]
+							price = events[0].(float64)
+							count = events[1].(float64)
+							amount = events[2].(float64)
 						}
 					}
 				}
 			}
 		}
 	}
+
+	Lock.Unlock()
+
+	if pair != "" {
+		b.addEvent(pair, price, count, amount)
+	}
+
 }
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
+	Lock.Lock()
 
-	newCoinBook := CoinBook{}
-	newCoinBook.Pair = b.convert(symbol)
-	//fmt.Println(b.convert(symbol))
-	newCoinBook.PriceLevels = PriceLevels{sync.Map{}, sync.Map{}}
 
-	previouseCoinBookI, _ := b.exchangeBook.Coins.LoadOrStore(symbol, newCoinBook)
-	previouseCoinBook := previouseCoinBookI.(CoinBook)
+	if _, ok := b.exchangeBook.CoinsBooks[symbol]; !ok {
+		newCoinBook := NewCoinBook(b.convert(symbol))
+		b.exchangeBook.CoinsBooks[symbol] = newCoinBook
+	}
+
+
+	previouseCoinBook := b.exchangeBook.CoinsBooks[symbol]
 
 	priceString := strconv.FormatFloat(price, 'f', 8, 64)
 	amountString := strconv.FormatFloat(math.Abs(float64(amount)), 'f', 8, 64)
@@ -158,26 +162,27 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 	if amount < 0 {
 		if amount == 0 {
 			//delete(coinBook.PriceLevels.Asks, priceString)
-			previouseCoinBook.PriceLevels.Asks.Delete(priceString)
+			delete(previouseCoinBook.Asks, priceString)
 
 		} else {
 			//coinBook.PriceLevels.Asks[priceString] = amountString
-			previouseCoinBook.PriceLevels.Asks.Store(priceString, amountString)
+			previouseCoinBook.Asks[priceString] = amountString
 		}
 
 
 	} else {
 		if amount == 0 {
 			//delete(coinBook.PriceLevels.Bids, priceString)
-			previouseCoinBook.PriceLevels.Bids.Delete(priceString)
+			delete(previouseCoinBook.Bids, priceString)
 		} else {
 			//coinBook.PriceLevels.Bids[priceString] = amountString
-			previouseCoinBook.PriceLevels.Bids.Store(priceString, amountString)
+			previouseCoinBook.Bids[priceString] = amountString
 		}
 
 	}
 
-	b.exchangeBook.Coins.Store(symbol, previouseCoinBook)
+	b.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
+	Lock.Unlock()
 	//b.coinBooks[symbol] = coinBook
 	//b.Unlock()
 	//fmt.Println(coinBook)
