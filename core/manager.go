@@ -249,7 +249,11 @@ func (b *Manager) StartListen(configuration ManagerConfiguration) {
 
 	go b.wsServer.start()
 	b.wsServer.ServerHandler = func(exchangeBooks *map[string]ExchangeBook) {
-		*exchangeBooks = b.agregator.getExchangeBooks()
+		v := b.agregator.getExchangeBooks()
+		Lock.Lock()
+		tmp := v
+		Lock.Unlock()
+		*exchangeBooks = tmp
 
 	}
 
