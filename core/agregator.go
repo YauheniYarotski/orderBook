@@ -2,7 +2,6 @@ package core
 
 import (
 	"sync"
-	"fmt"
 )
 
 type ExchangesBooks struct {
