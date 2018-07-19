@@ -52,10 +52,6 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 	b.api = api.NewBitfinexApi()
 	//b.coinBooks = sync.Map{}
 
-	var apiCurrenciesConfiguration = api.ApiCurrenciesConfiguration{}
-	apiCurrenciesConfiguration.TargetCurrencies = exchangeConfiguration.TargetCurrencies
-	apiCurrenciesConfiguration.ReferenceCurrencies = exchangeConfiguration.ReferenceCurrencies
-
 	ch := make(chan api.Reposponse)
 
 	go b.api.StartListen(ch)
@@ -90,7 +86,6 @@ func (b *BitfinexManager) addMessage(message []byte) {
 	var count float64
 	var amount float64
 
-	Lock.Lock()
 
 
 	var bitfinexBook BitfinexBookResponse
@@ -136,7 +131,6 @@ func (b *BitfinexManager) addMessage(message []byte) {
 		}
 	}
 
-	Lock.Unlock()
 
 	if pair != "" {
 		b.addEvent(pair, price, count, amount)
@@ -145,7 +139,6 @@ func (b *BitfinexManager) addMessage(message []byte) {
 }
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
-	Lock.Lock()
 
 
 	if _, ok := b.exchangeBook.CoinsBooks[symbol]; !ok {
@@ -182,7 +175,6 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 	}
 
 	b.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
-	Lock.Unlock()
 	//b.coinBooks[symbol] = coinBook
 	//b.Unlock()
 	//fmt.Println(coinBook)

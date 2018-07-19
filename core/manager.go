@@ -1,9 +1,7 @@
 package core
 
 import (
-"strings"
 "time"
-
 )
 
 const maxTickerAge = 5
@@ -12,10 +10,6 @@ type BasicManager struct {
 	//tickers map[string]Ticker
 }
 
-type CoinManager struct {
-	BasicManager
-	exchangeBook ExchangeBook
-}
 
 
 
@@ -24,10 +18,6 @@ type Result struct {
 	Err              *error
 }
 
-type ExchangeBook struct {
-	Exchange Exchange  `json:"exchange"`
-	CoinsBooks map[string]CoinBook  `json:"books"`
-}
 
 func newExchangeBook(exchange Exchange) ExchangeBook  {
 	exchangeBook := ExchangeBook{}
@@ -48,23 +38,6 @@ func newExchangeBook(exchange Exchange) ExchangeBook  {
 //
 //	return json.Marshal(tmpMap)
 //}
-
-type CoinBook struct {
-	Pair CurrencyPair  	`json:"pair"`
-	Asks map[string]string		`json:"asks"`
-	Bids map[string]string		`json:"bids"`
-}
-
-
-func NewCoinBook(pair CurrencyPair) CoinBook  {
-	coinBook := CoinBook{}
-	coinBook.Pair = pair
-	coinBook.Asks = map[string]string{}
-	coinBook.Bids = map[string]string{}
-	return coinBook
-}
-
-
 
 //func (f CoinBook) MarshalJSON() ([]byte, error) {
 //	tmpMap := make(map[string]map[string]string)
@@ -105,12 +78,6 @@ type Manager struct {
 	agregator *Agregator
 }
 
-type DBConfiguration struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-}
-
 func NewManager() *Manager {
 	var manger = Manager{}
 
@@ -139,89 +106,21 @@ func NewManager() *Manager {
 }
 
 type ManagerConfiguration struct {
-	TargetCurrencies    []string        `json:"targetCurrencies"`
-	ReferenceCurrencies []string        `json:"referenceCurrencies"`
 	Exchanges           []string        `json:"exchanges"`
 	RefreshInterval     time.Duration   `json:"refreshInterval"`
 	DBConfiguration     DBConfiguration `json:"dbconfiguration"`
 }
 
-func (b *ManagerConfiguration) Pairs() []CurrencyPair {
-	var pairs = []CurrencyPair{}
-	for _, targetCurrency := range b.TargetCurrencies {
-		for _, referenceCurrency := range b.ReferenceCurrencies {
 
-			if referenceCurrency == "USD" {
-				referenceCurrency = "USDT"
-			} else if referenceCurrency == targetCurrency {
-				continue
-			}
-			pair := CurrencyPair{NewCurrencyWithCode(targetCurrency), NewCurrencyWithCode(referenceCurrency)}
-			pairs = append(pairs, pair)
-		}
-	}
-	return pairs
-}
 
-//type DBConfiguration struct {
-//	User     string `json:"user"`
-//	Password string `json:"password"`
-//	Name     string `json:"name"`
-//}
-
-type Exchange int
-
-func NewExchange(exchangeString string) Exchange {
-	exchanges := map[string]Exchange{"BINANCE": Binance, "BITFINEX": Bitfinex, "GDAX": Gdax, "HITBTC": HitBtc, "OKEX": Okex, "POLONIEX": Poloniex, "BITTREX": Bittrex, "HUOBI": Huobi, "UPBIT": Upbit, "KRAKEN": Kraken, "BITHUMB": Bithumb}
-	exchange := exchanges[strings.ToUpper(exchangeString)]
-	return exchange
-}
-
-func (exchange Exchange) String() string {
-	exchanges := [...]string{
-		"BINANCE",
-		"BITFINEX",
-		"GDAX",
-		"HITBTC",
-		"OKEX",
-		"POLONIEX",
-		"BITTREX",
-		"HUOBI",
-		"UPBIT",
-		"KRAKEN",
-		"BITHUMB"}
-	return exchanges[exchange]
-}
-
-const (
-	Binance  Exchange = 0
-	Bitfinex Exchange = 1
-	Gdax     Exchange = 2
-	HitBtc   Exchange = 3
-	Okex     Exchange = 4
-	Poloniex Exchange = 5
-	Bittrex  Exchange = 6
-	Huobi 	 Exchange = 7
-	Upbit 	 Exchange = 8
-	Kraken 	 Exchange = 9
-	Bithumb Exchange = 10
-)
-
-type ExchangeConfiguration struct {
-	Exchange            Exchange
-	TargetCurrencies    []string
-	ReferenceCurrencies []string
-	RefreshInterval     int
-	Pairs []CurrencyPair
-}
 
 func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result) {
 
 	switch exchangeConfiguration.Exchange {
 	case Binance:
 		go b.binanceManager.StartListen(exchangeConfiguration, ch)
-	case Bitfinex:
-		go b.bitfinexManager.StartListen(exchangeConfiguration, ch)
+	//case Bitfinex:
+	//	go b.bitfinexManager.StartListen(exchangeConfiguration, ch)
 	//case Gdax:
 	//	go b.gdaxManager.StartListen(exchangeConfiguration, ch)
 	//case HitBtc:
@@ -245,31 +144,27 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 	}
 }
 
-func (b *Manager) StartListen(configuration ManagerConfiguration) {
+func (self *Manager) Start(configuration ManagerConfiguration) {
 
-	go b.wsServer.start()
-	b.wsServer.ServerHandler = func(exchangeBooks *map[string]ExchangeBook) {
-		v := b.agregator.getExchangeBooks()
-		Lock.Lock()
+	//start ws service
+	go self.wsServer.start()
+	self.wsServer.ServerHandler = func(exchangeBooks *map[string]ExchangeBook) {
+		v := self.agregator.getExchangeBooks()
 		tmp := v
-		Lock.Unlock()
 		*exchangeBooks = tmp
 
 	}
 
-	go b.fillDb()
+	//go b.fillDb()
+
 
 	ch := make(chan Result)
 
 	for _, exchangeString := range configuration.Exchanges {
 		exchangeConfiguration := ExchangeConfiguration{}
 		exchangeConfiguration.Exchange = NewExchange(exchangeString)
-		exchangeConfiguration.TargetCurrencies = configuration.TargetCurrencies
-		exchangeConfiguration.ReferenceCurrencies = configuration.ReferenceCurrencies
-		exchangeConfiguration.Pairs = configuration.Pairs()
-		b.launchExchange(exchangeConfiguration, ch)
+		self.launchExchange(exchangeConfiguration, ch)
 	}
-
 
 
 	for {
@@ -281,15 +176,12 @@ func (b *Manager) StartListen(configuration ManagerConfiguration) {
 			} else {
 				//fmt.Println(result.ExchangeEvents)
 				//b.agregator.add(*result.TickerCollection, result.exchangeTitle)
-				b.agregator.add(result.ExchangeBook)
+				self.agregator.add(result.ExchangeBook)
 			}
 
 		}
 	}
-
-
 }
-
 
 func (b *Manager) fillDb() {
 
@@ -329,14 +221,3 @@ func (b *Manager) fillDb() {
 //}
 
 
-func (b *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
-
-	for range time.Tick(1 * time.Second) {
-		func() {
-			Lock.Lock()
-			tmp := b.exchangeBook
-			Lock.Unlock()
-			resultChan <- Result{tmp, nil}
-		}()
-	}
-}

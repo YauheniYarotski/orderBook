@@ -31,11 +31,11 @@ func NewBinanceManager() *BinanceManager {
 	return &manger
 }
 
-func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
 	//log.Debugf("StartListen:start binance manager listen")
 	ch := make(chan api.Reposponse)
-	go b.binanceApi.StartListen(ch)
-	go b.startSendingDataBack(exchangeConfiguration, resultChan)
+	go self.binanceApi.StartListen(ch)
+	go self.startSendingDataBack(exchangeConfiguration, resultChan)
 
 	for {
 		select {
@@ -47,24 +47,27 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 				resultChan <- Result{exchangeEvents, response.Err}
 			} else if *response.Message != nil {
 
-				Lock.Lock()
 				//fmt.Printf("%s \n", *response.Message)
-				var binanceOrders BinanceEvents
-				json.Unmarshal(*response.Message, &binanceOrders)
+				var binanceEvents BinanceEvents
+				json.Unmarshal(*response.Message, &binanceEvents)
 				//fmt.Println(b.convert(binanceOrders.Symbol))
 
-				keySymbok := b.convertSymbol(binanceOrders.Symbol)
+				keySymbok := self.convertSymbol(binanceEvents.Symbol)
 				//fmt.Println(keySymbok)
 
-				if _, ok := b.exchangeBook.CoinsBooks[keySymbok]; !ok {
-					newCoinBook := NewCoinBook(b.convert(binanceOrders.Symbol))
-					b.exchangeBook.CoinsBooks[keySymbok] = newCoinBook
+				self.exchangeBook.mu.Lock()
+
+				//if map is empty for this pair than, just fill with empty pair
+				if _, ok := self.exchangeBook.CoinsBooks[keySymbok]; !ok {
+					pair :=  self.convertSymbolToPair(binanceEvents.Symbol)
+					newCoinBook := NewCoinBook(pair)
+					self.exchangeBook.CoinsBooks[keySymbok] = newCoinBook
 				}
 
-				previosCoinBook := b.exchangeBook.CoinsBooks[keySymbok]
 
+				previosCoinBook := self.exchangeBook.CoinsBooks[keySymbok]
 
-				for _, level := range  binanceOrders.Asks {
+				for _, level := range  binanceEvents.Asks {
 					price := level[0]
 					quantity:= level[1]
 
@@ -77,7 +80,7 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 					}
 				}
 
-				for _, level := range  binanceOrders.Bids {
+				for _, level := range  binanceEvents.Bids {
 					price := level[0]
 					quantity:= level[1]
 
@@ -90,9 +93,9 @@ func (b *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration
 					}
 				}
 
-				b.exchangeBook.CoinsBooks[keySymbok] = previosCoinBook
+				self.exchangeBook.CoinsBooks[keySymbok] = previosCoinBook
+				self.exchangeBook.mu.Unlock()
 
-				Lock.Unlock()
 			} else {
 				//log.Errorf("StartListen: Binance mesage is nil")
 			}
@@ -127,7 +130,7 @@ func (b *BinanceManager) convertSymbol(binanceSymbol string) string {
 	return ""
 }
 
-func (b *BinanceManager) convert(symbol string) CurrencyPair {
+func (b *BinanceManager) convertSymbolToPair(symbol string) CurrencyPair {
 	if len(symbol) > 0 {
 		var damagedSymbol = TrimLeftChars(symbol, 1)
 		for _, referenceCurrency := range DefaultReferenceCurrencies {
@@ -150,37 +153,3 @@ func (b *BinanceManager) convert(symbol string) CurrencyPair {
 	}
 	return CurrencyPair{NotAplicable, NotAplicable}
 }
-
-//type BinanceTicker struct {
-//	Symbol             string  `json:"s"`
-//	Rate               string  `json:"c"`
-//	EventTime          float64 `json:"E"` // field is not needed but it's a workaround because unmarshal is case insensitive and without this filed json can't be parsed
-//	StatisticCloseTime float64 `json:"C"` // field is not needed but it's a workaround because unmarshal is case insensitive and without this filed json can't be parsed
-//}
-//
-//func (b *BinanceTicker) getCurriences() CurrencyPair {
-//
-//	if len(b.Symbol) > 0 {
-//		var symbol = b.Symbol
-//		var damagedSymbol = TrimLeftChars(symbol, 1)
-//		for _, referenceCurrency := range DefaultReferenceCurrencies {
-//			//fmt.Println(damagedSymbol, referenceCurrency.CurrencyCode())
-//
-//			if strings.Contains(damagedSymbol, referenceCurrency.CurrencyCode()) {
-//
-//				//fmt.Println("2",symbol, referenceCurrency.CurrencyCode())
-//				targetCurrencyString := strings.TrimSuffix(symbol, referenceCurrency.CurrencyCode())
-//
-//				if targetCurrencyString == "BCC" {
-//					targetCurrencyString = "BCH"
-//				}
-//
-//				//fmt.Println(targetCurrencyString)
-//				var targetCurrency = NewCurrencyWithCode(targetCurrencyString)
-//				return CurrencyPair{targetCurrency, referenceCurrency}
-//			}
-//		}
-//
-//	}
-//	return CurrencyPair{NotAplicable, NotAplicable}
-//}

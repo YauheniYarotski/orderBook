@@ -12,7 +12,9 @@ import (
 	"encoding/json"
 )
 
-var addr = flag.String("addr", "213.136.80.2:8080", "http service address")
+//213.136.80.2
+
+var addr = flag.String("addr", "127.0.0.1:8080", "http service address")
 
 
 
@@ -48,9 +50,7 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 
 
 			//subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
-			Lock.Lock()
 			msg, _ := json.Marshal(exchangeBooks)
-			Lock.Unlock()
 			//fmt.Println(msg)
 			err = c.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
