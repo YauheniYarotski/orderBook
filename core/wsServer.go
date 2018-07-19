@@ -14,7 +14,7 @@ import (
 
 //213.136.80.2
 
-var addr = flag.String("addr", "127.0.0.1:8080", "http service address")
+var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
 
 
 
