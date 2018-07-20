@@ -25,7 +25,24 @@ func NewAgregator() *Agregator {
 func (self *Agregator) add(exchangeBook ExchangeBook) {
 	//fmt.Println("added:", exchangeBook)
 	self.exchangeBooks.mu.Lock()
-	self.exchangeBooks.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
+
+	newBook := newExchangeBook(exchangeBook.Exchange)
+	for k,coinBook := range exchangeBook.CoinsBooks {
+		newCoinBook := NewCoinBook(coinBook.Pair)
+
+		for k,v := range coinBook.Asks {
+			newCoinBook.Asks[k] = v
+		}
+
+		for k,v := range coinBook.Bids {
+			newCoinBook.Bids[k] = v
+		}
+
+		newBook.CoinsBooks[k] = newCoinBook
+	}
+
+
+	self.exchangeBooks.exchangeBooks[newBook.Exchange.String()] = newBook
 	self.exchangeBooks.mu.Unlock()
 }
 
