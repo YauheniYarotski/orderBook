@@ -24,7 +24,9 @@ func NewAgregator() *Agregator {
 
 func (self *Agregator) add(exchangeBook ExchangeBook) {
 	//fmt.Println("added:", exchangeBook)
+	self.exchangeBooks.mu.Lock()
 	self.exchangeBooks.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
+	self.exchangeBooks.mu.Unlock()
 }
 
 func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
