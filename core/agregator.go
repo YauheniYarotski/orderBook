@@ -4,39 +4,38 @@ import (
 	"sync"
 )
 
-type ExchangesBooks struct {
+
+
+
+
+type Agregator struct {
 	mu            sync.Mutex
 	exchangeBooks map[string]ExchangeBook
 }
 
-
-type Agregator struct {
-	exchangeBooks ExchangesBooks
-}
-
 func NewAgregator() *Agregator {
 	var agregator = Agregator{}
-	agregator.exchangeBooks = ExchangesBooks{}
-	agregator.exchangeBooks.exchangeBooks = map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
-	delete(agregator.exchangeBooks.exchangeBooks, "")
+	agregator.mu = sync.Mutex{}
+	agregator.exchangeBooks = map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
+	delete(agregator.exchangeBooks, "")
 	return &agregator
 }
 
 func (self *Agregator) add(exchangeBook ExchangeBook) {
 	//fmt.Println("added:", exchangeBook)
-	self.exchangeBooks.mu.Lock()
-	self.exchangeBooks.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
-	self.exchangeBooks.mu.Unlock()
+	self.mu.Lock()
+	self.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
+	self.mu.Unlock()
 }
 
 func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 
-	self.exchangeBooks.mu.Lock()
+	self.mu.Lock()
 
 	newExchangesBooks := map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
 	delete(newExchangesBooks, "")
 
-	for k,v := range  self.exchangeBooks.exchangeBooks {
+	for k,v := range  self.exchangeBooks {
 
 		newBook := newExchangeBook(v.Exchange)
 
@@ -57,6 +56,6 @@ func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 		newExchangesBooks[k] = newBook
 
 	}
-	self.exchangeBooks.mu.Unlock()
+	self.mu.Unlock()
 	return newExchangesBooks
 }
