@@ -2,6 +2,7 @@ package core
 
 
 type CoinBook struct {
+	Symbol string 	`json:"symbol"`
 	Pair CurrencyPair  	`json:"pair"`
 	Asks map[string]string		`json:"asks"`
 	Bids map[string]string		`json:"bids"`

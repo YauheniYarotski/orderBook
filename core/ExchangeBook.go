@@ -6,3 +6,17 @@ type ExchangeBook struct {
 	Exchange Exchange  `json:"exchange"`
 	CoinsBooks map[string]CoinBook  `json:"books"`
 }
+
+type WSExchangeBook struct {
+	ExchangeTitle string `json:"exchange_title"`
+	CoinsBooks []CoinBook  `json:"books"`
+}
+
+func newExchangeBook(exchange Exchange) ExchangeBook  {
+	exchangeBook := ExchangeBook{}
+
+	exchangeBook.Exchange = exchange
+	exchangeBook.CoinsBooks = map[string]CoinBook{"":NewCoinBook(CurrencyPair{})}
+	delete(exchangeBook.CoinsBooks, "")
+	return exchangeBook
+}

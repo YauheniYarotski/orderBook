@@ -19,14 +19,7 @@ type Result struct {
 }
 
 
-func newExchangeBook(exchange Exchange) ExchangeBook  {
-	exchangeBook := ExchangeBook{}
 
-	exchangeBook.Exchange = exchange
-	exchangeBook.CoinsBooks = map[string]CoinBook{"":NewCoinBook(CurrencyPair{})}
-	delete(exchangeBook.CoinsBooks, "")
-	return exchangeBook
-}
 
 //func (f ExchangeBook) MarshalJSON() ([]byte, error) {
 //	tmpMap := make(map[string]interface{})

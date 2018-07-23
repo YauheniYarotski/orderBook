@@ -46,10 +46,35 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 		b.ServerHandler(&exchangeBooks)
 		//fmt.Println(exchangeBooks)
 
+		var res []WSExchangeBook
+
+		for _, v := range exchangeBooks {
+
+			newBook := WSExchangeBook{}
+			newBook.ExchangeTitle = v.ExchangeTitle
+
+			for k,coinBook := range v.CoinsBooks {
+				newCoinBook := NewCoinBook(coinBook.Pair)
+				newCoinBook.Symbol = k
+
+				for k,v := range coinBook.Asks {
+					newCoinBook.Asks[k] = v
+				}
+
+				for k,v := range coinBook.Bids {
+					newCoinBook.Bids[k] = v
+				}
+
+				newBook.CoinsBooks = append(newBook.CoinsBooks, newCoinBook)
+			}
+
+			res = append(res, newBook)
+
+		}
 
 
 			//subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
-			msg, _ := json.Marshal(exchangeBooks)
+			msg, _ := json.Marshal(res)
 			//fmt.Println(msg)
 			err = c.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
