@@ -9,13 +9,13 @@ import (
 
 
 type Agregator struct {
-	mu            sync.Mutex
+	mu            *sync.Mutex
 	exchangeBooks map[string]ExchangeBook
 }
 
 func NewAgregator() *Agregator {
 	var agregator = Agregator{}
-	agregator.mu = sync.Mutex{}
+	agregator.mu =  &sync.Mutex{}
 	agregator.exchangeBooks = map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
 	delete(agregator.exchangeBooks, "")
 	return &agregator
