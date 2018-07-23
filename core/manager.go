@@ -112,8 +112,8 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 	switch exchangeConfiguration.Exchange {
 	case Binance:
 		go b.binanceManager.StartListen(exchangeConfiguration, ch)
-	//case Bitfinex:
-	//	go b.bitfinexManager.StartListen(exchangeConfiguration, ch)
+	case Bitfinex:
+		go b.bitfinexManager.StartListen(exchangeConfiguration, ch)
 	//case Gdax:
 	//	go b.gdaxManager.StartListen(exchangeConfiguration, ch)
 	//case HitBtc:
