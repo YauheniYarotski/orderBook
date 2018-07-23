@@ -3,9 +3,6 @@ package core
 import (
 	"sync"
 )
-
-
-
 var mu = &sync.Mutex{}
 
 type Agregator struct {
