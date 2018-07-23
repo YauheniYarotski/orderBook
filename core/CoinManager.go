@@ -32,7 +32,7 @@ func (self *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConf
 			}
 			mu.Unlock()
 
-			resultChan <- Result{newBook, nil}
+			resultChan <- Result{&newBook, nil}
 		}()
 	}
 }

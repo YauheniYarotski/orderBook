@@ -17,7 +17,7 @@ func NewAgregator() *Agregator {
 	return &agregator
 }
 
-func (self *Agregator) add(exchangeBook ExchangeBook) {
+func (self *Agregator) add(exchangeBook *ExchangeBook) {
 	//fmt.Println("added:", exchangeBook)
 	//mu.Lock()
 	//self.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
