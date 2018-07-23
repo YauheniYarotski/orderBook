@@ -13,12 +13,12 @@ type Agregator struct {
 	exchangeBooks map[string]ExchangeBook
 }
 
-func NewAgregator() *Agregator {
+func NewAgregator() Agregator {
 	var agregator = Agregator{}
 	agregator.mu =  &sync.Mutex{}
 	agregator.exchangeBooks = map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
 	delete(agregator.exchangeBooks, "")
-	return &agregator
+	return agregator
 }
 
 func (self *Agregator) add(exchangeBook ExchangeBook) {
