@@ -14,7 +14,7 @@ type BasicManager struct {
 
 
 type Result struct {
-	ExchangeBook *ExchangeBook
+	ExchangeBook ExchangeBook
 	Err              *error
 }
 

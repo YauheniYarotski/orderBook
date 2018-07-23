@@ -44,7 +44,7 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 			if *response.Err != nil {
 				//log.Errorf("StartListen: binance error:%v", *response.Err)
 				exchangeEvents := ExchangeBook{}
-				resultChan <- Result{&exchangeEvents, response.Err}
+				resultChan <- Result{exchangeEvents, response.Err}
 			} else if *response.Message != nil {
 
 				//fmt.Printf("%s \n", *response.Message)
