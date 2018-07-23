@@ -14,7 +14,7 @@ func (self *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConf
 		func() {
 
 
-			self.exchangeBook.mu.Lock()
+			mu.Lock()
 			newBook := newExchangeBook(exchangeConfiguration.Exchange)
 
 			for k,coinBook := range self.exchangeBook.CoinsBooks {
@@ -30,7 +30,7 @@ func (self *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConf
 
 				newBook.CoinsBooks[k] = newCoinBook
 			}
-			self.exchangeBook.mu.Unlock()
+			mu.Unlock()
 
 			resultChan <- Result{newBook, nil}
 		}()

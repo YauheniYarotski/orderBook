@@ -55,7 +55,7 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				keySymbok := self.convertSymbol(binanceEvents.Symbol)
 				//fmt.Println(keySymbok)
 
-				self.exchangeBook.mu.Lock()
+				mu.Lock()
 
 				//if map is empty for this pair than, just fill with empty pair
 				if _, ok := self.exchangeBook.CoinsBooks[keySymbok]; !ok {
@@ -94,7 +94,7 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				}
 
 				self.exchangeBook.CoinsBooks[keySymbok] = previosCoinBook
-				self.exchangeBook.mu.Unlock()
+				mu.Unlock()
 
 			} else {
 				//log.Errorf("StartListen: Binance mesage is nil")
