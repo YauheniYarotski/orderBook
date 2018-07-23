@@ -79,7 +79,7 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 
 
 
-func (b *BitfinexManager) addMessage(message []byte) {
+func (self *BitfinexManager) addMessage(message []byte) {
 
 	var pair string
 	var price float64
@@ -95,7 +95,7 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 	if bitfinexBook.ChanID > 0 {
 		//fmt.Println(b.convertSymbol(bitfinexBook.Pair))
-		b.bitfinexSymbols[bitfinexBook.ChanID] = b.convertSymbol(bitfinexBook.Pair)
+		self.bitfinexSymbols[bitfinexBook.ChanID] = self.convertSymbol(bitfinexBook.Pair)
 	} else {
 		var unmarshaledBookMessage []interface{}
 		json.Unmarshal(message, &unmarshaledBookMessage)
@@ -109,7 +109,7 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 					//fmt.Println(v)
 
-					pair = b.bitfinexSymbols[chanId]
+					pair = self.bitfinexSymbols[chanId]
 					price = v[0].(float64)
 					count = v[1].(float64)
 					amount = v[2].(float64)
@@ -120,7 +120,7 @@ func (b *BitfinexManager) addMessage(message []byte) {
 				} else if len(v) > 3 {
 					for _, vv := range v {
 						if events, ok := vv.([]interface{}); ok {
-							pair = b.bitfinexSymbols[chanId]
+							pair = self.bitfinexSymbols[chanId]
 							price = events[0].(float64)
 							count = events[1].(float64)
 							amount = events[2].(float64)
@@ -133,13 +133,14 @@ func (b *BitfinexManager) addMessage(message []byte) {
 
 
 	if pair != "" {
-		b.addEvent(pair, price, count, amount)
+		self.addEvent(pair, price, count, amount)
 	}
 
 }
 
 func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
 
+	mu.Lock()
 
 	if _, ok := b.exchangeBook.CoinsBooks[symbol]; !ok {
 		newCoinBook := NewCoinBook(b.convert(symbol))
@@ -175,10 +176,7 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 	}
 
 	b.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
-	//b.coinBooks[symbol] = coinBook
-	//b.Unlock()
-	//fmt.Println(coinBook)
-	//fmt.Println(b.coinBooks)
+	mu.Unlock()
 }
 //func (b PoloniexManager) convertArgsToTicker(args []interface{}) (wsticker PoloniexTicker, err error) {
 //	wsticker.CurrencyPair = b.channelsByID[strconv.FormatFloat(args[0].(float64), 'f', 0, 64)]
