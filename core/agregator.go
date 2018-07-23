@@ -19,14 +19,14 @@ func NewAgregator() *Agregator {
 
 func (self *Agregator) add(exchangeBook ExchangeBook) {
 	//fmt.Println("added:", exchangeBook)
-	mu.Lock()
-	self.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
-	mu.Unlock()
+	//mu.Lock()
+	//self.exchangeBooks[exchangeBook.Exchange.String()] = exchangeBook
+	//mu.Unlock()
 }
 
 func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 
-	mu.Lock()
+	//mu.Lock()
 
 	newExchangesBooks := map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
 	//delete(newExchangesBooks, "")
@@ -52,6 +52,6 @@ func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 	//	newExchangesBooks[k] = newBook
 	//
 	//}
-	mu.Unlock()
+	//mu.Unlock()
 	return newExchangesBooks
 }
