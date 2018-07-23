@@ -75,7 +75,7 @@ type Manager struct {
 	//bithumbManager     *BithumbManager
 
 
-	agregator Agregator
+	agregator *Agregator
 }
 
 func NewManager() *Manager {
