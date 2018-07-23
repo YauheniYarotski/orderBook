@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="862e676e-2981-4e98-b4bd-95375047c21a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/core/CoinManager.go" afterPath="$PROJECT_DIR$/core/CoinManager.go" />
       <change beforePath="$PROJECT_DIR$/core/agregator.go" afterPath="$PROJECT_DIR$/core/agregator.go" />
-      <change beforePath="$PROJECT_DIR$/core/binanceManager.go" afterPath="$PROJECT_DIR$/core/binanceManager.go" />
-      <change beforePath="$PROJECT_DIR$/core/manager.go" afterPath="$PROJECT_DIR$/core/manager.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,11 +30,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="binanceManager.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="binanceManager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/binanceManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="46" column="37" lean-forward="true" selection-start-line="46" selection-start-column="37" selection-end-line="46" selection-end-column="37" />
+            <state relative-caret-position="608">
+              <caret line="70" column="29" lean-forward="true" selection-start-line="70" selection-start-column="29" selection-end-line="70" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -97,11 +94,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="agregator.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="agregator.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/agregator.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="30" column="61" lean-forward="false" selection-start-line="30" selection-start-column="61" selection-end-line="30" selection-end-column="61" />
+            <state relative-caret-position="251">
+              <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
               <folding>
                 <element signature="e#14#32#0" expanded="true" />
               </folding>
@@ -205,10 +202,10 @@
         <option value="$PROJECT_DIR$/core/bitfinexManager.go" />
         <option value="$PROJECT_DIR$/service.go" />
         <option value="$PROJECT_DIR$/core/wsServer.go" />
-        <option value="$PROJECT_DIR$/core/agregator.go" />
         <option value="$PROJECT_DIR$/core/manager.go" />
         <option value="$PROJECT_DIR$/core/CoinManager.go" />
         <option value="$PROJECT_DIR$/core/binanceManager.go" />
+        <option value="$PROJECT_DIR$/core/agregator.go" />
       </list>
     </option>
   </component>
@@ -758,16 +755,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/agregator.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" column="61" lean-forward="false" selection-start-line="30" selection-start-column="61" selection-end-line="30" selection-end-column="61" />
-          <folding>
-            <element signature="e#14#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/manager.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -788,9 +775,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/binanceManager.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="46" column="37" lean-forward="true" selection-start-line="46" selection-start-column="37" selection-end-line="46" selection-end-column="37" />
+        <state relative-caret-position="608">
+          <caret line="70" column="29" lean-forward="true" selection-start-line="70" selection-start-column="29" selection-end-line="70" selection-end-column="29" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/agregator.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="29" column="0" lean-forward="true" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#32#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

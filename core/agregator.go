@@ -26,32 +26,32 @@ func (self *Agregator) add(exchangeBook ExchangeBook) {
 
 func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 
-	//mu.Lock()
+	mu.Lock()
 
 	newExchangesBooks := map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
-	//delete(newExchangesBooks, "")
-	//
-	//for k,v := range  self.exchangeBooks {
-	//
-	//	newBook := newExchangeBook(v.Exchange)
-	//
-	//	for k,coinBook := range v.CoinsBooks {
-	//		newCoinBook := NewCoinBook(coinBook.Pair)
-	//
-	//		for k,v := range coinBook.Asks {
-	//			newCoinBook.Asks[k] = v
-	//		}
-	//
-	//		for k,v := range coinBook.Bids {
-	//			newCoinBook.Bids[k] = v
-	//		}
-	//
-	//		newBook.CoinsBooks[k] = newCoinBook
-	//	}
-	//
-	//	newExchangesBooks[k] = newBook
-	//
-	//}
-	//mu.Unlock()
+	delete(newExchangesBooks, "")
+
+	for k,v := range  self.exchangeBooks {
+
+		newBook := newExchangeBook(v.Exchange)
+
+		for k,coinBook := range v.CoinsBooks {
+			newCoinBook := NewCoinBook(coinBook.Pair)
+
+			for k,v := range coinBook.Asks {
+				newCoinBook.Asks[k] = v
+			}
+
+			for k,v := range coinBook.Bids {
+				newCoinBook.Bids[k] = v
+			}
+
+			newBook.CoinsBooks[k] = newCoinBook
+		}
+
+		newExchangesBooks[k] = newBook
+
+	}
+	mu.Unlock()
 	return newExchangesBooks
 }
