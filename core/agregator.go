@@ -34,6 +34,7 @@ func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 	for k,v := range  self.exchangeBooks {
 
 		newBook := newExchangeBook(v.Exchange)
+		newBook.ExchangeTitle = v.Exchange.String()
 
 		for k,coinBook := range v.CoinsBooks {
 			newCoinBook := NewCoinBook(coinBook.Pair)

@@ -148,10 +148,16 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 	//start ws service
 	go self.wsServer.start()
-	self.wsServer.ServerHandler = func(exchangeBooks *map[string]ExchangeBook) {
+	self.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
 		v := self.agregator.getExchangeBooks()
-		tmp := v
-		*exchangeBooks = tmp
+
+		for _,vv := range  v  {
+
+			*exchangeBooks = append(*exchangeBooks, vv)
+		}
+
+		//tmp := v
+		//*exchangeBooks = tmp
 
 	}
 

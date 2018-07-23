@@ -20,7 +20,7 @@ var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
 
 type WsServer struct {
 	upgrader websocket.Upgrader
-	ServerHandler   func(p *map[string]ExchangeBook)
+	ServerHandler   func(p *[]ExchangeBook)
 }
 
 
@@ -42,8 +42,7 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 
 	for range time.Tick(1 * time.Second) {
 
-		exchangeBooks := map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
-		delete(exchangeBooks, "")
+		var exchangeBooks []ExchangeBook
 		b.ServerHandler(&exchangeBooks)
 		//fmt.Println(exchangeBooks)
 

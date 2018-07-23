@@ -1,9 +1,8 @@
 package core
 
-import "sync"
 
 type ExchangeBook struct {
-	mu      sync.Mutex
+	ExchangeTitle string `json:"exchange_title"`
 	Exchange Exchange  `json:"exchange"`
 	CoinsBooks map[string]CoinBook  `json:"books"`
 }
