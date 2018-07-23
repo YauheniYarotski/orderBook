@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="862e676e-2981-4e98-b4bd-95375047c21a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/core/agregator.go" afterPath="$PROJECT_DIR$/core/agregator.go" />
+      <change beforePath="$PROJECT_DIR$/core/wsServer.go" afterPath="$PROJECT_DIR$/core/wsServer.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -52,21 +52,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bitfinexManager.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="bitfinexManager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
+            <state relative-caret-position="27">
               <caret line="155" column="19" lean-forward="false" selection-start-line="155" selection-start-column="19" selection-end-line="155" selection-end-column="19" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="wsServer.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="wsServer.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/wsServer.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="59" column="48" lean-forward="true" selection-start-line="59" selection-start-column="48" selection-end-line="59" selection-end-column="48" />
+            <state relative-caret-position="127">
+              <caret line="42" column="25" lean-forward="false" selection-start-line="42" selection-start-column="25" selection-end-line="42" selection-end-column="25" />
               <folding>
                 <element signature="e#15#127#0" expanded="true" />
               </folding>
@@ -205,11 +205,11 @@
         <option value="$PROJECT_DIR$/core/CoinManager.go" />
         <option value="$PROJECT_DIR$/core/binanceManager.go" />
         <option value="$PROJECT_DIR$/core/ExchangeBook.go" />
-        <option value="$PROJECT_DIR$/core/wsServer.go" />
         <option value="$PROJECT_DIR$/core/CoinBook.go" />
         <option value="$PROJECT_DIR$/core/manager.go" />
         <option value="$PROJECT_DIR$/core/bitfinexManager.go" />
         <option value="$PROJECT_DIR$/core/agregator.go" />
+        <option value="$PROJECT_DIR$/core/wsServer.go" />
       </list>
     </option>
   </component>
@@ -714,16 +714,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/wsServer.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="59" column="48" lean-forward="true" selection-start-line="59" selection-start-column="48" selection-end-line="59" selection-end-column="48" />
-          <folding>
-            <element signature="e#15#127#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/manager.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
@@ -754,9 +744,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
+        <state relative-caret-position="27">
           <caret line="155" column="19" lean-forward="false" selection-start-line="155" selection-start-column="19" selection-end-line="155" selection-end-column="19" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/wsServer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="42" column="25" lean-forward="false" selection-start-line="42" selection-start-column="25" selection-end-line="42" selection-end-column="25" />
+          <folding>
+            <element signature="e#15#127#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
