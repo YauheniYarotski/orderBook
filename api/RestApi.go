@@ -1,0 +1,69 @@
+package api
+
+import (
+	//"fmt"
+	//"strconv"
+	//"encoding/json"
+
+	"net/http"
+	"time"
+	//"fmt"
+)
+
+type RestApi struct {
+	//connection *websocket.Conn
+
+	httpClient *http.Client
+}
+
+type RestApiReposponse struct {
+	Message []byte
+	//Pair CurrencyPair
+}
+
+
+func NewRestApi() *RestApi {
+	var api = RestApi{}
+	api.httpClient = &http.Client{Timeout: time.Second * 10}
+	return &api
+}
+
+//
+//func (p *RestApi) publicRequest(urlString string, pair CurrencyPair, responseCh chan <- RestApiReposponse, errorCh chan <- error) {
+//
+//	<-throttle
+//
+//	//TODO - check if close is needed
+//	//defer close(responseCh)
+//	//defer close(errorCh)
+//
+//
+//	req, err := http.NewRequest("GET", urlString, nil)
+//	if err != nil {
+//		fmt.Println("error creating request:", err)
+//		errorCh <- Error(RequestError)
+//		return
+//	}
+//
+//	req.Header.Add("Accept", "application/json")
+//
+//	resp, err := p.httpClient.Do(req)
+//	if err != nil {
+//		fmt.Println("error sending request:", err)
+//		errorCh <- Error(ConnectError)
+//		return
+//	}
+//
+//	defer resp.Body.Close()
+//	body, err := ioutil.ReadAll(resp.Body)
+//	if err != nil {
+//		fmt.Println("error reading response:", err)
+//		errorCh <- err
+//		return
+//	}
+//
+//	restApiResponse := RestApiReposponse{body, pair}
+//
+//	responseCh <- restApiResponse
+//	//errorCh <- nil
+//}
