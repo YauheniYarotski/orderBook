@@ -19,15 +19,24 @@ type BinanceEvents struct {
 	Asks [][]string `json:"a"`
 }
 
+type BinanceRestEvents struct {
+	LastUpdateID int             `json:"lastUpdateId"`
+	Bids         [][]string `json:"bids"`
+	Asks         [][]string `json:"asks"`
+}
+
 type BinanceManager struct {
 	CoinManager
 	binanceApi     *api.BinanceApi
+	restApi *api.RestApi
+
 }
 
 func NewBinanceManager() *BinanceManager {
 	var manger = BinanceManager{}
 	manger.exchangeBook = newExchangeBook(Binance)
 	manger.binanceApi = &api.BinanceApi{}
+	manger.restApi = api.NewRestApi()
 	return &manger
 }
 
@@ -36,6 +45,11 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 	ch := make(chan api.Reposponse)
 	go self.binanceApi.StartListen(ch)
 	go self.startSendingDataBack(exchangeConfiguration, resultChan)
+
+	restApiResponseChan := make(chan api.RestApiReposponse)
+
+	urlString := "https://www.binance.com/api/v1/depth?symbol=BTCUSDT&limit=1000"
+	go self.restApi.PublicRequest(urlString, restApiResponseChan)
 
 	for {
 		select {
@@ -60,6 +74,68 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				//if map is empty for this pair than, just fill with empty pair
 				if _, ok := self.exchangeBook.CoinsBooks[keySymbok]; !ok {
 					pair :=  self.convertSymbolToPair(binanceEvents.Symbol)
+					newCoinBook := NewCoinBook(pair)
+					self.exchangeBook.CoinsBooks[keySymbok] = newCoinBook
+				}
+
+
+				previosCoinBook := self.exchangeBook.CoinsBooks[keySymbok]
+
+				for _, level := range  binanceEvents.Asks {
+					price := level[0]
+					quantity:= level[1]
+
+					if quantity == "0.00000000" {
+						//delete(previosCoinBook.PriceLevels.Asks, price)
+						delete(previosCoinBook.Asks, price)
+					} else {
+						//previosCoinBook.PriceLevels.Asks[price] = quantity
+						previosCoinBook.Asks[price] = quantity
+					}
+				}
+
+				for _, level := range  binanceEvents.Bids {
+					price := level[0]
+					quantity:= level[1]
+
+					if quantity == "0.00000000" {
+						//delete(previosCoinBook.PriceLevels.Bids, price)
+						delete(previosCoinBook.Bids, price)
+					} else {
+						//previosCoinBook.PriceLevels.Bids[price] = quantity
+						previosCoinBook.Bids[price] = quantity
+					}
+				}
+
+				self.exchangeBook.CoinsBooks[keySymbok] = previosCoinBook
+				mu.Unlock()
+
+			} else {
+				//log.Errorf("StartListen: Binance mesage is nil")
+			}
+
+			//restApi response
+		case response := <-restApiResponseChan:
+
+			if *response.Err != nil {
+				//log.Errorf("StartListen: binance error:%v", *response.Err)
+				exchangeEvents := ExchangeBook{}
+				resultChan <- Result{exchangeEvents, response.Err}
+			} else if *response.Message != nil {
+
+				//fmt.Printf("%s \n", *response.Message)
+				var binanceEvents BinanceRestEvents
+				json.Unmarshal(*response.Message, &binanceEvents)
+				//fmt.Println(b.convert(binanceOrders.Symbol))
+
+				keySymbok := "BTCUSDT"//self.convertSymbol(binanceEvents.Symbol)
+				//fmt.Println(keySymbok)
+
+				mu.Lock()
+
+				//if map is empty for this pair than, just fill with empty pair
+				if _, ok := self.exchangeBook.CoinsBooks[keySymbok]; !ok {
+					pair :=  self.convertSymbolToPair("BTCUSDT")
 					newCoinBook := NewCoinBook(pair)
 					self.exchangeBook.CoinsBooks[keySymbok] = newCoinBook
 				}
