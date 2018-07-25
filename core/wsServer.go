@@ -35,7 +35,7 @@ func NewWsServer() *WsServer {
 func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("echo")
 
-	c, err := b.upgrader.Upgrade(w, r,  http.Header{})
+	c, err := b.upgrader.Upgrade(w, r,  nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
