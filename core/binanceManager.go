@@ -128,14 +128,14 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				json.Unmarshal(*response.Message, &binanceEvents)
 				//fmt.Println(b.convert(binanceOrders.Symbol))
 
-				keySymbok := "BTCUSDT"//self.convertSymbol(binanceEvents.Symbol)
+				keySymbok := "BTC-USDT"//self.convertSymbol(binanceEvents.Symbol)
 				//fmt.Println(keySymbok)
 
 				mu.Lock()
 
 				//if map is empty for this pair than, just fill with empty pair
 				if _, ok := self.exchangeBook.CoinsBooks[keySymbok]; !ok {
-					pair :=  self.convertSymbolToPair("BTCUSDT")
+					pair :=  self.convertSymbolToPair("BTC-USDT")
 					newCoinBook := NewCoinBook(pair)
 					self.exchangeBook.CoinsBooks[keySymbok] = newCoinBook
 				}
