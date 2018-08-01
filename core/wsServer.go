@@ -9,11 +9,12 @@ import (
 	"fmt"
 	"time"
 	"encoding/json"
+	"github.com/bradfitz/slice"
 )
 
 //213.136.80.2
 
-var addr = flag.String("addr", "0.0.0.0:80", "http service address")
+var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
 
 
 
@@ -74,6 +75,12 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		slice.Sort(res, func(i, j int) bool {
+			return res[i].ExchangeTitle < res[j].ExchangeTitle
+		})
+
+		//fmt.Println(res)
+		
 
 			//subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
 			msg, _ := json.Marshal(res)
