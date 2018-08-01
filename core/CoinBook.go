@@ -6,6 +6,9 @@ type CoinBook struct {
 	Pair CurrencyPair  	`json:"-"`
 	Asks map[string]string		`json:"asks"`
 	Bids map[string]string		`json:"bids"`
+
+	TotalAsks string		`json:"total_asks"`
+	TotalBids string		`json:"total_bids"`
 }
 
 

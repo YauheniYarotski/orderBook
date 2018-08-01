@@ -64,13 +64,19 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 					newCoinBook.Asks[k] = v
 				}
 
+				newCoinBook.TotalAsks = "555"
+				newCoinBook.TotalBids = "777"
+
 				for k,v := range coinBook.Bids {
 					newCoinBook.Bids[k] = v
 				}
 
+
+
 				newBook.CoinsBooks = append(newBook.CoinsBooks, newCoinBook)
 			}
 
+			res = append(res, newBook)
 			res = append(res, newBook)
 
 		}
