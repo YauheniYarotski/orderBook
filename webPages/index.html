@@ -106,14 +106,14 @@
       renderExchange = exchange => {
         // exchange.books.sort((a, b) => {
         //   if (a.symbol < b.symbol) {
-        //     return -1;
+        //     return 1;
         //   }
 
         //   if (a.symbol === b.symbol) {
         //     return 0;
         //   }
 
-        //   return 1;
+        //   return -1;
         // });
 
         return h(
@@ -150,8 +150,9 @@
           ])
         );
       };
-
-      const socket = new WebSocket('ws://127.0.0.1:8080/books');
+// 213.136.80.2:80
+//127.0.0.1
+      const socket = new WebSocket('ws://213.136.80.2:8080/books');
   
       socket.onopen = event => console.log('Connected', event);
   
