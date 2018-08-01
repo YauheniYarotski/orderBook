@@ -40,11 +40,11 @@
 
       .asks {
         margin-right: 10px;
-        background-color: #c2d6eb;
+        background-color: #EFC0C0;
       }
 
       .bids {
-        background-color: #d0e0a6;
+        background-color: #CEF6CE;
       }
     </style>
   </head>
@@ -90,15 +90,15 @@
 
       renderBook = book =>
         h('div', { className: 'column symbol' }, [
-          h('h3', {}, `Symbol: ${book.symbol}`),
+          h('h3', {}, `${book.symbol}`),
           h('div', { className: 'row' }, [
-            h('div', { className: 'column' }, [
-              h('div', {}, 'Asks'),
-              renderTable(book.asks, 'asks')
-            ]),
             h('div', { className: 'column' }, [
               h('div', {}, 'Bids'),
               renderTable(book.bids, 'bids')
+            ]),
+            h('div', { className: 'column' }, [
+              h('div', {}, 'Asks'),
+              renderTable(book.asks, 'asks')
             ]),
           ])
         ]);
@@ -121,7 +121,7 @@
           { className: 'column exchange' },
           [
             h('div', {}, [
-              h('h2', {}, `Exchange: ${exchange.exchange_title}`)
+              h('h2', {}, `${exchange.exchange_title}`)
             ]),
             h('div', { className: 'row symbols' }, exchange.books.map(renderBook))
           ]
@@ -145,7 +145,7 @@
 
         app.appendChild(
           h('div', {}, [
-            h('div', {}, `Last update: ${new Date().toISOString()}`),
+            h('div', {}, `${new Date()}`),
             h('div', { className: 'row exchanges' }, data.map(renderExchange))
           ])
         );
