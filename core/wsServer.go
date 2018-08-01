@@ -13,7 +13,7 @@ import (
 
 //213.136.80.2
 
-var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
+var addr = flag.String("addr", "0.0.0.0:80", "http service address")
 
 
 
@@ -92,6 +92,8 @@ func (b *WsServer) start() {
 	fmt.Println("start ws")
 	flag.Parse()
 	http.HandleFunc("/books", b.books)
+	//http.HandleFunc("/", home)
+	http.Handle("/", http.FileServer(http.Dir("./webPages")))
 	http.ListenAndServe(*addr, nil)
 	//log.Fatal(http.ListenAndServe(*addr, nil))
 }
