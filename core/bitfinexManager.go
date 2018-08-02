@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	//"fmt"
+	"fmt"
 )
 
 type BitfinexManager struct {
@@ -150,30 +151,32 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 
 	previouseCoinBook := b.exchangeBook.CoinsBooks[symbol]
 
-	priceString := strconv.FormatFloat(price, 'f', 8, 64)
-	amountString := strconv.FormatFloat(math.Abs(float64(amount)), 'f', 8, 64)
+	priceString := strconv.FormatFloat(price, 'f', 4, 64)
+	amountString := strconv.FormatFloat(math.Abs(float64(amount)), 'f', 4, 64)
 
-	if amount < 0 {
-		if amount == 0 {
-			//delete(coinBook.PriceLevels.Asks, priceString)
-			delete(previouseCoinBook.Asks, priceString)
+	if count > 0 {
 
-		} else {
-			//coinBook.PriceLevels.Asks[priceString] = amountString
+		if amount < 0 {
 			previouseCoinBook.Asks[priceString] = amountString
+		} else if amount > 0 {
+			previouseCoinBook.Bids[priceString] = amountString
+		}else {
+			fmt.Println("amount can't be:", amount)
 		}
 
-
-	} else {
-		if amount == 0 {
-			//delete(coinBook.PriceLevels.Bids, priceString)
+	} else if count == 0 {
+		if amount == -1 {
+			delete(previouseCoinBook.Asks, priceString)
+		} else if amount == 1 {
 			delete(previouseCoinBook.Bids, priceString)
 		} else {
-			//coinBook.PriceLevels.Bids[priceString] = amountString
-			previouseCoinBook.Bids[priceString] = amountString
+			fmt.Println("amount can't be:", amount)
 		}
 
+	} else {
+		fmt.Println("count can't be <0:", count)
 	}
+
 
 	b.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
 	mu.Unlock()
