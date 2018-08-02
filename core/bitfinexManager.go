@@ -19,6 +19,7 @@ type BitfinexManager struct {
 	CoinManager
 	bitfinexSymbols map[int]string
 	api             *api.BitfinexApi
+	restApi *api.RestApi
 }
 
 //type BitfinexTicker struct {
@@ -45,19 +46,28 @@ type BitfinexBookResponse struct {
 	TimpeStamp time.Time
 }
 
-func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
-	//b.bitfinexTickers = make(map[int]BitfinexTicker)
+type BitfinexRestEvents struct {
+	events [][]float64
+}
 
-	b.exchangeBook = newExchangeBook(Bitfinex)
-	b.bitfinexSymbols = map[int]string{}
-	b.api = api.NewBitfinexApi()
-	//b.coinBooks = sync.Map{}
+func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+	//self.bitfinexTickers = make(map[int]BitfinexTicker)
+
+	self.restApi = api.NewRestApi()
+	self.exchangeBook = newExchangeBook(Bitfinex)
+	self.bitfinexSymbols = map[int]string{}
+	self.api = api.NewBitfinexApi()
+	//self.coinBooks = sync.Map{}
 
 	ch := make(chan api.Reposponse)
+	restApiResponseChan := make(chan api.RestApiReposponse)
 
-	go b.api.StartListen(ch)
+	urlString := "https://api.bitfinex.com/v2/book/tBTCUSD/P0?len=100"
+	go self.restApi.PublicRequest(urlString, restApiResponseChan)
 
-	go b.startSendingDataBack(exchangeConfiguration, resultChan)
+	go self.api.StartListen(ch)
+
+	go self.startSendingDataBack(exchangeConfiguration, resultChan)
 
 	for {
 		select {
@@ -68,10 +78,36 @@ func (b *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguratio
 				//resultChan <- Result{exchangeConfiguration.Exchange.String(), nil, response.Err}
 			} else if *response.Message != nil {
 				//fmt.Printf("%s \n", response.Message)
-				b.addMessage(*response.Message)
+				self.addMessage(*response.Message)
 			} else {
 				//log.Errorf("StartListen :error parsing Bitfinex ticker")
 			}
+
+		case response := <-restApiResponseChan:
+			if *response.Err != nil {
+				//log.Errorf("StartListen: binance error:%v", *response.Err)
+				//exchangeEvents := ExchangeBook{}
+				//resultChan <- Result{exchangeEvents, response.Err}
+			} else if *response.Message != nil {
+
+				var bitfinexEvents [][]float64
+				json.Unmarshal(*response.Message, &bitfinexEvents)
+
+				for _, level := range  bitfinexEvents {
+					var pair = "BTC-USDT"
+					var price float64
+					var count float64
+					var amount float64
+					price = level[0]
+					count = level[1]
+					amount = level[2]
+					self.addEvent(pair, price, count, amount)
+				}
+
+			} else {
+				//log.Errorf("StartListen: Binance mesage is nil")
+			}
+
 
 		}
 	}
@@ -95,7 +131,7 @@ func (self *BitfinexManager) addMessage(message []byte) {
 
 
 	if bitfinexBook.ChanID > 0 {
-		//fmt.Println(b.convertSymbol(bitfinexBook.Pair))
+		//fmt.Println(self.convertSymbol(bitfinexBook.Pair))
 		self.bitfinexSymbols[bitfinexBook.ChanID] = self.convertSymbol(bitfinexBook.Pair)
 	} else {
 		var unmarshaledBookMessage []interface{}
@@ -116,8 +152,8 @@ func (self *BitfinexManager) addMessage(message []byte) {
 					amount = v[2].(float64)
 
 
-					//fmt.Println(sub.Price)
-					//b.bitfinexTickers[chanId] = sub
+					//fmt.Println(suself.Price)
+					//self.bitfinexTickers[chanId] = sub
 				} else if len(v) > 3 {
 					for _, vv := range v {
 						if events, ok := vv.([]interface{}); ok {
@@ -139,17 +175,17 @@ func (self *BitfinexManager) addMessage(message []byte) {
 
 }
 
-func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
+func (self *BitfinexManager) addEvent(symbol string, price float64, count float64, amount float64)  {
 
 	mu.Lock()
 
-	if _, ok := b.exchangeBook.CoinsBooks[symbol]; !ok {
-		newCoinBook := NewCoinBook(b.convert(symbol))
-		b.exchangeBook.CoinsBooks[symbol] = newCoinBook
+	if _, ok := self.exchangeBook.CoinsBooks[symbol]; !ok {
+		newCoinBook := NewCoinBook(self.convertSymbolToPair(symbol))
+		self.exchangeBook.CoinsBooks[symbol] = newCoinBook
 	}
 
 
-	previouseCoinBook := b.exchangeBook.CoinsBooks[symbol]
+	previouseCoinBook := self.exchangeBook.CoinsBooks[symbol]
 
 	priceString := strconv.FormatFloat(price, 'f', 4, 64)
 	amountString := strconv.FormatFloat(math.Abs(float64(amount)), 'f', 4, 64)
@@ -178,16 +214,16 @@ func (b *BitfinexManager) addEvent(symbol string, price float64, count float64, 
 	}
 
 
-	b.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
+	self.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
 	mu.Unlock()
 }
-//func (b PoloniexManager) convertArgsToTicker(args []interface{}) (wsticker PoloniexTicker, err error) {
-//	wsticker.CurrencyPair = b.channelsByID[strconv.FormatFloat(args[0].(float64), 'f', 0, 64)]
+//func (self PoloniexManager) convertArgsToTicker(args []interface{}) (wsticker PoloniexTicker, err error) {
+//	wsticker.CurrencyPair = self.channelsByID[strconv.FormatFloat(args[0].(float64), 'f', 0, 64)]
 //	wsticker.Last = args[1].(string)
 //	return
 //}
 
-func (b *BitfinexManager) convertSymbol(binanceSymbol string) string {
+func (self *BitfinexManager) convertSymbol(binanceSymbol string) string {
 
 	if len(binanceSymbol) > 0 {
 		var symbol = binanceSymbol
@@ -214,7 +250,7 @@ func (b *BitfinexManager) convertSymbol(binanceSymbol string) string {
 	return ""
 }
 
-func (b *BitfinexManager) convert(symbol string) CurrencyPair {
+func (self *BitfinexManager) convertSymbolToPair(symbol string) CurrencyPair {
 	if len(symbol) > 0 {
 		var damagedSymbol = TrimLeftChars(symbol, 1)
 		for _, referenceCurrency := range DefaultReferenceCurrencies {
