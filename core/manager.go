@@ -182,19 +182,19 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 	}
 }
 
-func (b *Manager) fillDb() {
-
-	for range time.Tick(1 * time.Second) {
-			b.dbManger.FillDb(b.agregator.getExchangeBooks())
-
-
-		//v := b.GetRates(time.Now().Add(-4 * time.Minute), "BINANCE", "BTS", []string{"BTC", "USDT"})
-		//
-		//for _,value := range v {
-		//	fmt.Println("get rates :", value.symbol(), value.TimpeStamp, value.Rate)
-		//}
-	}
-}
+//func (b *Manager) fillDb() {
+//
+//	for range time.Tick(1 * time.Second) {
+//			b.dbManger.FillDb(b.agregator.getExchangeBooks())
+//
+//
+//		//v := b.GetRates(time.Now().Add(-4 * time.Minute), "BINANCE", "BTS", []string{"BTC", "USDT"})
+//		//
+//		//for _,value := range v {
+//		//	fmt.Println("get rates :", value.symbol(), value.TimpeStamp, value.Rate)
+//		//}
+//	}
+//}
 
 //
 //func (b *Manager) convertToTickerCollection(tickerCollection TickerCollection) stream.StreamTickerCollection {

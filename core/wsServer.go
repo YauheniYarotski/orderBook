@@ -76,6 +76,7 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 				newBook.CoinsBooks = append(newBook.CoinsBooks, newCoinBook)
 			}
 
+			fmt.Println(newBook)
 			//res = append(res, newBook)
 			res = append(res, newBook)
 

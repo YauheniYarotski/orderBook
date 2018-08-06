@@ -2,7 +2,6 @@ package core
 
 import (
 	"sync"
-	"strconv"
 )
 var mu = &sync.Mutex{}
 
@@ -40,18 +39,16 @@ func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 		for k,coinBook := range v.CoinsBooks {
 			newCoinBook := NewCoinBook(coinBook.Pair)
 
-			for k,v := range coinBook.Asks {
+			for k,f := range coinBook.Asks {
 
-				f, _ := strconv.ParseFloat(v, 64)
 				if f >= 1.0 {
-					newCoinBook.Asks[k] = v
+					newCoinBook.Asks[k] = f
 				}
 			}
 
-			for k,v := range coinBook.Bids {
-				f, _ := strconv.ParseFloat(v, 64)
+			for k,f := range coinBook.Bids {
 				if f >= 1.0 {
-					newCoinBook.Bids[k] = v
+					newCoinBook.Bids[k] = f
 				}
 			}
 

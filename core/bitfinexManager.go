@@ -7,8 +7,6 @@ import (
 	//"strconv"
 	"encoding/json"
 	//"github.com/btcsuite/btcutil"
-	"strconv"
-	"math"
 	"strings"
 
 	//"fmt"
@@ -187,24 +185,22 @@ func (self *BitfinexManager) addEvent(symbol string, price float64, count float6
 
 	previouseCoinBook := self.exchangeBook.CoinsBooks[symbol]
 
-	priceString := strconv.FormatFloat(price, 'f', 4, 64)
-	amountString := strconv.FormatFloat(math.Abs(float64(amount)), 'f', 4, 64)
 
 	if count > 0 {
 
 		if amount < 0 {
-			previouseCoinBook.Asks[priceString] = amountString
+			previouseCoinBook.Asks[price] = amount
 		} else if amount > 0 {
-			previouseCoinBook.Bids[priceString] = amountString
+			previouseCoinBook.Bids[price] = amount
 		}else {
 			fmt.Println("amount can't be:", amount)
 		}
 
 	} else if count == 0 {
 		if amount == -1 {
-			delete(previouseCoinBook.Asks, priceString)
+			delete(previouseCoinBook.Asks, price)
 		} else if amount == 1 {
-			delete(previouseCoinBook.Bids, priceString)
+			delete(previouseCoinBook.Bids, price)
 		} else {
 			fmt.Println("amount can't be:", amount)
 		}

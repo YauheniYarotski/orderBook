@@ -7,6 +7,7 @@ import (
 	"orderBook/api"
 	//"fmt"
 	"strings"
+	"strconv"
 )
 
 type BinanceEvents struct {
@@ -82,10 +83,10 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				previosCoinBook := self.exchangeBook.CoinsBooks[keySymbok]
 
 				for _, level := range  binanceEvents.Asks {
-					price := level[0]
-					quantity:= level[1]
+					price, _ := strconv.ParseFloat(level[0], 64)
+					quantity, _ := strconv.ParseFloat(level[1], 64)
 
-					if quantity == "0.00000000" {
+					if quantity == 0 {
 						//delete(previosCoinBook.PriceLevels.Asks, price)
 						delete(previosCoinBook.Asks, price)
 					} else {
@@ -95,10 +96,10 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				}
 
 				for _, level := range  binanceEvents.Bids {
-					price := level[0]
-					quantity:= level[1]
+					price, _ := strconv.ParseFloat(level[0], 64)
+					quantity, _:= strconv.ParseFloat(level[1], 64)
 
-					if quantity == "0.00000000" {
+					if quantity == 0 {
 						//delete(previosCoinBook.PriceLevels.Bids, price)
 						delete(previosCoinBook.Bids, price)
 					} else {
@@ -144,10 +145,10 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				previosCoinBook := self.exchangeBook.CoinsBooks[keySymbok]
 
 				for _, level := range  binanceEvents.Asks {
-					price := level[0]
-					quantity:= level[1]
+					price, _:= strconv.ParseFloat(level[0], 64)
+					quantity, _:= strconv.ParseFloat(level[1], 64)
 
-					if quantity == "0.00000000" {
+					if quantity == 0 {
 						//delete(previosCoinBook.PriceLevels.Asks, price)
 						delete(previosCoinBook.Asks, price)
 					} else {
@@ -157,10 +158,10 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 				}
 
 				for _, level := range  binanceEvents.Bids {
-					price := level[0]
-					quantity:= level[1]
+					price, _:= strconv.ParseFloat(level[0], 64)
+					quantity, _:= strconv.ParseFloat(level[1], 64)
 
-					if quantity == "0.00000000" {
+					if quantity == 0 {
 						//delete(previosCoinBook.PriceLevels.Bids, price)
 						delete(previosCoinBook.Bids, price)
 					} else {
