@@ -46,6 +46,14 @@
       .bids {
         background-color: #CEF6CE;
       }
+        
+      .total_asks {
+        background-color: #EFC9C0;
+      }
+        
+      .total_bids {
+        background-color: #CEECCE;
+      }
     </style>
   </head>
   <body>
@@ -87,6 +95,15 @@
 
         return h('div', { className: `table ${className}` }, rows);
       }
+      
+//      const renderTotal = (item, title, className) => {
+//        return h('div', { className: `table ${className}` }, 
+//                 h('div', { className: 'row' }, [
+//                    h('div', { className: 'column cell' }, `${title}`),
+//                    h('div', { className: 'column cell' }, Number(item))
+//                 ])
+//                );
+//      };
 
       renderBook = book =>
         h('div', { className: 'column symbol' }, [
@@ -94,10 +111,19 @@
           h('div', { className: 'row' }, [
             h('div', { className: 'column' }, [
               h('div', {}, 'Bids'),
+              h('div', { className: 'row' }, [
+                h('div', { className: 'column cell' }, 'Total bids'), 
+                h('div', { className: 'column cell' }, book.total_bids)
+              ]), 
+//              renderTotal(book.total_bids, 'total_bids', 'total_bids'),
               renderTable(book.bids, 'bids')
             ]),
-            h('div', { className: 'column' }, [
+            h('div', { className: 'column' }, [                      
               h('div', {}, 'Asks'),
+              h('div', { className: 'row' }, [
+                h('div', { className: 'column cell' }, 'Total asks'), 
+                h('div', { className: 'column cell' }, book.total_asks)
+              ]),          
               renderTable(book.asks, 'asks')
             ]),
           ])
@@ -150,13 +176,9 @@
           ])
         );
       };
-// 213.136.80.2:80
-//127.0.0.1
-      const socket = new WebSocket('ws://213.136.80.2:8080/books');
-      // const socket = new WebSocket('ws://127.0.0.1:8080/books');
-  
+
+      const socket = new WebSocket('ws://213.136.80.2:8080/books');  
       socket.onopen = event => console.log('Connected', event);
-  
       socket.onclose = event => console.log('Closed', event);
 
       let rendered = false;
