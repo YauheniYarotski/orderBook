@@ -9,7 +9,7 @@ type ExchangeBook struct {
 
 type WSExchangeBook struct {
 	ExchangeTitle string `json:"exchange_title"`
-	CoinsBooks []CoinBook  `json:"books"`
+	CoinsBooks []WsCoinBook  `json:"books"`
 }
 
 func newExchangeBook(exchange Exchange) ExchangeBook  {

@@ -57,18 +57,18 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 			newBook.ExchangeTitle = v.ExchangeTitle
 
 			for k,coinBook := range v.CoinsBooks {
-				newCoinBook := NewCoinBook(coinBook.Pair)
+				newCoinBook := NewWsCoinBook(coinBook.Pair)
 				newCoinBook.Symbol = k
 
 				for k,v := range coinBook.Asks {
-					newCoinBook.Asks[k] = v
+					newCoinBook.Asks = append(newCoinBook.Asks, []float64{k,v})
 				}
 
-				newCoinBook.TotalAsks = "555"
-				newCoinBook.TotalBids = "777"
+				newCoinBook.TotalAsks = 555
+				newCoinBook.TotalBids = 777
 
 				for k,v := range coinBook.Bids {
-					newCoinBook.Bids[k] = v
+					newCoinBook.Bids = append(newCoinBook.Bids, []float64{k,v})
 				}
 
 
@@ -76,7 +76,7 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 				newBook.CoinsBooks = append(newBook.CoinsBooks, newCoinBook)
 			}
 
-			fmt.Println(newBook)
+			//fmt.Println(newBook)
 			//res = append(res, newBook)
 			res = append(res, newBook)
 

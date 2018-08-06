@@ -189,7 +189,7 @@ func (self *BitfinexManager) addEvent(symbol string, price float64, count float6
 	if count > 0 {
 
 		if amount < 0 {
-			previouseCoinBook.Asks[price] = amount
+			previouseCoinBook.Asks[price] = amount * -1
 		} else if amount > 0 {
 			previouseCoinBook.Bids[price] = amount
 		}else {
