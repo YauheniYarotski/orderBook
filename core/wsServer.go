@@ -47,7 +47,7 @@ func (self *WsServer) books(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
-	for range time.Tick(1 * time.Second) {
+	for range time.Tick(3 * time.Second) {
 
 		var exchangeBooks []ExchangeBook
 		self.ServerHandler(&exchangeBooks)
