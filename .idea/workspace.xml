@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="862e676e-2981-4e98-b4bd-95375047c21a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/core/wsServer.go" afterPath="$PROJECT_DIR$/core/wsServer.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -34,7 +33,7 @@
       <file leaf-file-name="binanceManager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/binanceManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1470">
+            <state relative-caret-position="0">
               <caret line="105" column="52" lean-forward="false" selection-start-line="105" selection-start-column="52" selection-end-line="105" selection-end-column="52" />
               <folding>
                 <element signature="e#15#90#0" expanded="true" />
@@ -43,25 +42,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bitfinexManager.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="bitfinexManager.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2715">
+            <state relative-caret-position="15">
               <caret line="191" column="55" lean-forward="false" selection-start-line="191" selection-start-column="55" selection-end-line="191" selection-end-column="55" />
               <folding>
                 <element signature="e#15#141#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="wsServer.go" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/core/wsServer.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="292">
-              <caret line="52" column="42" lean-forward="true" selection-start-line="52" selection-start-column="42" selection-end-line="52" selection-end-column="42" />
-              <folding>
-                <element signature="e#15#165#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -262,6 +249,12 @@
               <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
               <item name="orderBook" type="462c0819:PsiDirectoryNode" />
               <item name="core" type="462c0819:PsiDirectoryNode" />
+              <item name="bitfinexManager.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
+            </path>
+            <path>
+              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
+              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="wsServer.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
             </path>
             <path>
@@ -291,6 +284,14 @@
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
               <item name="Go SDK 1.10" type="20ee2d1f:SyntheticLibraryElementNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="html" type="462c0819:PsiDirectoryNode" />
+              <item name="template" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.10" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="io" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -299,6 +300,14 @@
               <item name="Go SDK 1.10" type="20ee2d1f:SyntheticLibraryElementNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="math" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.10" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="math" type="462c0819:PsiDirectoryNode" />
+              <item name="floor.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
             </path>
             <path>
               <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
@@ -711,7 +720,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/binanceManager.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1470">
+        <state relative-caret-position="0">
           <caret line="105" column="52" lean-forward="false" selection-start-line="105" selection-start-column="52" selection-end-line="105" selection-end-column="52" />
           <folding>
             <element signature="e#15#90#0" expanded="true" />
@@ -767,16 +776,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2715">
-          <caret line="191" column="55" lean-forward="false" selection-start-line="191" selection-start-column="55" selection-end-line="191" selection-end-column="55" />
-          <folding>
-            <element signature="e#15#141#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/go/src/math/floor.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="705">
@@ -791,6 +790,16 @@
           <caret line="52" column="42" lean-forward="true" selection-start-line="52" selection-start-column="42" selection-end-line="52" selection-end-column="42" />
           <folding>
             <element signature="e#15#165#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="191" column="55" lean-forward="false" selection-start-line="191" selection-start-column="55" selection-end-line="191" selection-end-column="55" />
+          <folding>
+            <element signature="e#15#141#0" expanded="true" />
           </folding>
         </state>
       </provider>
