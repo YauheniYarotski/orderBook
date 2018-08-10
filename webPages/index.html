@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glas</title>
+    <title>Market Depth</title>
     <style>
       .row {
         display: flex;
@@ -24,35 +24,36 @@
       }
 
       .exchange {
-        background-color: #dedede;
-        margin: 0 5px;
-        padding: 5px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 0.5px 0.5px #c3c3c3;
+        /*background-color: #dedede;*/
+        /*margin: 0 5px;*/
+        padding: 20px;
+        /*border-radius: 10px;*/
+        /*box-shadow: 0px 0px 0.5px 0.5px #c3c3c3;*/
       }
 
       .symbol {
-        background-color: #f3f3f3;
-        margin: 3px;
-        padding: 3px;
-        border-radius: 5px;
+        /*background-color: #f3f3f3;*/
+        /*margin: 3px;*/
+        /*padding: 3px;*/
+        /*border-radius: 5px;*/
       }
 
       .asks {
-        margin-right: 10px;
-        background-color: #EFC0C0;
+        /*margin-right: 10px;*/
+        /*background-color: #EFC0C0;*/
       }
 
       .bids {
-        background-color: #CEF6CE;
+        /*background-color: #CEF6CE;*/
       }
         
       .total_asks {
-        background-color: #EFC9C0;
+        /*margin-right: 10px;*/
+        /*background-color: #EFC9C0;*/
       }
         
       .total_bids {
-        background-color: #CEECCE;
+        /*background-color: #CEECCE;*/
       }
     </style>
   </head>
@@ -107,21 +108,21 @@
 
       renderBook = book =>
         h('div', { className: 'column symbol' }, [
-          h('h3', {}, `${book.symbol}`),
+          h('h5', {}, `${book.symbol}`),
           h('div', { className: 'row' }, [
             h('div', { className: 'column' }, [
-              h('div', {}, 'Bids'),
+              // h('div', {}, 'Bids'),
               h('div', { className: 'row' }, [
-                h('div', { className: 'column cell' }, 'Total bids'), 
+                h('div', { className: 'column cell' }, 'Bids'), 
                 h('div', { className: 'column cell' }, book.total_bids)
               ]), 
 //              renderTotal(book.total_bids, 'total_bids', 'total_bids'),
               renderTable(book.bids, 'bids')
             ]),
             h('div', { className: 'column' }, [                      
-              h('div', {}, 'Asks'),
+              // h('div', {}, 'Asks'),
               h('div', { className: 'row' }, [
-                h('div', { className: 'column cell' }, 'Total asks'), 
+                h('div', { className: 'column cell' }, 'Asks'), 
                 h('div', { className: 'column cell' }, book.total_asks)
               ]),          
               renderTable(book.asks, 'asks')
@@ -147,7 +148,7 @@
           { className: 'column exchange' },
           [
             h('div', {}, [
-              h('h2', {}, `${exchange.exchange_title}`)
+              h('h5', {}, `${exchange.exchange_title}`)
             ]),
             h('div', { className: 'row symbols' }, exchange.books.map(renderBook))
           ]
