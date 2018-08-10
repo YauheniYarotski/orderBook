@@ -10,6 +10,8 @@ import (
 	"time"
 	"encoding/json"
 	"github.com/bradfitz/slice"
+	"html/template"
+
 )
 
 //213.136.80.2
@@ -21,6 +23,7 @@ var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
 type WsServer struct {
 	upgrader websocket.Upgrader
 	ServerHandler   func(p *[]ExchangeBook)
+	book []WSExchangeBook
 }
 
 
@@ -33,20 +36,20 @@ func NewWsServer() *WsServer {
 	return &ws
 }
 
-func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
+func (self *WsServer) books(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("echo")
 
-	c, err := b.upgrader.Upgrade(w, r,  nil)
+	c, err := self.upgrader.Upgrade(w, r,  nil)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 	defer c.Close()
 
-	for range time.Tick(2 * time.Second) {
+	for range time.Tick(1 * time.Second) {
 
 		var exchangeBooks []ExchangeBook
-		b.ServerHandler(&exchangeBooks)
+		self.ServerHandler(&exchangeBooks)
 		//fmt.Println(exchangeBooks)
 
 		var res []WSExchangeBook
@@ -64,6 +67,10 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 					newCoinBook.Asks = append(newCoinBook.Asks, []float64{k,v})
 				}
 
+				slice.Sort(newCoinBook.Asks, func(i, j int) bool {
+					return newCoinBook.Asks[i][0] < newCoinBook.Asks[j][0]
+				})
+
 				newCoinBook.TotalAsks = 555
 				newCoinBook.TotalBids = 777
 
@@ -71,6 +78,9 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 					newCoinBook.Bids = append(newCoinBook.Bids, []float64{k,v})
 				}
 
+				slice.Sort(newCoinBook.Bids, func(i, j int) bool {
+					return newCoinBook.Bids[i][0] > newCoinBook.Bids[j][0]
+				})
 
 
 				newBook.CoinsBooks = append(newBook.CoinsBooks, newCoinBook)
@@ -87,7 +97,9 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 		})
 
 		//fmt.Println(res)
-		
+		//}
+
+		//self.book = res
 
 			//subscribtion := `{"event":"subscribe","channel":"ticker","symbol": ""}`
 			msg, _ := json.Marshal(res)
@@ -101,14 +113,21 @@ func (b *WsServer) books(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func (b *WsServer) start() {
+func (self *WsServer) start() {
 	//log.Debug("Start WS")
 	fmt.Println("start ws")
 	flag.Parse()
-	http.HandleFunc("/books", b.books)
-	//http.HandleFunc("/", home)
+	http.HandleFunc("/books", self.books)
+	//http.HandleFunc("/", self.home)
 	http.Handle("/", http.FileServer(http.Dir("./webPages")))
 	http.ListenAndServe(*addr, nil)
 	//log.Fatal(http.ListenAndServe(*addr, nil))
 }
+
+func (self *WsServer) home(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(self.book[0].CoinsBooks[0])
+	homeTemplate.Execute(w, self.book[0].CoinsBooks[0])
+}
+
+var homeTemplate,_ = template.ParseFiles("./webPages/firstPage.html")
 

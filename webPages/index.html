@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beethoven bagach</title>
+    <title>Glas</title>
     <style>
       .row {
         display: flex;
@@ -88,8 +88,8 @@
 
         for (const item in list) {
           rows.push(h('div', { className: 'row' }, [
-            h('div', { className: 'column cell' }, Number(item)),
-            h('div', { className: 'column cell' }, Number(list[item]))
+            h('div', { className: 'column cell' }, list[item][0]),
+            h('div', { className: 'column cell' }, list[item][1])
           ]));
         }
 
