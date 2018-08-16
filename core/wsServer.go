@@ -65,8 +65,10 @@ func (self *WsServer) books(w http.ResponseWriter, r *http.Request) {
 				newCoinBook.Symbol = k
 				totalAsks := 0.0
 				for k,v := range coinBook.Asks {
-					newCoinBook.Asks = append(newCoinBook.Asks, []float64{k,RoundDown(v, 1)})
-					totalAsks = totalAsks + v
+					if v >= 1 {
+						newCoinBook.Asks = append(newCoinBook.Asks, []float64{k, math.Round(v)})
+						totalAsks = totalAsks + v
+					}
 				}
 
 				slice.Sort(newCoinBook.Asks, func(i, j int) bool {
@@ -78,8 +80,10 @@ func (self *WsServer) books(w http.ResponseWriter, r *http.Request) {
 
 				totalBids := 0.0
 				for k,v := range coinBook.Bids {
-					newCoinBook.Bids = append(newCoinBook.Bids, []float64{k,RoundDown(v, 1)})
-					totalBids = totalBids + v
+					if v >= 1 {
+						newCoinBook.Bids = append(newCoinBook.Bids, []float64{k, math.Round(v)})
+						totalBids = totalBids + v
+					}
 				}
 				newCoinBook.TotalBids = math.Trunc(totalBids)
 
@@ -138,11 +142,3 @@ var homeTemplate,_ = template.ParseFiles("./webPages/firstPage.html")
 
 
 
-func RoundDown(input float64, places int) (newVal float64) {
-	var round float64
-	pow := math.Pow(10, float64(places))
-	digit := pow * input
-	round = math.Floor(digit)
-	newVal = round / pow
-	return
-}
