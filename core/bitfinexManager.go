@@ -60,7 +60,7 @@ func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfigura
 	ch := make(chan api.Reposponse)
 	restApiResponseChan := make(chan api.RestApiReposponse)
 
-	urlString := "https://api.bitfinex.com/v2/book/tBTCUSD/P0?len=100"
+	urlString := "https://api.bitfinex.com/v2/book/tBTCUSD/P1?len=100"
 	go self.restApi.PublicRequest(urlString, restApiResponseChan)
 
 	go self.api.StartListen(ch)
