@@ -136,72 +136,73 @@ func (self *BitmexManager) addEvent(reponse BitmexBookResponse)  {
 	for _,level := range reponse.Data {
 
 
-		id := level.ID
-		symbol := level.Symbol
-		price := level.Price
-		amount := level.Size
-
-		if _, ok := self.exchangeBook.CoinsBooks[symbol]; !ok {
-			newCoinBook := NewCoinBook(self.convertSymbolToPair(symbol))
-			self.exchangeBook.CoinsBooks[symbol] = newCoinBook
+		if _, ok := self.exchangeBook.CoinsBooks[level.Symbol]; !ok {
+			newCoinBook := NewCoinBook(self.convertSymbolToPair(level.Symbol))
+			self.exchangeBook.CoinsBooks[level.Symbol] = newCoinBook
 		}
 
-		previouseCoinBook := self.exchangeBook.CoinsBooks[symbol]
+		previouseCoinBook := self.exchangeBook.CoinsBooks[level.Symbol]
 
 
-		if reponse.Action == "partial" {
-			self.bitMexIds[id] = level
-
-			if level.Side == "Buy" {
-				previouseCoinBook.Bids[price] = amount
-			} else if level.Side == "Sell" {
-				previouseCoinBook.Asks[price] = amount
-			}
-
-
-		} else if reponse.Action == "insert" {
-			self.bitMexIds[id] = level
+		switch action := reponse.Action; action {
+		case  "partial", "insert":
+			self.bitMexIds[level.ID] = level
 
 			if level.Side == "Buy" {
-				previouseCoinBook.Bids[price] = amount
+				previouseCoinBook.Bids[level.Price] = level.Size
 			} else if level.Side == "Sell" {
-				previouseCoinBook.Asks[price] = amount
+				//if level.Price < 6430 {
+				//	fmt.Println("insert:",level.Price)
+				//}
+				previouseCoinBook.Asks[level.Price] = level.Size
 			}
-		} else if reponse.Action == "delete" {
+
+		case "delete":
+
+			leveltToDelete := self.bitMexIds[level.ID]
 
 
-			leveltToUpdate := self.bitMexIds[id]
-			price = leveltToUpdate.Price
-
-			if leveltToUpdate.Side == "Buy" {
-				delete(previouseCoinBook.Bids, price)
-			} else if leveltToUpdate.Side == "Sell" {
-				delete(previouseCoinBook.Asks, price)
+			if leveltToDelete.Side == "Buy" {
+				delete(previouseCoinBook.Bids, leveltToDelete.Price)
+			} else if leveltToDelete.Side == "Sell" {
+				delete(previouseCoinBook.Asks, leveltToDelete.Price)
+				//if level.Price < 6430 {
+				//	fmt.Println("delete:", leveltToDelete.Price)
+				//}
 			}
-			delete(self.bitMexIds, id)
 
-		} else if reponse.Action == "update" {
+			delete(self.bitMexIds, level.ID)
 
-			leveltToUpdate := self.bitMexIds[id]
+
+
+		case "update":
+
+			leveltToUpdate := self.bitMexIds[level.ID]
+
+
 			leveltToUpdate.Side = level.Side
 			leveltToUpdate.Size = level.Size
-			price = leveltToUpdate.Price
-			amount := leveltToUpdate.Size
 
 			if leveltToUpdate.Side == "Buy" {
-				previouseCoinBook.Bids[price] = amount
+				previouseCoinBook.Bids[leveltToUpdate.Price] = leveltToUpdate.Size
 			} else if leveltToUpdate.Side == "Sell" {
-				previouseCoinBook.Asks[price] = amount
+				previouseCoinBook.Asks[leveltToUpdate.Price] = leveltToUpdate.Size
+				//if level.Price < 6430 {
+				//	fmt.Println("update:",leveltToUpdate.Price)
+				//}
 			}
 
-			self.bitMexIds[id] = leveltToUpdate
 
+			self.bitMexIds[level.ID] = leveltToUpdate
+
+		default:
+			fmt.Printf("unknown action: ", action)
 		}
 
 
 
 
-		self.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
+		self.exchangeBook.CoinsBooks[level.Symbol] = previouseCoinBook
 	}
 	mu.Unlock()
 }

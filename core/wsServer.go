@@ -67,6 +67,7 @@ func (self *WsServer) books(w http.ResponseWriter, r *http.Request) {
 				for k,v := range coinBook.Asks {
 					if v >= 1 {
 						newCoinBook.Asks = append(newCoinBook.Asks, []float64{k, math.Round(v)})
+					//newCoinBook.Asks = append(newCoinBook.Asks, []float64{k,v})
 						totalAsks = totalAsks + v
 					}
 				}

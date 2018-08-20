@@ -40,12 +40,12 @@ func (self *Agregator) getExchangeBooks()  map[string]ExchangeBook {
 			newCoinBook := NewCoinBook(coinBook.Pair)
 
 			for k,f := range coinBook.Asks {
-				k = Round(k, 50)
+				k = Trunc(k, 50)
 				newCoinBook.Asks[k] = newCoinBook.Asks[k] + f
 			}
 
 			for k,f := range coinBook.Bids {
-				k = Round(k, 50)
+				k = Trunc(k, 50)
 				newCoinBook.Bids[k] = newCoinBook.Bids[k] + f
 
 			}

@@ -29,6 +29,11 @@ func Round(x, unit float64) float64 {
 	return math.Round(x/unit) * unit
 }
 
+func Trunc(x, unit float64) float64 {
+	return math.Trunc(x/unit) * unit
+}
+
+
 func RoundDown(input float64, places int) (newVal float64) {
 	var round float64
 	pow := math.Pow(10, float64(places))
