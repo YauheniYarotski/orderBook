@@ -148,12 +148,12 @@ func (self *BitmexManager) addEvent(reponse BitmexBookResponse)  {
 			self.bitMexIds[level.ID] = level
 
 			if level.Side == "Buy" {
-				previouseCoinBook.Bids[level.Price] = level.Size
+				previouseCoinBook.Bids[level.Price] = level.Size / level.Price
 			} else if level.Side == "Sell" {
 				if level.Price == 0 {
 					fmt.Println("insert:",level.Price)
 				}
-				previouseCoinBook.Asks[level.Price] = level.Size
+				previouseCoinBook.Asks[level.Price] = level.Size / level.Price
 			}
 
 		case "delete":
@@ -182,9 +182,9 @@ func (self *BitmexManager) addEvent(reponse BitmexBookResponse)  {
 				leveltToUpdate.Size = level.Size
 
 				if leveltToUpdate.Side == "Buy" {
-					previouseCoinBook.Bids[leveltToUpdate.Price] = leveltToUpdate.Size
+					previouseCoinBook.Bids[leveltToUpdate.Price] = leveltToUpdate.Size / leveltToUpdate.Price
 				} else if leveltToUpdate.Side == "Sell" {
-					previouseCoinBook.Asks[leveltToUpdate.Price] = leveltToUpdate.Size
+					previouseCoinBook.Asks[leveltToUpdate.Price] = leveltToUpdate.Size / leveltToUpdate.Price
 					if leveltToUpdate.Price == 0 {
 						fmt.Println("update:", leveltToUpdate.Price, leveltToUpdate.ID)
 					}
