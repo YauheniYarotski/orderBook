@@ -5,7 +5,7 @@ import "strings"
 type Exchange int
 
 func NewExchange(exchangeString string) Exchange {
-	exchanges := map[string]Exchange{"BINANCE": Binance, "BITFINEX": Bitfinex, "GDAX": Gdax, "HITBTC": HitBtc, "OKEX": Okex, "POLONIEX": Poloniex, "BITTREX": Bittrex, "HUOBI": Huobi, "UPBIT": Upbit, "KRAKEN": Kraken, "BITHUMB": Bithumb, "BITMEX": Bitmex}
+	exchanges := map[string]Exchange{"BINANCE": Binance, "BITFINEX": Bitfinex, "GDAX": Gdax, "HITBTC": HitBtc, "OKEX": Okex, "POLONIEX": Poloniex, "BITTREX": Bittrex, "HUOBI": Huobi, "UPBIT": Upbit, "KRAKEN": Kraken, "BITHUMB": Bithumb, "BITMEX": Bitmex, "BITSTAMP": Bitstamp}
 	exchange := exchanges[strings.ToUpper(exchangeString)]
 	return exchange
 }
@@ -23,7 +23,8 @@ func (exchange Exchange) String() string {
 		"UPBIT",
 		"KRAKEN",
 		"BITHUMB",
-		"BITMEX"}
+		"BITMEX",
+		"BITSTAMP"}
 	return exchanges[exchange]
 }
 
@@ -40,6 +41,7 @@ const (
 	Kraken 	 Exchange = 9
 	Bithumb  Exchange = 10
 	Bitmex   Exchange = 11
+	Bitstamp   Exchange = 12
 )
 
 type ExchangeConfiguration struct {
