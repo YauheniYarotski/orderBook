@@ -135,7 +135,6 @@ func (self *BitmexManager) addEvent(reponse BitmexBookResponse)  {
 
 	for _,level := range reponse.Data {
 
-
 		if _, ok := self.exchangeBook.CoinsBooks[level.Symbol]; !ok {
 			newCoinBook := NewCoinBook(self.convertSymbolToPair(level.Symbol))
 			self.exchangeBook.CoinsBooks[level.Symbol] = newCoinBook
@@ -151,9 +150,9 @@ func (self *BitmexManager) addEvent(reponse BitmexBookResponse)  {
 			if level.Side == "Buy" {
 				previouseCoinBook.Bids[level.Price] = level.Size
 			} else if level.Side == "Sell" {
-				//if level.Price < 6430 {
-				//	fmt.Println("insert:",level.Price)
-				//}
+				if level.Price == 0 {
+					fmt.Println("insert:",level.Price)
+				}
 				previouseCoinBook.Asks[level.Price] = level.Size
 			}
 
@@ -166,7 +165,7 @@ func (self *BitmexManager) addEvent(reponse BitmexBookResponse)  {
 				delete(previouseCoinBook.Bids, leveltToDelete.Price)
 			} else if leveltToDelete.Side == "Sell" {
 				delete(previouseCoinBook.Asks, leveltToDelete.Price)
-				//if level.Price < 6430 {
+				//if level.Price == 0 {
 				//	fmt.Println("delete:", leveltToDelete.Price)
 				//}
 			}
@@ -176,24 +175,23 @@ func (self *BitmexManager) addEvent(reponse BitmexBookResponse)  {
 
 
 		case "update":
+			//some times updated can come before partial, so, we have to check if key exist and only after updated
+			if leveltToUpdate, ok := self.bitMexIds[level.ID]; ok {
 
-			leveltToUpdate := self.bitMexIds[level.ID]
+				leveltToUpdate.Side = level.Side
+				leveltToUpdate.Size = level.Size
 
+				if leveltToUpdate.Side == "Buy" {
+					previouseCoinBook.Bids[leveltToUpdate.Price] = leveltToUpdate.Size
+				} else if leveltToUpdate.Side == "Sell" {
+					previouseCoinBook.Asks[leveltToUpdate.Price] = leveltToUpdate.Size
+					if leveltToUpdate.Price == 0 {
+						fmt.Println("update:", leveltToUpdate.Price, leveltToUpdate.ID)
+					}
+				}
 
-			leveltToUpdate.Side = level.Side
-			leveltToUpdate.Size = level.Size
-
-			if leveltToUpdate.Side == "Buy" {
-				previouseCoinBook.Bids[leveltToUpdate.Price] = leveltToUpdate.Size
-			} else if leveltToUpdate.Side == "Sell" {
-				previouseCoinBook.Asks[leveltToUpdate.Price] = leveltToUpdate.Size
-				//if level.Price < 6430 {
-				//	fmt.Println("update:",leveltToUpdate.Price)
-				//}
+				self.bitMexIds[level.ID] = leveltToUpdate
 			}
-
-
-			self.bitMexIds[level.ID] = leveltToUpdate
 
 		default:
 			fmt.Printf("unknown action: ", action)
