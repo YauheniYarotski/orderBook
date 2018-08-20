@@ -31,6 +31,10 @@ func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfigura
 	//self.restApi = api.NewRestApi()
 	self.exchangeBook = newExchangeBook(Bitstamp)
 
+	go self.getApiOrderBook()
+
+
+
 	for {
 		log.Println("Dialing Bitstamp...")
 		var err error
@@ -77,9 +81,9 @@ func (self *BitstampManager) handleEvent(e *bitstamp.Event, Ws *bitstamp.WebSock
 	switch e.Event {
 	// pusher stuff
 	case "pusher:connection_established":
-		log.Println("Connected")
+		log.Println("Bitstamp Connected")
 	case "pusher_internal:subscription_succeeded":
-		log.Println("Subscribed")
+		log.Println("Bitstamp Subscribed for:", e.Channel)
 	case "pusher:pong":
 		// ignore
 	case "pusher:ping":
@@ -106,11 +110,12 @@ func (self *BitstampManager) handleEvent(e *bitstamp.Event, Ws *bitstamp.WebSock
 }
 
 
+func (self *BitstampManager) getApiOrderBook() {
+	apiOrderBook, _ := bitstamp.OrderBook("btcusd")
 
-
-
-
-
+	//fmt.Println(apiOrderBook.Bids)
+	self.addEvent(*apiOrderBook)
+}
 
 
 
