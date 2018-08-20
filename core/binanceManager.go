@@ -49,7 +49,7 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 
 	restApiResponseChan := make(chan api.RestApiReposponse)
 
-	urlString := "https://www.binance.com/api/v1/depth?symbol=BTCUSDT&limit=1000"
+	urlString := "https://www.binance.com/api/v1/depth?symbol=BTCUSDT&limit=0"
 	go self.restApi.PublicRequest(urlString, restApiResponseChan)
 
 	for {
