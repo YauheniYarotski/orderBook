@@ -19,39 +19,6 @@ type Result struct {
 }
 
 
-
-
-//func (f ExchangeBook) MarshalJSON() ([]byte, error) {
-//	tmpMap := make(map[string]interface{})
-//	tmpMap["Exchange"] = f.Exchange.String()
-//	f.Coins.Range(func(k, v interface{}) bool {
-//		tmpMap[k.(string)] = v.(CoinBook)
-//		return true
-//	})
-//
-//	return json.Marshal(tmpMap)
-//}
-
-//func (f CoinBook) MarshalJSON() ([]byte, error) {
-//	tmpMap := make(map[string]map[string]string)
-//	asks := make(map[string]string)
-//	bids := make(map[string]string)
-//	f.Asks.Range(func(k, v interface{}) bool {
-//		asks[k.(string)] = v.(string)
-//		return true
-//	})
-//
-//	f.Bids.Range(func(k, v interface{}) bool {
-//		bids[k.(string)] = v.(string)
-//		return true
-//	})
-//
-//	tmpMap["Asks"] = asks
-//	tmpMap["Bids"] = bids
-//
-//	return json.Marshal(tmpMap)
-//}
-
 type Manager struct {
 	binanceManager  *BinanceManager
 	//hitBtcManager   *HitBtcManager
@@ -83,7 +50,7 @@ func NewManager() *Manager {
 	manger.bitfinexManager = &BitfinexManager{}
 	manger.bitmexManager = &BitmexManager{}
 	manger.bitstampManager = &BitstampManager{}
-	manger.wsServer = NewWsServer()
+	manger.wsServer = NewWsServer("/books")
 	//manger.gdaxManager = &GdaxManager{}
 	//manger.okexManager = &OkexManager{}
 	//manger.server = &stream.Server{}
@@ -150,7 +117,7 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 	//start ws service
 	go self.wsServer.start()
 	self.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
-		v := self.agregator.getExchangeBooks()
+		v := self.agregator.getExchangeBooks(self.wsServer.granulation)
 
 		for _,vv := range  v  {
 

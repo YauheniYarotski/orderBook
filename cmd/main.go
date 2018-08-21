@@ -3,11 +3,14 @@ package main
 import (
 	"orderBook/core"
 	"sync"
+	"net/http"
+	"flag"
 )
 
 var manager = core.NewManager()
 var waitGroup = &sync.WaitGroup{}
 
+var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
 
 
 func main() {
@@ -22,10 +25,10 @@ func main() {
 	dbConfig.Name = "test"
 	configuration.DBConfiguration = dbConfig
 
-	waitGroup.Add(len(configuration.Exchanges) + 2)
 
 	go manager.Start(configuration)
 
-	waitGroup.Wait()
+	http.Handle("/", http.FileServer(http.Dir("./webPages")))
 
+	http.ListenAndServe(*addr, nil)
 }
