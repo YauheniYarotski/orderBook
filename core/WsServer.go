@@ -28,7 +28,7 @@ type WsServer struct {
 	granulation float64
 
 	pattern   string
-	messages  []*Message
+	//messages  []*Message
 	clients   map[int]*Client
 	addCh     chan *Client
 	delCh     chan *Client
@@ -47,7 +47,7 @@ func NewWsServer(pattern string) *WsServer {
 	ws.granulation = 50
 
 	ws.pattern = pattern
-	ws.messages = []*Message{}
+	//ws.messages = []*Message{}
 	ws.clients = make(map[int]*Client)
 	ws.addCh = make(chan *Client)
 	ws.delCh = make(chan *Client)
@@ -77,11 +77,11 @@ func (s *WsServer) Err(err error) {
 	s.errCh <- err
 }
 
-func (s *WsServer) sendPastMessages(c *Client) {
-	for _, msg := range s.messages {
-		c.Write(msg)
-	}
-}
+//func (s *WsServer) sendPastMessages(c *Client) {
+//	for _, msg := range s.messages {
+//		c.Write(msg)
+//	}
+//}
 
 func (s *WsServer) sendAll(msg *Message) {
 	for _, c := range s.clients {
@@ -143,7 +143,7 @@ func (s *WsServer) start() {
 			// broadcast message for all clients
 		case msg := <-s.sendAllCh:
 			//log.Println("Send all:")
-			s.messages = append(s.messages, msg)
+			//s.messages = append(s.messages, msg)
 			s.sendAll(msg)
 
 		case err := <-s.errCh:
