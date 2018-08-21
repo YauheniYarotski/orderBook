@@ -151,6 +151,7 @@ func (s *WsServer) start() {
 
 
 		case <-s.doneCh:
+			log.Println("return got")
 			return
 		}
 	}
