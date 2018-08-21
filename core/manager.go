@@ -116,8 +116,8 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 	//start ws service
 	go self.wsServer.start()
-	self.wsServer.ServerHandler = func(exchangeBooks *[]ExchangeBook) {
-		v := self.agregator.getExchangeBooks(self.wsServer.granulation)
+	self.wsServer.ServerHandler = func(granulation float64 ,exchangeBooks *[]ExchangeBook) {
+		v := self.agregator.getExchangeBooks(granulation)
 
 		for _,vv := range  v  {
 

@@ -23,7 +23,7 @@ import (
 
 type WsServer struct {
 	upgrader websocket.Upgrader
-	ServerHandler   func(p *[]ExchangeBook)
+	ServerHandler   func(granulation float64, p *[]ExchangeBook)
 	book []WSExchangeBook
 	granulation float64
 
@@ -35,7 +35,6 @@ type WsServer struct {
 	sendAllCh chan *Message
 	doneCh    chan bool
 	errCh     chan error
-	granulationCh chan float64
 }
 
 
@@ -55,7 +54,6 @@ func NewWsServer(pattern string) *WsServer {
 	ws.sendAllCh = make(chan *Message)
 	ws.doneCh = make(chan bool)
 	ws.errCh = make(chan error)
-	ws.granulationCh = make(chan float64)
 	return &ws
 }
 
@@ -87,13 +85,10 @@ func (s *WsServer) sendPastMessages(c *Client) {
 
 func (s *WsServer) sendAll(msg *Message) {
 	for _, c := range s.clients {
-		c.Write(msg)
+		if msg.granulation == c.granulation {
+			c.Write(msg)
+		}
 	}
-}
-
-func (s *WsServer) changeGranulation(granulation float64) {
-	log.Println("change granulation to", granulation)
-	s.granulationCh <- granulation
 }
 
 func (s *WsServer) start() {
@@ -134,10 +129,6 @@ func (s *WsServer) start() {
 		select {
 
 		// Add new a client
-		case granulation := <-s.granulationCh:
-			s.granulation = granulation
-			log.Println(s.granulation)
-
 		case c := <-s.addCh:
 			log.Println("Added new client")
 			s.clients[c.id] = c
@@ -173,69 +164,82 @@ func (self *WsServer) home(w http.ResponseWriter, r *http.Request) {
 
 var homeTemplate,_ = template.ParseFiles("./webPages/firstPage.html")
 
+func (self *WsServer) getGranulation() []float64 {
+	granulationsMap := map[float64]bool{}
+	for _, c := range self.clients {
+		granulationsMap[c.granulation] = true
+	}
+	granulations := make([]float64, 0, len(granulationsMap))
+	for k := range granulationsMap {
+		granulations = append(granulations, k)
+	}
+	return granulations
+}
 
 func (self *WsServer) startSendingAll() {
 	for range time.Tick(1 * time.Second) {
 
-		var exchangeBooks []ExchangeBook
-		self.ServerHandler(&exchangeBooks)
-		//fmt.Println(exchangeBooks)
+		for _, granulation := range self.getGranulation() {
 
-		var res []WSExchangeBook
+			var exchangeBooks []ExchangeBook
+			self.ServerHandler(granulation, &exchangeBooks)
+			//fmt.Println(exchangeBooks)
 
-		for _, v := range exchangeBooks {
+			var res []WSExchangeBook
 
-			newBook := WSExchangeBook{}
-			newBook.ExchangeTitle = v.ExchangeTitle
+			for _, v := range exchangeBooks {
 
-			for k, coinBook := range v.CoinsBooks {
-				newCoinBook := NewWsCoinBook(coinBook.Pair)
-				newCoinBook.Symbol = k
-				totalAsks := 0.0
-				for k, v := range coinBook.Asks {
-					if v >= 1 {
-						newCoinBook.Asks = append(newCoinBook.Asks, []float64{k, math.Round(v)})
-						//newCoinBook.Asks = append(newCoinBook.Asks, []float64{k,v})
-						totalAsks = totalAsks + v
+				newBook := WSExchangeBook{}
+				newBook.ExchangeTitle = v.ExchangeTitle
+
+				for k, coinBook := range v.CoinsBooks {
+					newCoinBook := NewWsCoinBook(coinBook.Pair)
+					newCoinBook.Symbol = k
+					totalAsks := 0.0
+					for k, v := range coinBook.Asks {
+						if v >= 1 {
+							newCoinBook.Asks = append(newCoinBook.Asks, []float64{k, math.Round(v)})
+							//newCoinBook.Asks = append(newCoinBook.Asks, []float64{k,v})
+							totalAsks = totalAsks + v
+						}
 					}
+
+					slice.Sort(newCoinBook.Asks, func(i, j int) bool {
+						return newCoinBook.Asks[i][0] < newCoinBook.Asks[j][0]
+					})
+
+					newCoinBook.TotalAsks = math.Trunc(totalAsks)
+
+					totalBids := 0.0
+					for k, v := range coinBook.Bids {
+						if v >= 1 {
+							newCoinBook.Bids = append(newCoinBook.Bids, []float64{k, math.Round(v)})
+							totalBids = totalBids + v
+						}
+					}
+					newCoinBook.TotalBids = math.Trunc(totalBids)
+
+					slice.Sort(newCoinBook.Bids, func(i, j int) bool {
+						return newCoinBook.Bids[i][0] > newCoinBook.Bids[j][0]
+					})
+
+					newBook.CoinsBooks = append(newBook.CoinsBooks, newCoinBook)
 				}
 
-				slice.Sort(newCoinBook.Asks, func(i, j int) bool {
-					return newCoinBook.Asks[i][0] < newCoinBook.Asks[j][0]
-				})
+				//fmt.Println(newBook)
+				//res = append(res, newBook)
+				res = append(res, newBook)
 
-				newCoinBook.TotalAsks = math.Trunc(totalAsks)
-
-				totalBids := 0.0
-				for k, v := range coinBook.Bids {
-					if v >= 1 {
-						newCoinBook.Bids = append(newCoinBook.Bids, []float64{k, math.Round(v)})
-						totalBids = totalBids + v
-					}
-				}
-				newCoinBook.TotalBids = math.Trunc(totalBids)
-
-				slice.Sort(newCoinBook.Bids, func(i, j int) bool {
-					return newCoinBook.Bids[i][0] > newCoinBook.Bids[j][0]
-				})
-
-				newBook.CoinsBooks = append(newBook.CoinsBooks, newCoinBook)
 			}
 
-			//fmt.Println(newBook)
-			//res = append(res, newBook)
-			res = append(res, newBook)
+			slice.Sort(res, func(i, j int) bool {
+				return res[i].ExchangeTitle < res[j].ExchangeTitle
+			})
 
+			data, _ := json.Marshal(res)
+			message := Message{data, granulation}
+			self.SendAll(&message)
 		}
-
-		slice.Sort(res, func(i, j int) bool {
-			return res[i].ExchangeTitle < res[j].ExchangeTitle
-		})
-
-		data, _ := json.Marshal(res)
-		message := Message{data}
-		self.SendAll(&message)
-
 	}
 
 }

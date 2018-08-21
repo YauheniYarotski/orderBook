@@ -4,9 +4,8 @@ import (
 "fmt"
 "log"
 	"github.com/gorilla/websocket"
-
-	"strconv"
 	"io"
+	"encoding/json"
 )
 
 const channelBufSize = 100
@@ -20,6 +19,7 @@ type Client struct {
 	server *WsServer
 	ch     chan *Message
 	doneCh chan bool
+	granulation float64
 }
 
 // Create new chat client.
@@ -37,7 +37,7 @@ func NewClient(ws *websocket.Conn, server *WsServer) *Client {
 	ch := make(chan *Message, channelBufSize)
 	doneCh := make(chan bool)
 
-	return &Client{maxId, ws, server, ch, doneCh}
+	return &Client{maxId, ws, server, ch, doneCh, 50}
 }
 
 func (c *Client) Conn() *websocket.Conn {
@@ -117,22 +117,29 @@ func (c *Client) listenRead() {
 			//}
 
 			_, message, err := c.ws.ReadMessage()
+			granulation := Granulation{}
+			json.Unmarshal(message, &granulation)
+			log.Println(granulation)
+
 			if err == io.EOF {
+				log.Println("end")
 				c.doneCh <- true
 			} else if err != nil {
 				c.doneCh <- true
 				c.server.Err(err)
 			} else {
 
-				stringMessage := string(message)
-				log.Printf("recv from client %d %@:", c.id, stringMessage)
-				granulation, err := strconv.ParseFloat(stringMessage, 64)
-				if err == nil {
-					c.server.changeGranulation(granulation)
+				log.Printf("recv from client %d %d:", c.id, granulation.Granulation)
+				if err == nil && granulation.Granulation != 0 {
+					c.granulation = granulation.Granulation
 				} else {
-					c.server.changeGranulation(50)
+					c.granulation = 50
 				}
 			}
 		}
 	}
+}
+
+type Granulation struct {
+	Granulation float64 `json:"granulation"`
 }
