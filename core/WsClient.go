@@ -4,7 +4,6 @@ import (
 "fmt"
 "log"
 	"github.com/gorilla/websocket"
-	"io"
 	"encoding/json"
 )
 
@@ -48,11 +47,10 @@ func (c *Client) Write(msg *Message) {
 	select {
 	case c.ch <- msg:
 	default:
-		//c.ws.Close()
+		c.ws.Close()
 		c.server.Del(c)
 		err := fmt.Errorf("client %d is disconnected.", c.id)
-		fmt.Println(err)
-		//c.server.Err(err)
+		c.server.Err(err)
 	}
 }
 
@@ -83,7 +81,7 @@ func (c *Client) listenWrite() {
 
 			// receive done request
 		case <-c.doneCh:
-			//c.ws.Close()
+			c.ws.Close()
 			c.server.Del(c)
 			c.doneCh <- true // for listenRead method
 			return
@@ -99,32 +97,18 @@ func (c *Client) listenRead() {
 
 		// receive done request
 		case <-c.doneCh:
-			//c.ws.Close()
+			c.ws.Close()
 			c.server.Del(c)
 			c.doneCh <- true // for listenWrite method
 			return
 
 			// read data from websocket connection
 		default:
-			//var msg Message
-			//err := websocket.JSON.Receive(c.ws, &msg)
-			//if err == io.EOF {
-			//	c.doneCh <- true
-			//} else if err != nil {
-			//	c.server.Err(err)
-			//} else {
-			//	c.server.SendAll(&msg)
-			//}
 
 			_, message, err := c.ws.ReadMessage()
 			granulation := Granulation{}
 			json.Unmarshal(message, &granulation)
-			log.Println(granulation)
-
-			if err == io.EOF {
-				log.Println("end")
-				c.doneCh <- true
-			} else if err != nil {
+			if err != nil {
 				c.doneCh <- true
 				c.server.Err(err)
 			} else {
