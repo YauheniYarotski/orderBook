@@ -16,7 +16,7 @@ type Client struct {
 	id     int
 	ws     *websocket.Conn
 	server *WsServer
-	ch     chan *Message
+	messageCh     chan *Message
 	doneCh chan bool
 	granulation float64
 }
@@ -33,7 +33,7 @@ func NewClient(ws *websocket.Conn, server *WsServer) *Client {
 	}
 
 	maxId++
-	ch := make(chan *Message, channelBufSize)
+	ch := make(chan *Message)
 	doneCh := make(chan bool)
 
 	return &Client{maxId, ws, server, ch, doneCh, 50}
@@ -45,7 +45,7 @@ func (c *Client) Conn() *websocket.Conn {
 
 func (c *Client) Write(msg *Message) {
 	select {
-	case c.ch <- msg:
+	case c.messageCh <- msg:
 	default:
 		c.ws.Close()
 		c.server.Del(c)
@@ -71,7 +71,7 @@ func (c *Client) listenWrite() {
 		select {
 
 		// send message to the client
-		case msg := <-c.ch:
+		case msg := <-c.messageCh:
 			//log.Println("Send to client:", c.id)
 			//websocket.JSON.Send(c.ws, msg)
 			err := c.ws.WriteMessage(websocket.TextMessage, msg.Body)
@@ -81,7 +81,7 @@ func (c *Client) listenWrite() {
 
 			// receive done request
 		case <-c.doneCh:
-			c.ws.Close()
+			//c.ws.Close()
 			c.server.Del(c)
 			c.doneCh <- true // for listenRead method
 			return
@@ -109,6 +109,7 @@ func (c *Client) listenRead() {
 			granulation := Granulation{}
 			json.Unmarshal(message, &granulation)
 			if err != nil {
+
 				c.doneCh <- true
 				c.server.Err(err)
 			} else {
