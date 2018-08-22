@@ -85,7 +85,7 @@ func (s *WsServer) Err(err error) {
 
 func (s *WsServer) sendAll(msg *Message) {
 	for _, c := range s.clients {
-		if msg.granulation == c.granulation {
+		if msg.granulation == c.granulation && msg.patern == c.paternt {
 			c.Write(msg)
 		}
 	}
@@ -112,14 +112,14 @@ func (s *WsServer) start() {
 				s.errCh <- err
 			}
 		}()
-
-		client := NewClient(ws, s)
+		client := NewClient(ws, s, r.RequestURI)
 		s.Add(client)
 		client.Listen()
 	}
 
 	//http.Handle(s.pattern, websocket.Handler(onConnected))
 	http.HandleFunc(s.pattern, onConnected)
+	http.HandleFunc("/list", onConnected)
 
 
 
@@ -238,7 +238,7 @@ func (self *WsServer) startSendingAll() {
 			})
 
 			data, _ := json.Marshal(res)
-			message := Message{data, granulation}
+			message := Message{data, granulation, "/books"}
 			self.SendAll(&message)
 		}
 	}

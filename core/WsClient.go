@@ -19,10 +19,11 @@ type Client struct {
 	messageCh     chan *Message
 	doneCh chan bool
 	granulation float64
+	paternt string
 }
 
 // Create new chat client.
-func NewClient(ws *websocket.Conn, server *WsServer) *Client {
+func NewClient(ws *websocket.Conn, server *WsServer, patern string) *Client {
 
 	if ws == nil {
 		panic("ws cannot be nil")
@@ -36,7 +37,7 @@ func NewClient(ws *websocket.Conn, server *WsServer) *Client {
 	ch := make(chan *Message)
 	doneCh := make(chan bool)
 
-	return &Client{maxId, ws, server, ch, doneCh, 50}
+	return &Client{maxId, ws, server, ch, doneCh, 50, patern}
 }
 
 func (c *Client) Conn() *websocket.Conn {
