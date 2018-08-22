@@ -180,7 +180,6 @@ func (self *WsServer) getGranulation() []float64 {
 func (self *WsServer) startSendingAll() {
 	for range time.Tick(1 * time.Second) {
 		gr := self.getGranulation()
-		log.Println(gr)
 		for _, granulation := range gr {
 
 			var exchangeBooks []ExchangeBook
