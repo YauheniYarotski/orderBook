@@ -62,7 +62,7 @@ func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfigura
 				self.handleEvent(ev, self.api)
 
 			case err := <-self.api.Errors:
-				log.Printf("Socket error: %s, reconnecting...", err)
+				log.Printf("Bitstamp Socket error: %s, reconnecting...", err)
 				self.api.Close()
 				break L
 

@@ -179,8 +179,9 @@ func (self *WsServer) getGranulation() []float64 {
 
 func (self *WsServer) startSendingAll() {
 	for range time.Tick(1 * time.Second) {
-
-		for _, granulation := range self.getGranulation() {
+		gr := self.getGranulation()
+		log.Println(gr)
+		for _, granulation := range gr {
 
 			var exchangeBooks []ExchangeBook
 			self.ServerHandler(granulation, &exchangeBooks)
