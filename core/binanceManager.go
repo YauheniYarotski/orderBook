@@ -8,6 +8,9 @@ import (
 	//"fmt"
 	"strings"
 	"strconv"
+	"github.com/adshao/go-binance"
+	"fmt"
+	"log"
 )
 
 type BinanceEvents struct {
@@ -41,11 +44,12 @@ func NewBinanceManager() *BinanceManager {
 	return &manger
 }
 
-func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCh chan *binance.WsTradeEvent) {
 	//log.Debugf("StartListen:start binance manager listen")
 	ch := make(chan api.Reposponse)
 	go self.binanceApi.StartListen(ch)
 	go self.startSendingDataBack(exchangeConfiguration, resultChan)
+	go self.startListenHistoryList(tradeCh)
 
 	restApiResponseChan := make(chan api.RestApiReposponse)
 
@@ -229,4 +233,24 @@ func (b *BinanceManager) convertSymbolToPair(symbol string) CurrencyPair {
 		}
 	}
 	return CurrencyPair{NotAplicable, NotAplicable}
+}
+
+
+func (self *BinanceManager)startListenHistoryList(tradeCh chan *binance.WsTradeEvent) {
+
+	errHandler := func(err error) {
+		fmt.Println(err)
+	}
+
+	wsTradeHandler := func(event *binance.WsTradeEvent) {
+		//fmt.Println(event)
+		tradeCh <- event
+	}
+
+	_, _, err := binance.WsTradeServe("BTCUSDT", wsTradeHandler, errHandler)
+	if err != nil {
+		log.Println(err)
+		//return
+	}
+
 }

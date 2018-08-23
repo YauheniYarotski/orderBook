@@ -98,20 +98,24 @@ func (c *Client) listenRead() {
 
 		// receive done request
 		case <-c.doneCh:
-			c.ws.Close()
+			//c.ws.Close()
 			c.server.Del(c)
 			c.doneCh <- true // for listenWrite method
+			log.Println("shoud return")
 			return
 
 			// read data from websocket connection
 		default:
 
 			_, message, err := c.ws.ReadMessage()
-			granulation := Granulation{}
-			json.Unmarshal(message, &granulation)
 			if err != nil {
-				c.server.Err(err)
+				log.Println(" ws client read error")
+				c.doneCh <- true // for listenWrite method
+				return
 			} else {
+
+				granulation := Granulation{}
+				json.Unmarshal(message, &granulation)
 				log.Printf("recv from client %d %d:", c.id, granulation.Granulation)
 				if err == nil && granulation.Granulation != 0 {
 					c.granulation = granulation.Granulation

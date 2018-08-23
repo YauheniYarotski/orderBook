@@ -2,6 +2,7 @@ package core
 
 import (
 	"sync"
+	"github.com/adshao/go-binance"
 )
 var mu = &sync.Mutex{}
 
@@ -60,3 +61,7 @@ func (self *Agregator) getExchangeBooks(granulation float64)  map[string]Exchang
 	return newExchangesBooks
 }
 
+
+func (self *Agregator) addTrade(trade *binance.WsTradeEvent) {
+
+	}

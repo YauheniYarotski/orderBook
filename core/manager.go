@@ -2,6 +2,7 @@ package core
 
 import (
 "time"
+	"github.com/adshao/go-binance"
 )
 
 const maxTickerAge = 5
@@ -78,11 +79,11 @@ type ManagerConfiguration struct {
 
 
 
-func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result) {
+func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result, tradeCh chan *binance.WsTradeEvent) {
 
 	switch exchangeConfiguration.Exchange {
 	case Binance:
-		go b.binanceManager.StartListen(exchangeConfiguration, ch)
+		go b.binanceManager.StartListen(exchangeConfiguration, ch, tradeCh)
 	case Bitfinex:
 		go b.bitfinexManager.StartListen(exchangeConfiguration, ch)
 	case Bitmex:
@@ -133,11 +134,12 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 
 	ch := make(chan Result)
+	tradeCh := make(chan *binance.WsTradeEvent)
 
 	for _, exchangeString := range configuration.Exchanges {
 		exchangeConfiguration := ExchangeConfiguration{}
 		exchangeConfiguration.Exchange = NewExchange(exchangeString)
-		self.launchExchange(exchangeConfiguration, ch)
+		self.launchExchange(exchangeConfiguration, ch, tradeCh)
 	}
 
 
@@ -152,6 +154,10 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 				//b.agregator.add(*result.TickerCollection, result.exchangeTitle)
 				self.agregator.add(result.ExchangeBook)
 			}
+
+		case trade := <-tradeCh:
+			self.agregator.addTrade(trade)
+		//log.Println(trade)
 
 		}
 	}

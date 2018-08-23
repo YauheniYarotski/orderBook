@@ -109,6 +109,7 @@ func (s *WsServer) start() {
 			log.Println("Def close...")
 			err := ws.Close()
 			if err != nil {
+				log.Println("error after def")
 				s.errCh <- err
 			}
 		}()
