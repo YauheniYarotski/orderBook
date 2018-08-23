@@ -73,8 +73,6 @@ func (c *Client) listenWrite() {
 
 		// send message to the client
 		case msg := <-c.messageCh:
-			//log.Println("Send to client:", c.id)
-			//websocket.JSON.Send(c.ws, msg)
 			err := c.ws.WriteMessage(websocket.TextMessage, msg.Body)
 			if err != nil {
 				log.Printf("write:", err)

@@ -107,11 +107,11 @@ func (s *WsServer) start() {
 
 		defer func() {
 			log.Println("Def close...")
-			err := ws.Close()
-			if err != nil {
-				log.Println("error after def")
-				s.errCh <- err
-			}
+			//err := ws.Close()
+			//if err != nil {
+			//	log.Println("error after def")
+			//	//s.errCh <- err
+			//}
 		}()
 		client := NewClient(ws, s, r.RequestURI)
 		s.Add(client)
