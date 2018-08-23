@@ -2,8 +2,6 @@ package core
 
 import (
 "time"
-	"github.com/adshao/go-binance"
-	"strconv"
 )
 
 const maxTickerAge = 5
@@ -80,7 +78,7 @@ type ManagerConfiguration struct {
 
 
 
-func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result, tradeCh chan *binance.WsTradeEvent) {
+func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result, tradeCh chan *WsTrade) {
 
 	switch exchangeConfiguration.Exchange {
 	case Binance:
@@ -135,7 +133,7 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 
 	ch := make(chan Result)
-	tradeCh := make(chan *binance.WsTradeEvent)
+	tradeCh := make(chan *WsTrade)
 
 	for _, exchangeString := range configuration.Exchanges {
 		exchangeConfiguration := ExchangeConfiguration{}
@@ -158,12 +156,14 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 		case trade := <-tradeCh:
 			self.agregator.addTrade(trade)
-			quantity, _ := strconv.ParseFloat(trade.Quantity, 64)
-			if quantity >= 1.0 {
-				self.wsServer.SendTrad(trade)
-			}
-
+			self.sendTradeToWs(trade)
 		}
+	}
+}
+
+func (self *Manager)sendTradeToWs(trade *WsTrade) {
+	if trade.Quantity >= 0.5 {
+		self.wsServer.SendTrade(trade)
 	}
 }
 

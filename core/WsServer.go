@@ -14,7 +14,6 @@ import (
 	"time"
 	"encoding/json"
 	"math"
-	"github.com/adshao/go-binance"
 )
 
 //213.136.80.2
@@ -251,7 +250,7 @@ func (self *WsServer) startSendingAll() {
 
 
 
-func (self *WsServer) SendTrad(trade *binance.WsTradeEvent) {
+func (self *WsServer) SendTrade(trade *WsTrade) {
 	data, _ := json.Marshal(trade)
 	message := Message{data, 50, "/list"}
 	self.SendAll(&message)
