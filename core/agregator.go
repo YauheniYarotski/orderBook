@@ -9,12 +9,14 @@ var mu = &sync.Mutex{}
 type Agregator struct {
 
 	exchangeBooks map[string]ExchangeBook
+	trades []*binance.WsTradeEvent
 }
 
 func NewAgregator() *Agregator {
 	var agregator = Agregator{}
 	agregator.exchangeBooks = map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
 	delete(agregator.exchangeBooks, "")
+	agregator.trades = []*binance.WsTradeEvent{}
 	return &agregator
 }
 
@@ -63,5 +65,8 @@ func (self *Agregator) getExchangeBooks(granulation float64)  map[string]Exchang
 
 
 func (self *Agregator) addTrade(trade *binance.WsTradeEvent) {
-
+	self.trades = append(self.trades, trade)
+	if len(self.trades) > 1000 {
+		self.trades = self.trades[100: len(self.trades)-1]
 	}
+}

@@ -3,6 +3,7 @@ package core
 import (
 "time"
 	"github.com/adshao/go-binance"
+	"strconv"
 )
 
 const maxTickerAge = 5
@@ -157,7 +158,10 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 		case trade := <-tradeCh:
 			self.agregator.addTrade(trade)
-		//log.Println(trade)
+			quantity, _ := strconv.ParseFloat(trade.Quantity, 64)
+			if quantity >= 1.0 {
+				self.wsServer.SendTrad(trade)
+			}
 
 		}
 	}
