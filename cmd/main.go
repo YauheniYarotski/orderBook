@@ -17,7 +17,7 @@ func main() {
 
 	var configuration = core.ManagerConfiguration{}
 
-	configuration.Exchanges = []string{"BITMEX","BITFINEX", "BINANCE"}
+	configuration.Exchanges = []string{"BITMEX","BITFINEX", "BINANCE", "BITSTAMP"}
 	configuration.RefreshInterval = 1
 	dbConfig := core.DBConfiguration{}
 	dbConfig.User = "postgres"

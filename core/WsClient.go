@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 )
 
-const channelBufSize = 100
 
 var maxId int = 0
 
@@ -63,6 +62,7 @@ func (c *Client) Done() {
 func (c *Client) Listen() {
 	go c.listenWrite()
 	c.listenRead()
+	log.Println("after all")
 }
 
 // Listen write request via chanel
@@ -110,11 +110,8 @@ func (c *Client) listenRead() {
 			granulation := Granulation{}
 			json.Unmarshal(message, &granulation)
 			if err != nil {
-
-				c.doneCh <- true
 				c.server.Err(err)
 			} else {
-
 				log.Printf("recv from client %d %d:", c.id, granulation.Granulation)
 				if err == nil && granulation.Granulation != 0 {
 					c.granulation = granulation.Granulation

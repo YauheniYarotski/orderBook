@@ -179,6 +179,7 @@ func (self *WsServer) getGranulation() []float64 {
 
 func (self *WsServer) startSendingAll() {
 	for range time.Tick(1 * time.Second) {
+		//log.Println("ping")
 		gr := self.getGranulation()
 		for _, granulation := range gr {
 
