@@ -13,6 +13,7 @@ import (
 	//"debug/elf"
 	"encoding/json"
 	"github.com/ajph/bitstamp-go"
+	"strconv"
 )
 
 const WS_TIMEOUT = 10 * time.Second
@@ -21,17 +22,20 @@ const WS_TIMEOUT = 10 * time.Second
 type BitstampManager struct {
 	CoinManager
 	api             *bitstamp.WebSocket
+	tradeCh chan *WsTrade
 	//restApi *api.RestApi
 }
 
 
 
-func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCh chan *WsTrade) {
 
 	//self.restApi = api.NewRestApi()
 	self.exchangeBook = newExchangeBook(Bitstamp)
+	self.tradeCh = tradeCh
 
 	go self.getApiOrderBook()
+	go self.startSendingDataBack(exchangeConfiguration, resultChan)
 
 
 
@@ -45,6 +49,7 @@ func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfigura
 			continue
 		}
 		self.api.Subscribe("diff_order_book")
+		self.api.Subscribe("live_trades")
 
 
 		//restApiResponseChan := make(chan api.RestApiReposponse)
@@ -53,7 +58,6 @@ func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfigura
 		//go self.restApi.PublicRequest(urlString, restApiResponseChan)
 
 
-		go self.startSendingDataBack(exchangeConfiguration, resultChan)
 
 	L:
 		for {
@@ -91,9 +95,12 @@ func (self *BitstampManager) handleEvent(e *bitstamp.Event, Ws *bitstamp.WebSock
 
 		// bitstamp
 	case "trade":
-		fmt.Printf("%#v\n", e.Data)
+		event := BitstampTrade{}
+		json.Unmarshal([]byte(e.Data.(string)), &event)
+		self.handleTrade(&event)
+		//log.Println(event)
 	case "data":
-		//fmt.Println(e.Data)
+		//log.Println(e.Data)
 		orderBookResult := bitstamp.OrderBookResult{}
 		json.Unmarshal([]byte(e.Data.(string)), &orderBookResult)
 
@@ -159,4 +166,34 @@ func (self *BitstampManager) addEvent(orderBookResult bitstamp.OrderBookResult) 
 
 	self.exchangeBook.CoinsBooks[symbol] = previouseCoinBook
 	mu.Unlock()
+}
+
+
+func (self *BitstampManager) handleTrade(event *BitstampTrade)  {
+	trade := WsTrade{}
+	trade.Exchange = Bitstamp.String()
+	trade.Symbol = "BTC/USD"
+	trade.Quantity = event.Amount
+	trade.Price = event.Price
+	time, _ := strconv.ParseInt(event.Timestamp, 10, 64)
+	trade.TradeTime = time
+	if event.Type == 0 {
+		trade.IsBid = true
+	} else {
+		trade.IsBid = false
+	}
+	self.tradeCh <- &trade
+
+}
+
+type BitstampTrade struct {
+	Amount      float64 `json:"amount"`
+	BuyOrderID  int     `json:"buy_order_id"`
+	SellOrderID int     `json:"sell_order_id"`
+	AmountStr   string  `json:"amount_str"`
+	PriceStr    string  `json:"price_str"`
+	Timestamp   string  `json:"timestamp"`
+	Price       float64 `json:"price"`
+	Type        int     `json:"type"`
+	ID          int     `json:"id"`
 }

@@ -88,7 +88,7 @@ func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch
 	case Bitmex:
 		go b.bitmexManager.StartListen(exchangeConfiguration, ch)
 	case Bitstamp:
-		go b.bitstampManager.StartListen(exchangeConfiguration, ch)
+		go b.bitstampManager.StartListen(exchangeConfiguration, ch, tradeCh)
 	//case Gdax:
 	//	go b.gdaxManager.StartListen(exchangeConfiguration, ch)
 	//case HitBtc:
