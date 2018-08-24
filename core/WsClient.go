@@ -1,7 +1,6 @@
 package core
 
 import (
-"fmt"
 "log"
 	"github.com/gorilla/websocket"
 	"encoding/json"
@@ -47,10 +46,7 @@ func (c *Client) Write(msg *Message) {
 	select {
 	case c.messageCh <- msg:
 	default:
-		c.ws.Close()
-		c.server.Del(c)
-		err := fmt.Errorf("client %d is disconnected.", c.id)
-		c.server.Err(err)
+		return
 	}
 }
 
