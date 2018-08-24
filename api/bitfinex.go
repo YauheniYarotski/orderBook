@@ -47,7 +47,7 @@ func (b *BitfinexApi) connectWs() *websocket.Conn {
 		//log.Debugf("connectWs:Bitfinex ws connected")
 		//b.symbolesForSubscirbe = b.composeSymbolsForSubscirbe(apiCurrenciesConfiguration)
 		//for _, symbol := range b.symbolesForSubscirbe {
-			subscribtion := `{"event":"subscribe","channel":"book","symbol": "BTCUSD", "prec": "P2", "len": "100"}`
+			subscribtion := `{"event":"subscribe","channel":"book","symbol": "BTCUSD", "prec": "P3", "len": "100"}`
 			//fmt.Println(subscribtion)
 			connection.WriteMessage(websocket.TextMessage, []byte(subscribtion))
 		//}
