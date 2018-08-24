@@ -7,5 +7,5 @@ type WsTrade struct {
 	Price         float64	`json:"p"`
 	Quantity      float64 	`json:"q"`
 	TradeTime     int64  	`json:"t"`
-	IfBid  		bool   		`json:"m"`
+	IsBid  		bool   		`json:"m"`
 }

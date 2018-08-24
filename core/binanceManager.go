@@ -252,7 +252,7 @@ func (self *BinanceManager)startListenHistoryList(tradeCh chan *WsTrade) {
 		price, _ := strconv.ParseFloat(event.Price, 64)
 		trade.Price = price
 		trade.TradeTime = event.TradeTime
-		trade.IfBid = event.IsBuyerMaker
+		trade.IsBid = event.IsBuyerMaker
 
 		tradeCh <- &trade
 	}

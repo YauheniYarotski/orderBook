@@ -11,6 +11,10 @@ import (
 
 	//"fmt"
 	"fmt"
+	"github.com/bitfinexcom/bitfinex-api-go/v2"
+	"github.com/bitfinexcom/bitfinex-api-go/v2/websocket"
+	"log"
+	"context"
 )
 
 type BitfinexManager struct {
@@ -48,7 +52,7 @@ type BitfinexRestEvents struct {
 	events [][]float64
 }
 
-func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCh chan *WsTrade) {
 	//self.bitfinexTickers = make(map[int]BitfinexTicker)
 
 	self.restApi = api.NewRestApi()
@@ -66,6 +70,7 @@ func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfigura
 	go self.api.StartListen(ch)
 
 	go self.startSendingDataBack(exchangeConfiguration, resultChan)
+	go self.startListenHistoryList(tradeCh)
 
 	for {
 		select {
@@ -284,4 +289,50 @@ func (self *BitfinexManager) convertSymbolToPair(symbol string) CurrencyPair {
 
 	}
 	return CurrencyPair{NotAplicable, NotAplicable}
+}
+
+
+func (self *BitfinexManager)startListenHistoryList(tradeCh chan *WsTrade) {
+
+	c := websocket.New()
+
+	err := c.Connect()
+	if err != nil {
+		log.Fatal("Bitfinex Error connecting to web socket : ", err)
+	}
+
+
+	// subscribe to BTCUSD trades
+	ctx, cxl2 := context.WithTimeout(context.Background(), time.Second*5)
+	defer cxl2()
+	_, err = c.SubscribeTrades(ctx, bitfinex.BTCUSD)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for obj := range c.Listen() {
+		switch obj.(type) {
+		case error:
+			log.Printf("Bitfin order hist channel closed: %s", obj)
+			break
+
+		default:
+		}
+		if event, ok := obj.(*bitfinex.Trade); ok {
+			trade := WsTrade{}
+			trade.Exchange = Bitfinex.String()
+			trade.Symbol = event.Pair
+			trade.Quantity = event.Amount
+			trade.Price = event.Price
+			trade.TradeTime = event.MTS
+			if event.Side == bitfinex.Bid {
+				trade.IsBid = true
+			} else {
+				trade.IsBid = false
+			}
+			tradeCh <- &trade
+		}
+
+	}
+
 }
