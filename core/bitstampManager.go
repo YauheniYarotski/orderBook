@@ -176,7 +176,7 @@ func (self *BitstampManager) handleTrade(event *BitstampTrade)  {
 	trade.Quantity = event.Amount
 	trade.Price = event.Price
 	time, _ := strconv.ParseInt(event.Timestamp, 0, 64)
-	trade.TradeTime = time
+	trade.TradeTime = time * 1000 // to get from 1536617724 -> 1536617724000
 	if event.Type == 0 {
 		trade.IsBid = true
 	} else {
