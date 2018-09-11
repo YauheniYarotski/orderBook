@@ -16,7 +16,7 @@ var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
 func main() {
 
 	var configuration = core.ManagerConfiguration{}
-
+	//"BITMEX","BITFINEX", "BINANCE", "BITSTAMP"
 	configuration.Exchanges = []string{"BITMEX","BITFINEX", "BINANCE", "BITSTAMP"}
 	configuration.RefreshInterval = 1
 	dbConfig := core.DBConfiguration{}

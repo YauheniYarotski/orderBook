@@ -87,6 +87,9 @@ func (s *WsServer) sendAll(msg *Message) {
 	for _, c := range s.clients {
 		if msg.granulation == c.granulation && msg.patern == c.paternt {
 			c.Write(msg)
+			//trade:= WsTrade{}
+			//json.Unmarshal(msg.Body, &trade)
+			//log.Println("before trade:", trade.Quantity)
 		}
 	}
 }
@@ -251,7 +254,14 @@ func (self *WsServer) startSendingAll() {
 
 
 func (self *WsServer) SendTrade(trade *WsTrade) {
-	data, _ := json.Marshal(trade)
-	message := Message{data, 50, "/list"}
-	self.SendAll(&message)
+	data, err := json.Marshal(trade)
+	if err != nil {
+		log.Println("Error encoding trade json", err)
+	} else {
+		message := Message{data, 50, "/list"}
+		self.SendAll(&message)
+		//trade:= WsTrade{}
+		//json.Unmarshal(message.Body, &trade)
+		//log.Println("before trade:", trade.Quantity)
+	}
 }

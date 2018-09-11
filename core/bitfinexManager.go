@@ -319,6 +319,7 @@ func (self *BitfinexManager)startListenHistoryList(tradeCh chan *WsTrade) {
 		default:
 		}
 		if event, ok := obj.(*bitfinex.Trade); ok {
+			//log.Println(event.Amount)
 			trade := WsTrade{}
 			trade.Exchange = Bitfinex.String()
 			trade.Symbol = event.Pair
@@ -331,6 +332,8 @@ func (self *BitfinexManager)startListenHistoryList(tradeCh chan *WsTrade) {
 				trade.IsBid = false
 			}
 			tradeCh <- &trade
+		} else {
+			log.Println("Bitfinex trade not ok")
 		}
 
 	}

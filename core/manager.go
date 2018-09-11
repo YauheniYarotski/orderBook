@@ -163,6 +163,7 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 func (self *Manager)sendTradeToWs(trade *WsTrade) {
 	//if trade.Quantity >= 0.5 {
+
 		self.wsServer.SendTrade(trade)
 	//}
 }

@@ -43,11 +43,12 @@ func (c *Client) Conn() *websocket.Conn {
 }
 
 func (c *Client) Write(msg *Message) {
-	select {
-	case c.messageCh <- msg:
-	default:
-		return
-	}
+	//select {
+	//case
+	c.messageCh <- msg
+	//default:
+	//	return
+	//}
 }
 
 func (c *Client) Done() {
@@ -73,6 +74,10 @@ func (c *Client) listenWrite() {
 			if err != nil {
 				log.Printf("write:", err)
 			}
+
+			//trade:= WsTrade{}
+			//json.Unmarshal(msg.Body, &trade)
+			//log.Println("trade:", trade.Quantity)
 
 			// receive done request
 		case <-c.doneCh:
