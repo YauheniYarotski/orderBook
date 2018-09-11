@@ -264,3 +264,32 @@ func (self *BinanceManager)startListenHistoryList(tradeCh chan *WsTrade) {
 	}
 
 }
+
+func (self *BinanceManager)startListenTrades(tradeCh chan *WsTrade) {
+
+	errHandler := func(err error) {
+		fmt.Println(err)
+	}
+
+	wsTradeHandler := func(event *binance.WsTradeEvent) {
+		//fmt.Println(event)
+		trade := WsTrade{}
+		trade.Exchange = Binance.String()
+		trade.Symbol = event.Symbol
+		quantity, _ := strconv.ParseFloat(event.Quantity, 64)
+		trade.Quantity = quantity
+		price, _ := strconv.ParseFloat(event.Price, 64)
+		trade.Price = price
+		trade.TradeTime = event.TradeTime
+		trade.IsBid = event.IsBuyerMaker
+
+		tradeCh <- &trade
+	}
+
+	_, _, err := binance.WsTradeServe("BTCUSDT", wsTradeHandler, errHandler)
+	if err != nil {
+		log.Println(err)
+		//return
+	}
+
+}

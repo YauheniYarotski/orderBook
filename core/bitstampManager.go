@@ -175,7 +175,7 @@ func (self *BitstampManager) handleTrade(event *BitstampTrade)  {
 	trade.Symbol = "BTC/USD"
 	trade.Quantity = event.Amount
 	trade.Price = event.Price
-	time, _ := strconv.ParseInt(event.Timestamp, 10, 64)
+	time, _ := strconv.ParseInt(event.Timestamp, 0, 64)
 	trade.TradeTime = time
 	if event.Type == 0 {
 		trade.IsBid = true
