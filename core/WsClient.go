@@ -32,10 +32,10 @@ func NewClient(ws *websocket.Conn, server *WsServer, patern string) *Client {
 	}
 
 	maxId++
-	ch := make(chan *Message)
+	messageCh := make(chan *Message, 30)
 	doneCh := make(chan bool)
 
-	return &Client{maxId, ws, server, ch, doneCh, 50, patern}
+	return &Client{maxId, ws, server, messageCh, doneCh, 50, patern}
 }
 
 func (c *Client) Conn() *websocket.Conn {

@@ -86,7 +86,7 @@ func (s *WsServer) Err(err error) {
 func (s *WsServer) sendAll(msg *Message) {
 	for _, c := range s.clients {
 		if msg.granulation == c.granulation && msg.patern == c.paternt {
-			c.Write(msg)
+			go c.Write(msg)
 			//trade:= WsTrade{}
 			//json.Unmarshal(msg.Body, &trade)
 			//log.Println("before trade:", trade.Quantity)
