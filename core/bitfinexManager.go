@@ -52,7 +52,7 @@ type BitfinexRestEvents struct {
 	events [][]float64
 }
 
-func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCh chan *WsTrade) {
+func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCompletion WsTradeCompletion) {
 	//self.bitfinexTickers = make(map[int]BitfinexTicker)
 
 	self.restApi = api.NewRestApi()
@@ -70,7 +70,7 @@ func (self *BitfinexManager) StartListen(exchangeConfiguration ExchangeConfigura
 	go self.api.StartListen(ch)
 
 	go self.startSendingDataBack(exchangeConfiguration, resultChan)
-	go self.startListenHistoryList(tradeCh)
+	go self.startListenHistoryList(tradeCompletion)
 
 	for {
 		select {
@@ -292,7 +292,7 @@ func (self *BitfinexManager) convertSymbolToPair(symbol string) CurrencyPair {
 }
 
 
-func (self *BitfinexManager)startListenHistoryList(tradeCh chan *WsTrade) {
+func (self *BitfinexManager)startListenHistoryList(completion WsTradeCompletion) {
 
 	c := websocket.New()
 
@@ -331,7 +331,7 @@ func (self *BitfinexManager)startListenHistoryList(tradeCh chan *WsTrade) {
 			} else {
 				trade.IsBid = false
 			}
-			tradeCh <- &trade
+			completion(&trade)
 		} else {
 			log.Println("Bitfinex trade not ok")
 		}

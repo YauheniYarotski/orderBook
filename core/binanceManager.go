@@ -44,12 +44,12 @@ func NewBinanceManager() *BinanceManager {
 	return &manger
 }
 
-func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCh chan *WsTrade) {
+func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCompletion WsTradeCompletion) {
 	//log.Debugf("StartListen:start binance manager listen")
 	ch := make(chan api.Reposponse)
 	go self.binanceApi.StartListen(ch)
 	go self.startSendingDataBack(exchangeConfiguration, resultChan)
-	go self.startListenHistoryList(tradeCh)
+	go self.startListenHistoryList(tradeCompletion)
 
 	restApiResponseChan := make(chan api.RestApiReposponse)
 
@@ -236,7 +236,7 @@ func (b *BinanceManager) convertSymbolToPair(symbol string) CurrencyPair {
 }
 
 
-func (self *BinanceManager)startListenHistoryList(tradeCh chan *WsTrade) {
+func (self *BinanceManager)startListenHistoryList(completion WsTradeCompletion) {
 
 	errHandler := func(err error) {
 		fmt.Println(err)
@@ -254,36 +254,7 @@ func (self *BinanceManager)startListenHistoryList(tradeCh chan *WsTrade) {
 		trade.TradeTime = event.TradeTime
 		trade.IsBid = event.IsBuyerMaker
 
-		tradeCh <- &trade
-	}
-
-	_, _, err := binance.WsTradeServe("BTCUSDT", wsTradeHandler, errHandler)
-	if err != nil {
-		log.Println(err)
-		//return
-	}
-
-}
-
-func (self *BinanceManager)startListenTrades(tradeCh chan *WsTrade) {
-
-	errHandler := func(err error) {
-		fmt.Println(err)
-	}
-
-	wsTradeHandler := func(event *binance.WsTradeEvent) {
-		//fmt.Println(event)
-		trade := WsTrade{}
-		trade.Exchange = Binance.String()
-		trade.Symbol = event.Symbol
-		quantity, _ := strconv.ParseFloat(event.Quantity, 64)
-		trade.Quantity = quantity
-		price, _ := strconv.ParseFloat(event.Price, 64)
-		trade.Price = price
-		trade.TradeTime = event.TradeTime
-		trade.IsBid = event.IsBuyerMaker
-
-		tradeCh <- &trade
+		completion(&trade)
 	}
 
 	_, _, err := binance.WsTradeServe("BTCUSDT", wsTradeHandler, errHandler)

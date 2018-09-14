@@ -2,6 +2,8 @@ package core
 
 import (
 "time"
+	"encoding/json"
+	"log"
 )
 
 const maxTickerAge = 5
@@ -78,17 +80,17 @@ type ManagerConfiguration struct {
 
 
 
-func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result, tradeCh chan *WsTrade) {
+func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result, tradeCompletion WsTradeCompletion) {
 
 	switch exchangeConfiguration.Exchange {
 	case Binance:
-		go b.binanceManager.StartListen(exchangeConfiguration, ch, tradeCh)
+		go b.binanceManager.StartListen(exchangeConfiguration, ch, tradeCompletion)
 	case Bitfinex:
-		go b.bitfinexManager.StartListen(exchangeConfiguration, ch, tradeCh)
+		go b.bitfinexManager.StartListen(exchangeConfiguration, ch, tradeCompletion)
 	case Bitmex:
 		go b.bitmexManager.StartListen(exchangeConfiguration, ch)
 	case Bitstamp:
-		go b.bitstampManager.StartListen(exchangeConfiguration, ch, tradeCh)
+		go b.bitstampManager.StartListen(exchangeConfiguration, ch, tradeCompletion)
 	//case Gdax:
 	//	go b.gdaxManager.StartListen(exchangeConfiguration, ch)
 	//case HitBtc:
@@ -133,12 +135,15 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 
 	ch := make(chan Result)
-	tradeCh := make(chan *WsTrade)
+
+	//tradeCompletion := WsTradeCompletion {
+	//
+	//}()
 
 	for _, exchangeString := range configuration.Exchanges {
 		exchangeConfiguration := ExchangeConfiguration{}
 		exchangeConfiguration.Exchange = NewExchange(exchangeString)
-		self.launchExchange(exchangeConfiguration, ch, tradeCh)
+		self.launchExchange(exchangeConfiguration, ch, self.TradeCompletion)
 	}
 
 
@@ -154,18 +159,29 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 				self.agregator.add(result.ExchangeBook)
 			}
 
-		case trade := <-tradeCh:
-			self.agregator.addTrade(trade)
-			self.sendTradeToWs(trade)
 		}
 	}
 }
 
-func (self *Manager)sendTradeToWs(trade *WsTrade) {
-	//if trade.Quantity >= 0.5 {
 
-		self.wsServer.SendTrade(trade)
-	//}
+func (self *Manager)TradeCompletion(trade *WsTrade)  {
+//if trade.Quantity >= 0.5 {
+//	self.agregator.addTrade(trade)
+self.sendTradeToWs(trade)
+//}
+}
+
+func (self *Manager) sendTradeToWs(trade *WsTrade) {
+	data, err := json.Marshal(trade)
+	if err != nil {
+		log.Println("Error encoding trade json", err)
+	} else {
+		message := Message{data, 50, "/list"}
+		self.wsServer.Send(&message)
+		//trade:= WsTrade{}
+		//json.Unmarshal(message.Body, &trade)
+		//log.Println("before trade:", trade.Quantity)
+	}
 }
 
 //func (b *Manager) fillDb() {

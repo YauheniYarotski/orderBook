@@ -22,17 +22,15 @@ const WS_TIMEOUT = 10 * time.Second
 type BitstampManager struct {
 	CoinManager
 	api             *bitstamp.WebSocket
-	tradeCh chan *WsTrade
 	//restApi *api.RestApi
 }
 
 
 
-func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCh chan *WsTrade) {
+func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCompletion WsTradeCompletion) {
 
 	//self.restApi = api.NewRestApi()
 	self.exchangeBook = newExchangeBook(Bitstamp)
-	self.tradeCh = tradeCh
 
 	go self.getApiOrderBook()
 	go self.startSendingDataBack(exchangeConfiguration, resultChan)
@@ -63,7 +61,7 @@ func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfigura
 		for {
 			select {
 			case ev := <-self.api.Stream:
-				self.handleEvent(ev, self.api)
+				self.handleEvent(ev, self.api, tradeCompletion)
 
 			case err := <-self.api.Errors:
 				log.Printf("Bitstamp Socket error: %s, reconnecting...", err)
@@ -81,7 +79,7 @@ func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfigura
 
 
 
-func (self *BitstampManager) handleEvent(e *bitstamp.Event, Ws *bitstamp.WebSocket) {
+func (self *BitstampManager) handleEvent(e *bitstamp.Event, Ws *bitstamp.WebSocket, tradeCompletion WsTradeCompletion) {
 	switch e.Event {
 	// pusher stuff
 	case "pusher:connection_established":
@@ -97,7 +95,7 @@ func (self *BitstampManager) handleEvent(e *bitstamp.Event, Ws *bitstamp.WebSock
 	case "trade":
 		event := BitstampTrade{}
 		json.Unmarshal([]byte(e.Data.(string)), &event)
-		self.handleTrade(&event)
+		self.handleTrade(&event, tradeCompletion)
 		//log.Println(event)
 	case "data":
 		//log.Println(e.Data)
@@ -169,7 +167,7 @@ func (self *BitstampManager) addEvent(orderBookResult bitstamp.OrderBookResult) 
 }
 
 
-func (self *BitstampManager) handleTrade(event *BitstampTrade)  {
+func (self *BitstampManager) handleTrade(event *BitstampTrade, tradeCompletion WsTradeCompletion)  {
 	trade := WsTrade{}
 	trade.Exchange = Bitstamp.String()
 	trade.Symbol = "BTC/USD"
@@ -182,7 +180,7 @@ func (self *BitstampManager) handleTrade(event *BitstampTrade)  {
 	} else {
 		trade.IsBid = false
 	}
-	self.tradeCh <- &trade
+	tradeCompletion(&trade)
 
 }
 

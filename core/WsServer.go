@@ -51,7 +51,7 @@ func NewWsServer(pattern string) *WsServer {
 	ws.clients = make(map[int]*Client)
 	ws.addCh = make(chan *Client)
 	ws.delCh = make(chan *Client)
-	ws.sendAllCh = make(chan *Message)
+	ws.sendAllCh = make(chan *Message, 100)
 	ws.doneCh = make(chan bool)
 	ws.errCh = make(chan error)
 	return &ws
@@ -65,7 +65,7 @@ func (s *WsServer) Del(c *Client) {
 	s.delCh <- c
 }
 
-func (s *WsServer) SendAll(msg *Message) {
+func (s *WsServer) Send(msg *Message) {
 	s.sendAllCh <- msg
 }
 
@@ -83,7 +83,7 @@ func (s *WsServer) Err(err error) {
 //	}
 //}
 
-func (s *WsServer) sendAll(msg *Message) {
+func (s *WsServer) send(msg *Message) {
 	for _, c := range s.clients {
 		if msg.granulation == c.granulation && msg.patern == c.paternt || msg.patern == c.paternt && msg.patern == "/list"  {
 			go c.Write(msg)
@@ -148,7 +148,7 @@ func (s *WsServer) start() {
 		case msg := <-s.sendAllCh:
 			//log.Println("Send all:")
 			//s.messages = append(s.messages, msg)
-			s.sendAll(msg)
+			s.send(msg)
 
 		case err := <-s.errCh:
 			log.Println("Error:", err.Error())
@@ -244,7 +244,7 @@ func (self *WsServer) startSendingAll() {
 
 			data, _ := json.Marshal(res)
 			message := Message{data, granulation, "/books"}
-			self.SendAll(&message)
+			self.Send(&message)
 		}
 	}
 
@@ -253,15 +253,3 @@ func (self *WsServer) startSendingAll() {
 
 
 
-func (self *WsServer) SendTrade(trade *WsTrade) {
-	data, err := json.Marshal(trade)
-	if err != nil {
-		log.Println("Error encoding trade json", err)
-	} else {
-		message := Message{data, 50, "/list"}
-		self.SendAll(&message)
-		//trade:= WsTrade{}
-		//json.Unmarshal(message.Body, &trade)
-		//log.Println("before trade:", trade.Quantity)
-	}
-}

@@ -9,3 +9,5 @@ type WsTrade struct {
 	TradeTime     int64  	`json:"t"`
 	IsBid  		bool   		`json:"m"`
 }
+
+type WsTradeCompletion func(*WsTrade)

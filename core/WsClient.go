@@ -32,7 +32,7 @@ func NewClient(ws *websocket.Conn, server *WsServer, patern string) *Client {
 	}
 
 	maxId++
-	messageCh := make(chan *Message, 30)
+	messageCh := make(chan *Message, 100)
 	doneCh := make(chan bool)
 
 	return &Client{maxId, ws, server, messageCh, doneCh, 50, patern}
@@ -46,6 +46,7 @@ func (c *Client) Write(msg *Message) {
 	//select {
 	//case
 	c.messageCh <- msg
+	//log.Println(len(c.messageCh))
 	//default:
 	//	return
 	//}
