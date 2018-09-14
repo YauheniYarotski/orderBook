@@ -3,13 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="862e676e-2981-4e98-b4bd-95375047c21a" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/core/CoinManager.go" afterPath="$PROJECT_DIR$/core/CoinManager.go" />
-      <change beforePath="$PROJECT_DIR$/core/ExchangeBook.go" afterPath="$PROJECT_DIR$/core/ExchangeBook.go" />
-      <change beforePath="$PROJECT_DIR$/core/agregator.go" afterPath="$PROJECT_DIR$/core/agregator.go" />
-      <change beforePath="$PROJECT_DIR$/core/binanceManager.go" afterPath="$PROJECT_DIR$/core/binanceManager.go" />
-      <change beforePath="$PROJECT_DIR$/core/bitfinexManager.go" afterPath="$PROJECT_DIR$/core/bitfinexManager.go" />
-      <change beforePath="$PROJECT_DIR$/core/bitmexManager.go" afterPath="$PROJECT_DIR$/core/bitmexManager.go" />
-      <change beforePath="$PROJECT_DIR$/core/bitstampManager.go" afterPath="$PROJECT_DIR$/core/bitstampManager.go" />
+      <change beforePath="$PROJECT_DIR$/cmd/service" afterPath="$PROJECT_DIR$/cmd/service" />
+      <change beforePath="$PROJECT_DIR$/core/WsServer.go" afterPath="$PROJECT_DIR$/core/WsServer.go" />
       <change beforePath="$PROJECT_DIR$/core/manager.go" afterPath="$PROJECT_DIR$/core/manager.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -42,7 +37,7 @@
         <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="330">
-              <caret line="69" column="31" lean-forward="true" selection-start-line="69" selection-start-column="31" selection-end-line="69" selection-end-column="31" />
+              <caret line="69" column="31" lean-forward="false" selection-start-line="69" selection-start-column="31" selection-end-line="69" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -62,7 +57,17 @@
         <entry file="file://$PROJECT_DIR$/core/CoinManager.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="368">
-              <caret line="27" column="43" lean-forward="true" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
+              <caret line="27" column="43" lean-forward="false" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WsServer.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/core/WsServer.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="239">
+              <caret line="150" column="22" lean-forward="false" selection-start-line="150" selection-start-column="22" selection-end-line="150" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -71,8 +76,8 @@
       <file leaf-file-name="WsClient.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/WsClient.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="111">
-              <caret line="49" column="14" lean-forward="true" selection-start-line="49" selection-start-column="14" selection-end-line="49" selection-end-column="14" />
+            <state relative-caret-position="43">
+              <caret line="60" column="22" lean-forward="false" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="22" />
               <folding>
                 <element signature="e#14#79#0" expanded="true" />
               </folding>
@@ -80,21 +85,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bitstampManager.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/bitstampManager.go">
+      <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Makefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="29" column="138" lean-forward="true" selection-start-line="29" selection-start-column="86" selection-end-line="29" selection-end-column="138" />
+            <state relative-caret-position="345">
+              <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="agregator.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="agregator.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/agregator.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="21" column="23" lean-forward="false" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
+            <state relative-caret-position="45">
+              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -103,28 +108,8 @@
       <file leaf-file-name="manager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/manager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="147" column="25" lean-forward="true" selection-start-line="147" selection-start-column="25" selection-end-line="147" selection-end-column="25" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="bitmexManager.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/bitmexManager.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="50" column="27" lean-forward="false" selection-start-line="50" selection-start-column="27" selection-end-line="50" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExchangeBook.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core/ExchangeBook.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="1" lean-forward="false" selection-start-line="21" selection-start-column="1" selection-end-line="21" selection-end-column="1" />
+            <state relative-caret-position="325">
+              <caret line="149" column="24" lean-forward="false" selection-start-line="149" selection-start-column="24" selection-end-line="149" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -175,10 +160,10 @@
       <find>01143284</find>
       <find>startListenTrades</find>
       <find>clients</find>
-      <find>s.clients</find>
       <find>sendAllCh</find>
-      <find>startListenHistoryList</find>
       <find>handleEvent</find>
+      <find>startListenHistoryList</find>
+      <find>s.clients</find>
       <find>messageCh</find>
       <find>tradeCh</find>
     </findStrings>
@@ -214,16 +199,16 @@
         <option value="$PROJECT_DIR$/api/bitfinex.go" />
         <option value="$PROJECT_DIR$/cmd/main.go" />
         <option value="$PROJECT_DIR$/core/WsTrade.go" />
-        <option value="$PROJECT_DIR$/core/WsServer.go" />
         <option value="$PROJECT_DIR$/core/binanceManager.go" />
         <option value="$PROJECT_DIR$/core/CoinManager.go" />
         <option value="$PROJECT_DIR$/core/bitfinexManager.go" />
         <option value="$PROJECT_DIR$/core/bitmexManager.go" />
         <option value="$PROJECT_DIR$/core/bitstampManager.go" />
-        <option value="$PROJECT_DIR$/core/agregator.go" />
-        <option value="$PROJECT_DIR$/core/manager.go" />
         <option value="$PROJECT_DIR$/core/WsClient.go" />
         <option value="$PROJECT_DIR$/core/ExchangeBook.go" />
+        <option value="$PROJECT_DIR$/core/manager.go" />
+        <option value="$PROJECT_DIR$/core/agregator.go" />
+        <option value="$PROJECT_DIR$/core/WsServer.go" />
       </list>
     </option>
   </component>
@@ -233,11 +218,11 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="80" />
-    <option name="y" value="36" />
+    <option name="y" value="88" />
     <option name="width" value="1840" />
-    <option name="height" value="1164" />
+    <option name="height" value="1112" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -273,6 +258,11 @@
             <path>
               <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
               <item name="orderBook" type="462c0819:PsiDirectoryNode" />
+              <item name="cmd" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
+              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
               <item name="core" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -280,42 +270,6 @@
               <item name="orderBook" type="462c0819:PsiDirectoryNode" />
               <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="agregator.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="binanceManager.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="bitfinexManager.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="bitmexManager.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="bitstampManager.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="CoinManager.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="ExchangeBook.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
             </path>
             <path>
               <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
@@ -334,141 +288,6 @@
               <item name="orderBook" type="462c0819:PsiDirectoryNode" />
               <item name="core" type="462c0819:PsiDirectoryNode" />
               <item name="WsServer.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="orderBook" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="WsTrade.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.11" type="20ee2d1f:SyntheticLibraryElementNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.11" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.11" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="strconv" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.11" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="strconv" type="462c0819:PsiDirectoryNode" />
-              <item name="atoi.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="adshao" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="adshao" type="462c0819:PsiDirectoryNode" />
-              <item name="go-binance" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="adshao" type="462c0819:PsiDirectoryNode" />
-              <item name="go-binance" type="462c0819:PsiDirectoryNode" />
-              <item name="websocket_service.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="ajph" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="ajph" type="462c0819:PsiDirectoryNode" />
-              <item name="bitstamp-go" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="ajph" type="462c0819:PsiDirectoryNode" />
-              <item name="bitstamp-go" type="462c0819:PsiDirectoryNode" />
-              <item name="bitstamp.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="gorilla" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="gorilla" type="462c0819:PsiDirectoryNode" />
-              <item name="websocket" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="orderBook" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="GOPATH &lt;orderBook&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="gorilla" type="462c0819:PsiDirectoryNode" />
-              <item name="websocket" type="462c0819:PsiDirectoryNode" />
-              <item name="conn.go" type="e9541c9c:GoTreeStructureProvider$GoFileNode" />
             </path>
           </expand>
           <select />
@@ -535,18 +354,17 @@
     <option name="remove_strategy" value="false" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="80" y="23" width="1840" height="1177" extended-state="6" />
-    <editor active="true" />
+    <frame x="80" y="88" width="1840" height="1112" extended-state="0" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.38153505" sideWeight="0.4946401" order="1" side_tool="false" content_ui="combo" x="146" y="185" width="296" height="809" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26534468" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15864022" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295562" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34560907" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36820924" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4220963" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24819544" sideWeight="0.5053599" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -615,19 +433,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/core/WsServer.go</url>
-          <line>111</line>
+          <line>113</line>
           <option name="timeStamp" value="39" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/core/bitstampManager.go</url>
           <line>97</line>
           <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/core/manager.go</url>
-          <line>159</line>
-          <properties />
-          <option name="timeStamp" value="43" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="44" />
@@ -759,13 +571,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="5" column="1" lean-forward="true" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="5" lean-forward="false" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -914,16 +719,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/WsServer.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="88" column="19" lean-forward="false" selection-start-line="88" selection-start-column="19" selection-end-line="88" selection-end-column="19" />
-          <folding>
-            <element signature="e#15#177#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/WsTrade.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -943,7 +738,7 @@
     <entry file="file://$PROJECT_DIR$/core/CoinManager.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
-          <caret line="27" column="43" lean-forward="true" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
+          <caret line="27" column="43" lean-forward="false" selection-start-line="27" selection-start-column="43" selection-end-line="27" selection-end-column="43" />
           <folding />
         </state>
       </provider>
@@ -951,7 +746,7 @@
     <entry file="file://$PROJECT_DIR$/core/bitfinexManager.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
-          <caret line="69" column="31" lean-forward="true" selection-start-line="69" selection-start-column="31" selection-end-line="69" selection-end-column="31" />
+          <caret line="69" column="31" lean-forward="false" selection-start-line="69" selection-start-column="31" selection-end-line="69" selection-end-column="31" />
           <folding />
         </state>
       </provider>
@@ -972,16 +767,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/WsClient.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="49" column="14" lean-forward="true" selection-start-line="49" selection-start-column="14" selection-end-line="49" selection-end-column="14" />
-          <folding>
-            <element signature="e#14#79#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/ExchangeBook.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
@@ -990,18 +775,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/WsClient.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="43">
+          <caret line="60" column="22" lean-forward="false" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="22" />
+          <folding>
+            <element signature="e#14#79#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/manager.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="147" column="25" lean-forward="true" selection-start-line="147" selection-start-column="25" selection-end-line="147" selection-end-column="25" />
+        <state relative-caret-position="325">
+          <caret line="149" column="24" lean-forward="false" selection-start-line="149" selection-start-column="24" selection-end-line="149" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/core/agregator.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="21" column="23" lean-forward="false" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
+        <state relative-caret-position="45">
+          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/WsServer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="150" column="22" lean-forward="false" selection-start-line="150" selection-start-column="22" selection-end-line="150" selection-end-column="22" />
           <folding />
         </state>
       </provider>

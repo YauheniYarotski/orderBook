@@ -14,6 +14,7 @@ import (
 	"time"
 	"encoding/json"
 	"math"
+	"sync"
 )
 
 //213.136.80.2
@@ -22,6 +23,7 @@ import (
 
 
 type WsServer struct {
+	sync.Mutex
 	upgrader websocket.Upgrader
 	ServerHandler   func(granulation float64, p *[]ExchangeBook)
 	book []WSExchangeBook
@@ -135,15 +137,18 @@ func (s *WsServer) start() {
 		// Add new a client
 		case c := <-s.addCh:
 			log.Println("Added new client")
+			s.Lock()
 			s.clients[c.id] = c
+			s.Unlock()
 			log.Println("Now", len(s.clients), "clients connected.")
 			//s.sendPastMessages(c)
 
 			// del a client
 		case c := <-s.delCh:
 			log.Println("Delete client")
+			s.Lock()
 			delete(s.clients, c.id)
-
+			s.Unlock()
 			// broadcast message for all clients
 		case msg := <-s.sendAllCh:
 			//log.Println("Send all:")
@@ -171,9 +176,11 @@ var homeTemplate,_ = template.ParseFiles("./webPages/firstPage.html")
 
 func (self *WsServer) getGranulation() []float64 {
 	granulationsMap := map[float64]bool{}
+	self.Lock()
 	for _, c := range self.clients {
 		granulationsMap[c.granulation] = true
 	}
+	self.Unlock()
 	granulations := make([]float64, 0, len(granulationsMap))
 	for k := range granulationsMap {
 		granulations = append(granulations, k)

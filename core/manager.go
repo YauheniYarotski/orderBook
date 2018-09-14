@@ -129,6 +129,8 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 	//go b.fillDb()
 
 
+
+
 	for _, exchangeString := range configuration.Exchanges {
 		exchangeConfiguration := ExchangeConfiguration{}
 		exchangeConfiguration.Exchange = NewExchange(exchangeString)
@@ -141,7 +143,7 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 
 func (self *Manager) getBookCompletion(book *ExchangeBook, err *error)  {
 	if err != nil {
-		//log.Errorf("StartListen:error: %v", result.Err)
+		log.Println("StartListen:error: %v", err)
 	} else {
 		//fmt.Println(result.ExchangeEvents)
 		//b.agregator.add(*result.TickerCollection, result.exchangeTitle)
