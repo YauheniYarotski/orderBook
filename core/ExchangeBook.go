@@ -20,3 +20,7 @@ func newExchangeBook(exchange Exchange) ExchangeBook  {
 	delete(exchangeBook.CoinsBooks, "")
 	return exchangeBook
 }
+
+type GetExchangeBookCompletion func(exchangeBook *ExchangeBook, err *error)
+
+

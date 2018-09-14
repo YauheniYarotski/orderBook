@@ -15,11 +15,6 @@ type BasicManager struct {
 
 
 
-type Result struct {
-	ExchangeBook ExchangeBook
-	Err              *error
-}
-
 
 type Manager struct {
 	binanceManager  *BinanceManager
@@ -80,17 +75,17 @@ type ManagerConfiguration struct {
 
 
 
-func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, ch chan Result, tradeCompletion WsTradeCompletion) {
+func (b *Manager) launchExchange(exchangeConfiguration ExchangeConfiguration, getExchangeBookCompletion GetExchangeBookCompletion, tradeCompletion WsTradeCompletion) {
 
 	switch exchangeConfiguration.Exchange {
 	case Binance:
-		go b.binanceManager.StartListen(exchangeConfiguration, ch, tradeCompletion)
+		go b.binanceManager.StartListen(exchangeConfiguration, getExchangeBookCompletion, tradeCompletion)
 	case Bitfinex:
-		go b.bitfinexManager.StartListen(exchangeConfiguration, ch, tradeCompletion)
+		go b.bitfinexManager.StartListen(exchangeConfiguration, getExchangeBookCompletion, tradeCompletion)
 	case Bitmex:
-		go b.bitmexManager.StartListen(exchangeConfiguration, ch)
+		go b.bitmexManager.StartListen(exchangeConfiguration, getExchangeBookCompletion)
 	case Bitstamp:
-		go b.bitstampManager.StartListen(exchangeConfiguration, ch, tradeCompletion)
+		go b.bitstampManager.StartListen(exchangeConfiguration, getExchangeBookCompletion, tradeCompletion)
 	//case Gdax:
 	//	go b.gdaxManager.StartListen(exchangeConfiguration, ch)
 	//case HitBtc:
@@ -134,35 +129,25 @@ func (self *Manager) Start(configuration ManagerConfiguration) {
 	//go b.fillDb()
 
 
-	ch := make(chan Result)
-
-	//tradeCompletion := WsTradeCompletion {
-	//
-	//}()
-
 	for _, exchangeString := range configuration.Exchanges {
 		exchangeConfiguration := ExchangeConfiguration{}
 		exchangeConfiguration.Exchange = NewExchange(exchangeString)
-		self.launchExchange(exchangeConfiguration, ch, self.TradeCompletion)
+		self.launchExchange(exchangeConfiguration, self.getBookCompletion, self.TradeCompletion)
 	}
 
 
-	for {
-		select {
-		case result := <-ch:
 
-			if result.Err != nil {
-				//log.Errorf("StartListen:error: %v", result.Err)
-			} else {
-				//fmt.Println(result.ExchangeEvents)
-				//b.agregator.add(*result.TickerCollection, result.exchangeTitle)
-				self.agregator.add(result.ExchangeBook)
-			}
-
-		}
-	}
 }
 
+func (self *Manager) getBookCompletion(book *ExchangeBook, err *error)  {
+	if err != nil {
+		//log.Errorf("StartListen:error: %v", result.Err)
+	} else {
+		//fmt.Println(result.ExchangeEvents)
+		//b.agregator.add(*result.TickerCollection, result.exchangeTitle)
+		self.agregator.add(book)
+	}
+}
 
 func (self *Manager)TradeCompletion(trade *WsTrade)  {
 //if trade.Quantity >= 0.5 {

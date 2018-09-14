@@ -48,7 +48,7 @@ type BitmexRestEvents struct {
 	events [][]float64
 }
 
-func (self *BitmexManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+func (self *BitmexManager) StartListen(exchangeConfiguration ExchangeConfiguration, getExchangeBookCompletion GetExchangeBookCompletion) {
 	//self.bitfinexTickers = make(map[int]BitfinexTicker)
 
 	self.restApi = api.NewRestApi()
@@ -66,7 +66,7 @@ func (self *BitmexManager) StartListen(exchangeConfiguration ExchangeConfigurati
 
 	go self.api.StartListen(ch)
 
-	go self.startSendingDataBack(exchangeConfiguration, resultChan)
+	go self.startSendingDataBack(exchangeConfiguration, getExchangeBookCompletion)
 
 	for {
 		select {

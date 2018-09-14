@@ -27,13 +27,13 @@ type BitstampManager struct {
 
 
 
-func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCompletion WsTradeCompletion) {
+func (self *BitstampManager) StartListen(exchangeConfiguration ExchangeConfiguration, getExchangeBookCompletion GetExchangeBookCompletion, tradeCompletion WsTradeCompletion) {
 
 	//self.restApi = api.NewRestApi()
 	self.exchangeBook = newExchangeBook(Bitstamp)
 
 	go self.getApiOrderBook()
-	go self.startSendingDataBack(exchangeConfiguration, resultChan)
+	go self.startSendingDataBack(exchangeConfiguration, getExchangeBookCompletion)
 
 
 

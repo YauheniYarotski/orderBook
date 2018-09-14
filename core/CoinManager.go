@@ -8,7 +8,7 @@ type CoinManager struct {
 }
 
 
-func (self *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, resultChan chan Result) {
+func (self *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConfiguration, getExchangeBookCompletion GetExchangeBookCompletion) {
 
 	for range time.Tick(1 * time.Second) {
 		func() {
@@ -32,7 +32,7 @@ func (self *CoinManager) startSendingDataBack(exchangeConfiguration ExchangeConf
 			}
 			mu.Unlock()
 
-			resultChan <- Result{newBook, nil}
+			getExchangeBookCompletion(&newBook, nil)
 		}()
 	}
 }

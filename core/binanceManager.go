@@ -44,11 +44,11 @@ func NewBinanceManager() *BinanceManager {
 	return &manger
 }
 
-func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, resultChan chan Result, tradeCompletion WsTradeCompletion) {
+func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfiguration, getExchangeBookCompletion GetExchangeBookCompletion, tradeCompletion WsTradeCompletion) {
 	//log.Debugf("StartListen:start binance manager listen")
 	ch := make(chan api.Reposponse)
 	go self.binanceApi.StartListen(ch)
-	go self.startSendingDataBack(exchangeConfiguration, resultChan)
+	go self.startSendingDataBack(exchangeConfiguration, getExchangeBookCompletion)
 	go self.startListenHistoryList(tradeCompletion)
 
 	restApiResponseChan := make(chan api.RestApiReposponse)
@@ -62,8 +62,8 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 
 			if *response.Err != nil {
 				//log.Errorf("StartListen: binance error:%v", *response.Err)
-				exchangeEvents := ExchangeBook{}
-				resultChan <- Result{exchangeEvents, response.Err}
+				//resultChan <- Result{exchangeEvents, response.Err}
+				getExchangeBookCompletion(nil, response.Err)
 			} else if *response.Message != nil {
 
 				//fmt.Printf("%s \n", *response.Message)
@@ -124,8 +124,9 @@ func (self *BinanceManager) StartListen(exchangeConfiguration ExchangeConfigurat
 
 			if *response.Err != nil {
 				//log.Errorf("StartListen: binance error:%v", *response.Err)
-				exchangeEvents := ExchangeBook{}
-				resultChan <- Result{exchangeEvents, response.Err}
+				//exchangeEvents := ExchangeBook{}
+				//resultChan <- Result{exchangeEvents, response.Err}
+				getExchangeBookCompletion(nil, response.Err)
 			} else if *response.Message != nil {
 
 				//fmt.Printf("%s \n", *response.Message)
