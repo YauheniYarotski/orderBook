@@ -9,6 +9,10 @@ type Agregator struct {
 
 	exchangeBooks map[string]ExchangeBook
 	trades []*WsTrade
+	booksCh chan *ExchangeBook
+	signalCh chan bool
+	getbooksCh chan map[string]ExchangeBook
+
 }
 
 func NewAgregator() *Agregator {
@@ -16,24 +20,45 @@ func NewAgregator() *Agregator {
 	agregator.exchangeBooks = map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
 	delete(agregator.exchangeBooks, "")
 	agregator.trades = []*WsTrade{}
+	agregator.booksCh = make(chan *ExchangeBook)
+
+	agregator.signalCh = make(chan bool)
+
+
+	agregator.getbooksCh = make(chan map[string]ExchangeBook)
+	go agregator.startListen()
 	return &agregator
+}
+
+func (self *Agregator) startListen() {
+	for {
+		select {
+		// send message to the client
+		case exchangeBook := <-self.booksCh:
+			self.exchangeBooks[exchangeBook.Exchange.String()] = *exchangeBook
+		case <-self.signalCh:
+			self.getbooksCh <- self.exchangeBooks
+			//self.exchangeBooks[exchangeBook.Exchange.String()] = *exchangeBook
+		}
+	}
 }
 
 func (self *Agregator) add(exchangeBook *ExchangeBook) {
 	//fmt.Println("added:", exchangeBook)
-	mu.Lock()
-	self.exchangeBooks[exchangeBook.Exchange.String()] = *exchangeBook
-	mu.Unlock()
+	self.booksCh <- exchangeBook
+	//mu.Lock()
+	//self.exchangeBooks[exchangeBook.Exchange.String()] = *exchangeBook
+	//mu.Unlock()
 }
 
 func (self *Agregator) getExchangeBooks(granulation float64)  map[string]ExchangeBook {
 
-	mu.Lock()
 
 	newExchangesBooks := map[string]ExchangeBook{"":newExchangeBook(Bitfinex)}
 	delete(newExchangesBooks, "")
-
-	for k,v := range  self.exchangeBooks {
+	self.signalCh <- true
+	exchangeBooks := <- self.getbooksCh
+	for k,v := range  exchangeBooks {
 
 		newBook := newExchangeBook(v.Exchange)
 		newBook.ExchangeTitle = v.Exchange.String()
@@ -58,7 +83,6 @@ func (self *Agregator) getExchangeBooks(granulation float64)  map[string]Exchang
 		newExchangesBooks[k] = newBook
 
 	}
-	mu.Unlock()
 	return newExchangesBooks
 }
 

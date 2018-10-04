@@ -5,6 +5,8 @@ import (
 	"sync"
 	"net/http"
 	"flag"
+	"log"
+	"os"
 )
 
 var manager = core.NewManager()
@@ -30,5 +32,19 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("./webPages")))
 
-	http.ListenAndServe(*addr, nil)
+	var httpErr error
+
+	if _, err := os.Stat("./selfsigned.crt"); err == nil {
+		log.Println("file ", "selfsigned.crt found switching to https")
+		if httpErr = http.ListenAndServeTLS(*addr, "selfsigned.crt", "selfsigned.key", nil); httpErr != nil {
+			log.Fatal("The process exited with https error: ", httpErr.Error())
+		}
+	} else {
+		httpErr = http.ListenAndServe(*addr, nil)
+		if httpErr != nil {
+			log.Fatal("The process exited with http error: ", httpErr.Error())
+		}
+	}
+
+
 }
