@@ -12,8 +12,8 @@ import (
 var manager = core.NewManager()
 var waitGroup = &sync.WaitGroup{}
 
-var addr = flag.String("addr", "0.0.0.0:8080", "http service address")
-
+var addr = flag.String("addr", "0.0.0.0:8081", "http service address")
+var ssl_addr = flag.String("ssl_addr", "0.0.0.0:8080", "https service address")
 
 func main() {
 
@@ -34,9 +34,17 @@ func main() {
 
 	var httpErr error
 
+	go func() {
+		var httpErr error
+		httpErr = http.ListenAndServe(*addr, nil)
+		if httpErr != nil {
+			log.Fatal("The process exited with http error: ", httpErr.Error())
+		}
+	}()
+
 	if _, err := os.Stat("./selfsigned.crt"); err == nil {
 		log.Println("file ", "selfsigned.crt found switching to https")
-		if httpErr = http.ListenAndServeTLS(*addr, "selfsigned.crt", "selfsigned.key", nil); httpErr != nil {
+		if httpErr = http.ListenAndServeTLS(*ssl_addr, "selfsigned.crt", "selfsigned.key", nil); httpErr != nil {
 			log.Fatal("The process exited with https error: ", httpErr.Error())
 		}
 	} else {
